@@ -6,3 +6,8 @@ target
 /.project
 /.settings
 /RUNNING_PID
+
+# default entries are above
+
+/.metals
+/.vscode
