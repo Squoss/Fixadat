@@ -9,5 +9,7 @@ target
 
 # default entries are above
 
+.bloop
 /.metals
+metals.sbt
 /.vscode
