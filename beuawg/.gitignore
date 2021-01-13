@@ -13,3 +13,5 @@ target
 /.metals
 metals.sbt
 /.vscode
+
+/conf/insecure.conf
