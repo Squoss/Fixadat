@@ -1,41 +1,83 @@
 import React from 'react';
+import { Link, NavLink, Redirect, Route, Switch } from 'react-router-dom';
+
+import NotFound from './NotFound';
+import ToDo from './ToDo';
 
 function App() {
   return (
     <React.Fragment>
       <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">Fixed navbar</a>
+          <Link className="navbar-brand" to="/">Squawg</Link> <a className="navbar-brand" href="https://io.squeng.com/abode/" target="Squeng"><small>Squeng<sup>&reg;</sup>&nbsp;made</small></a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarCollapse">
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
-              <li className="nav-item active">
-                <a className="nav-link" aria-current="page" href="#">Home</a>
+              <li className="nav-item">
+                <NavLink className="nav-link" exact={true} activeClassName="active" aria-current="page" to="/"><i className="bi-house"></i></NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Link</a>
+                <NavLink className="nav-link" activeClassName="active" to="/acknowledgements">Acknowledgements</NavLink>
+              </li>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="legalese" role="button" data-bs-toggle="dropdown" aria-expanded="false">Legalese</a>
+                <ul className="dropdown-menu" aria-labelledby="legalese">
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/im">Imprint / Masthead</NavLink></li>
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/pp">Privacy Policy</NavLink></li>
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/tos">Terms of Service</NavLink></li>
+                </ul>
               </li>
               <li className="nav-item">
-                <a className="nav-link disabled" href="#" tabIndex={-1} aria-disabled="true">Disabled</a>
+                <a className="nav-link disabled" href="#" tabIndex={-1} aria-disabled="true">Prices</a>
               </li>
             </ul>
-            <form className="d-flex">
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-              <button className="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            <div className="dropdown">
+              <a className="btn btn-primary dropdown-toggle" href="#" role="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi-globe"></i></a>
+              <ul className="dropdown-menu" aria-labelledby="language">
+                <li><a className="dropdown-item disabled" href="#">Deutsch</a></li>
+                <li><a className="dropdown-item" href="#">English</a></li>
+              </ul>
+            </div>
+            &nbsp;
+            <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi-github"></i></a>
           </div>
         </div>
       </nav>
 
       <main className="container">
-        <div className="bg-light p-5 rounded">
-          <h1>Navbar example</h1>
-          <p className="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
-          <a className="btn btn-lg btn-primary" href="/docs/5.0/components/navbar/" role="button">View navbar docs &raquo;</a>
-        </div>
+        <Switch>
+          <Route exact path="/" component={ToDo} />
+          <Route path="/events/:event" component={ToDo} />
+          <Route path="/acknowledgements" component={ToDo} />
+          <Route exact path="/legalese">
+            <Redirect to="/legalese/im" />
+          </Route>
+          <Route path="/legalese/im" component={ToDo} />
+          <Route path="/legalese/pp" component={ToDo} />
+          <Route path="/legalese/tos" component={ToDo} />
+          {/* when none of the above match, <NotFound> will be rendered */}
+          <Route component={NotFound} />
+        </Switch>
       </main>
+
+      <footer className="fixed-bottom">
+        <div className="card text-dark bg-light">
+          <div className="card-body">
+            <div className="clearfix">
+              <span className="float-start">Copyright &copy; <time dateTime="2021">2021</time> Squeng AG</span>
+              <div className="float-end">
+                <Link className="link-dark" to="/legalese/im">Imprint / Masthead</Link>
+                &nbsp;
+                <Link className="link-dark" to="/legalese/pp">Privacy Policy</Link>
+                &nbsp;
+                <Link className="link-dark" to="/legalese/tos">Terms of Service</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </React.Fragment>
   );
 }
