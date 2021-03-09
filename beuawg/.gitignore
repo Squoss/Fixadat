@@ -12,6 +12,7 @@ target
 .bloop
 /.metals
 metals.sbt
+/null
 /.vscode
 
 /conf/insecure.conf
