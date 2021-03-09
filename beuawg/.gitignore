@@ -10,9 +10,10 @@ target
 # default entries are above
 
 .bloop
+.bsp
 /.metals
 metals.sbt
-/null
+null
 /.vscode
 
 /conf/insecure.conf
