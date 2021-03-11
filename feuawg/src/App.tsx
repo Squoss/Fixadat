@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, Redirect, Route, Switch } from 'react-router-dom';
 
+import Abode from './Abode';
 import NotFound from './NotFound';
 import ToDo from './ToDo';
 
@@ -40,15 +41,15 @@ function App() {
                 <li><a className="dropdown-item" href="#">English</a></li>
               </ul>
             </div>
-            &nbsp;
-            <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi-github"></i></a>
+              &nbsp;
+              <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi-github"></i></a>
           </div>
         </div>
       </nav>
 
       <main className="container">
         <Switch>
-          <Route exact path="/" component={ToDo} />
+          <Route exact path="/" component={Abode} />
           <Route path="/events/:event" component={ToDo} />
           <Route path="/acknowledgements" component={ToDo} />
           <Route exact path="/legalese">
@@ -63,18 +64,9 @@ function App() {
       </main>
 
       <footer className="fixed-bottom">
-        <div className="card text-dark bg-light">
+        <div className="card text-end">
           <div className="card-body">
-            <div className="clearfix">
-              <span className="float-start">Copyright &copy; <time dateTime="2021">2021</time> Squeng AG</span>
-              <div className="float-end">
-                <Link className="link-dark" to="/legalese/im">Imprint / Masthead</Link>
-                &nbsp;
-                <Link className="link-dark" to="/legalese/pp">Privacy Policy</Link>
-                &nbsp;
-                <Link className="link-dark" to="/legalese/tos">Terms of Service</Link>
-              </div>
-            </div>
+            Copyright &copy; <time dateTime="2021">2021</time> Squeng AG
           </div>
         </div>
       </footer>
