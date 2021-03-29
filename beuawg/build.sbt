@@ -1,10 +1,19 @@
-name := """beuawg"""
-organization := "com.squeng"
+name := "beuawg"
 
-version := "1.0-SNAPSHOT"
+organization := "com.squeng"
+organizationName := "Squeng AG"
+organizationHomepage := Some(url("https://io.squeng.com/"))
+
+homepage := Some(url("https://squawg.com"))
+startYear := Some(2021)
+description := "répondez s'il vous plaît"
+licenses += "MIT" -> url("https://choosealicense.com/licenses/mit/")
+
+version := "MVP"
 
 lazy val root = (project in file("."))
     .enablePlugins(PlayScala)
+// https://www.playframework.com/documentation/latest/SBTSubProjects#Adding-a-simple-library-sub-project
     .aggregate(reinraum)
     .dependsOn(reinraum)
 lazy val reinraum = project
