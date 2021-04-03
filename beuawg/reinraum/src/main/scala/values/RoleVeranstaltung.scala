@@ -24,8 +24,11 @@
 
 package domain.values
 
+import java.net.URL
 import java.time.Instant
-import java.util.UUID
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 
 import domain.values.Role._
 
@@ -33,22 +36,67 @@ sealed trait RoleVeranstaltung {
 
   val role: Role
 
-  def id(): UUID
+  val id: Id
 
-  def guestToken(): AccessToken
+  val guestToken: AccessToken
+
+  val name: String
+
+  val description: Option[String]
+
+  val date: Option[LocalDate]
+
+  val time: Option[LocalTime]
+
+  val timeZone: Option[TimeZone]
+
+  val url: Option[URL]
+
+  val place: Option[String] // FIXME
+
+  val emailAddressRequired: Boolean
+
+  val phoneNumberRequired: Boolean
+
+  val plus1Allowed: Boolean
 }
 
-final case class GuestVeranstaltung(id: UUID, guestToken: AccessToken)
-    extends RoleVeranstaltung {
-      
+final case class GuestVeranstaltung(
+    id: Id,
+    guestToken: AccessToken,
+    name: String,
+    description: Option[String],
+    date: Option[LocalDate],
+    time: Option[LocalTime],
+    timeZone: Option[TimeZone],
+    url: Option[URL],
+    place: Option[String], // FIXME
+    emailAddressRequired: Boolean,
+    phoneNumberRequired: Boolean,
+    plus1Allowed: Boolean
+) extends RoleVeranstaltung {
+
   override val role = Guest
 }
 
 final case class HostVeranstaltung(
-    id: UUID,
+    id: Id,
+    created: Instant,
     guestToken: AccessToken,
     hostToken: AccessToken,
-    created: Instant
+    name: String,
+    description: Option[String],
+    date: Option[LocalDate],
+    time: Option[LocalTime],
+    timeZone: Option[TimeZone],
+    url: Option[URL],
+    place: Option[String], // FIXME
+    emailAddressRequired: Boolean,
+    phoneNumberRequired: Boolean,
+    plus1Allowed: Boolean,
+    rsvps: Seq[Rsvp],
+    closed: Boolean,
+    updated: Instant
 ) extends RoleVeranstaltung {
 
   override val role = Host

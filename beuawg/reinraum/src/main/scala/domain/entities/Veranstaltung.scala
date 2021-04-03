@@ -124,9 +124,40 @@ final class Veranstaltung private (
 
   def isClosed() = closed
 
-  private def toGuestVeranstaltung(): GuestVeranstaltung = ???
+  private def toGuestVeranstaltung(): GuestVeranstaltung = GuestVeranstaltung(
+    id,
+    guestToken,
+    name,
+    description,
+    date,
+    time,
+    timeZone,
+    url,
+    place,
+    emailAddressRequired,
+    phoneNumberRequired,
+    plus1Allowed
+  )
 
-  private def toHostVeranstaltung(): HostVeranstaltung = ???
+  private def toHostVeranstaltung(): HostVeranstaltung = HostVeranstaltung(
+    id,
+    created,
+    guestToken,
+    hostToken,
+    name,
+    description,
+    date,
+    time,
+    timeZone,
+    url,
+    place,
+    emailAddressRequired,
+    phoneNumberRequired,
+    plus1Allowed,
+    rsvps.toSeq,
+    closed,
+    updated
+  )
 
   def toRoleVeranstaltung(
       token: AccessToken
