@@ -26,20 +26,19 @@ package ports
 
 import scala.concurrent.Future
 
-import domain.VeranstaltungCreatedEvent
-import domain.VeranstaltungDeletedEvent
 import domain.VeranstaltungEvent
-import domain.VeranstaltungRetextedEvent
+import domain.VeranstaltungOpenedEvent
 import domain.entities.Veranstaltung
 import domain.values.Id
 
 trait Repository {
 
-  def logEvent(event: VeranstaltungCreatedEvent): Future[Boolean]
-  def logEvent(event: VeranstaltungRetextedEvent): Future[Unit]
-  def logEvent(event: VeranstaltungDeletedEvent): Future[Unit]
+  def logEvent(event: VeranstaltungOpenedEvent): Future[Boolean]
+  def logEvent(event: VeranstaltungEvent): Future[Unit]
 
   def readEvents(
       id: Id
   ): Future[(Option[Veranstaltung], Seq[VeranstaltungEvent])]
+
+  def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit]
 }

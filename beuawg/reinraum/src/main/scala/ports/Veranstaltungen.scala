@@ -33,16 +33,72 @@ import domain.VeranstaltungenService
 import domain.entities.Veranstaltung
 import domain.values.AccessToken
 import domain.values.Error._
-import domain.values.RoleVeranstaltung
 import domain.values.Id
+import domain.values.RoleVeranstaltung
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
+import java.net.URL
+import domain.values.EmailAddress
+import domain.values.Attendance._
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 
 @ImplementedBy(classOf[VeranstaltungenService])
 trait Veranstaltungen {
 
-  def createVeranstaltung(): Future[(Id, AccessToken)]
+  def openVeranstaltung(): Future[(Id, AccessToken)]
 
   def readVeranstaltung(
       id: Id,
       token: AccessToken
   ): Future[Either[Error, RoleVeranstaltung]]
+
+  def retextVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      name: String,
+      description: Option[String]
+  ): Future[Either[Error, Boolean]]
+
+  def rescheduleVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      date: Option[LocalDate],
+      time: Option[LocalTime],
+      timeZone: Option[TimeZone]
+  ): Future[Either[Error, Boolean]]
+
+  def relocateVeranstatung(
+      id: Id,
+      token: AccessToken,
+      url: Option[URL],
+      place: Option[String] // FIXME
+  ): Future[Either[Error, Boolean]]
+
+  def recalibrateVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      emailAddressRequired: Boolean,
+      phoneNumberRequired: Boolean,
+      plus1Allowed: Boolean
+  ): Future[Either[Error, Boolean]]
+
+  def closeVeranstaltung(
+      id: Id,
+      token: AccessToken
+  ): Future[Either[Error, Boolean]]
+
+  def reopenVeranstaltung(
+      id: Id,
+      token: AccessToken
+  ): Future[Either[Error, Boolean]]
+
+  def rsvp(
+      id: Id,
+      token: AccessToken,
+      name: String,
+      emailAddress: Option[EmailAddress],
+      phoneNumber: Option[PhoneNumber],
+      attendance: Attendance
+  ): Future[Either[Error, Unit]]
 }

@@ -24,11 +24,22 @@
 
 package domain.entities
 
+import java.net.URL
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 
-import domain.VeranstaltungCreatedEvent
-import domain.VeranstaltungDeletedEvent
+import scala.collection.mutable
+
+import domain.RsvpEvent
+import domain.VeranstaltungClosedEvent
 import domain.VeranstaltungEvent
+import domain.VeranstaltungOpenedEvent
+import domain.VeranstaltungRecalibratedEvent
+import domain.VeranstaltungRelocatedEvent
+import domain.VeranstaltungReopenedEvent
+import domain.VeranstaltungRescheduledEvent
 import domain.VeranstaltungRetextedEvent
 import domain.values.AccessToken
 import domain.values.Error._
@@ -36,15 +47,25 @@ import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
 import domain.values.Id
 import domain.values.RoleVeranstaltung
+import domain.values.Rsvp
 
-final class Veranstaltung(
+final class Veranstaltung private (
     val id: Id,
     val created: Instant,
     val guestToken: AccessToken,
     val hostToken: AccessToken,
     var name: String,
     var description: Option[String],
-    var deleted: Boolean,
+    var date: Option[LocalDate],
+    var time: Option[LocalTime],
+    var timeZone: Option[TimeZone],
+    var url: Option[URL],
+    var place: Option[String],
+    var emailAddressRequired: Boolean,
+    var phoneNumberRequired: Boolean,
+    var plus1Allowed: Boolean,
+    var closed: Boolean,
+    val rsvps: mutable.Buffer[Rsvp],
     var updated: Instant,
     var replayedEvents: Int
 ) {
@@ -58,11 +79,42 @@ final class Veranstaltung(
 
   def replay(events: Seq[VeranstaltungEvent]): Veranstaltung = {
     events.foreach(event => {
+      assert(this.id == id)
       event match {
+        case VeranstaltungOpenedEvent(_, _, _, _) => assert(false)
         case VeranstaltungRetextedEvent(_, name, description, _) =>
           this.name = name; this.description = description
-        // TODO
-        case VeranstaltungDeletedEvent(_, _) => deleted = true
+        case VeranstaltungRescheduledEvent(
+              _,
+              date,
+              time,
+              timeZone,
+              _
+            ) =>
+          this.date = date; this.time = time; this.timeZone = timeZone
+        case VeranstaltungRelocatedEvent(_, url, place, _) =>
+          this.url = url; this.place = place
+        case VeranstaltungRecalibratedEvent(
+              _,
+              emailAddressRequired,
+              phoneNumberRequired,
+              plus1Allowed,
+              _
+            ) =>
+          this.emailAddressRequired = emailAddressRequired;
+          this.phoneNumberRequired = phoneNumberRequired;
+          this.plus1Allowed = plus1Allowed
+        case VeranstaltungClosedEvent(_, _)   => closed = true
+        case VeranstaltungReopenedEvent(_, _) => closed = false
+        case RsvpEvent(
+              _,
+              name,
+              emailAddress,
+              phoneNumber,
+              attendance,
+              _
+            ) =>
+          rsvps += Rsvp(name, emailAddress, phoneNumber, attendance)
       }
       updated = event.occurred
       replayedEvents += 1
@@ -70,7 +122,7 @@ final class Veranstaltung(
     this
   }
 
-  def isDeleted() = deleted
+  def isClosed() = closed
 
   private def toGuestVeranstaltung(): GuestVeranstaltung = ???
 
@@ -94,7 +146,16 @@ object Veranstaltung {
       hostToken: AccessToken,
       name: String,
       description: Option[String],
-      deleted: Boolean,
+      date: Option[LocalDate],
+      time: Option[LocalTime],
+      timeZone: Option[TimeZone],
+      url: Option[URL],
+      place: Option[String],
+      emailAddressRequired: Boolean,
+      phoneNumberRequired: Boolean,
+      plus1Allowed: Boolean,
+      rsvps: Seq[Rsvp],
+      closed: Boolean,
       updated: Instant,
       replayedEvents: Int
   ) =
@@ -105,14 +166,23 @@ object Veranstaltung {
       hostToken,
       name,
       description,
-      deleted,
+      date,
+      time,
+      timeZone,
+      url,
+      place,
+      emailAddressRequired,
+      phoneNumberRequired,
+      plus1Allowed,
+      closed,
+      rsvps.toBuffer,
       updated,
       replayedEvents
     )
 
   def replay(events: Seq[VeranstaltungEvent]): Veranstaltung =
     events match {
-      case VeranstaltungCreatedEvent(
+      case VeranstaltungOpenedEvent(
             id,
             guestToken,
             hostToken,
@@ -125,6 +195,15 @@ object Veranstaltung {
           hostToken,
           id.toString,
           None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          false,
+          false,
+          false,
+          Nil,
           false,
           occurred,
           1
