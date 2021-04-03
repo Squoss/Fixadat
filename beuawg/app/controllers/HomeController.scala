@@ -19,14 +19,15 @@ class HomeController @Inject() (
     val env: Environment
 ) extends BaseController {
 
+  val is = env.classLoader.getResourceAsStream("public/index.html")
+  val bufferedSource = Source.createBufferedSource(
+    inputStream = is,
+    close = () => is.close()
+  )(Codec.UTF8)
+  val stringBuilder = bufferedSource.addString(new StringBuilder())
+  val string = stringBuilder.mkString
+
   def index() = Action { implicit request: Request[AnyContent] =>
-    val is = env.classLoader.getResourceAsStream("public/index.html")
-    val bufferedSource = Source.createBufferedSource(
-      inputStream = is,
-      close = () => is.close()
-    )(Codec.UTF8)
-    val stringBuilder = bufferedSource.addString(new StringBuilder())
-    val string = stringBuilder.mkString
     val token =
       CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
     Ok(string.replace("REPLACE_CSRF_TOKEN", token.get.value))

@@ -21,6 +21,7 @@ lazy val reinraum = project
 scalaVersion := "2.13.5"
 
 libraryDependencies += guice
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.2.2"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
 // Adds additional packages into Twirl
