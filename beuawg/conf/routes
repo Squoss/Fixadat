@@ -9,10 +9,9 @@ GET     /                                  controllers.HomeController.index
 POST    /iapi/events                       controllers.EventsController.postEvent()
 GET     /iapi/events/:event                controllers.EventsController.getEvent(event: Int)
 PUT     /iapi/events/:event/text           controllers.EventsController.putEventText(event: Int)
-PUT     /iapi/events/:event/schedule       controllers.EventsController.todo(event: Int)
-PUT     /iapi/events/:event/location       controllers.EventsController.todo(event: Int)
-PUT     /iapi/events/:event/calibration    controllers.EventsController.todo(event: Int)
-PATCH   /iapi/events/:event                controllers.EventsController.todo(event: Int)
+PUT     /iapi/events/:event/schedule       controllers.EventsController.putEventSchedule(event: Int)
+PUT     /iapi/events/:event/location       controllers.EventsController.putEventLocation(event: Int)
+PATCH   /iapi/events/:event                controllers.EventsController.patchEvent(event: Int)
 DELETE  /iapi/events/:event                controllers.EventsController.todo(event: Int)
 POST    /iapi/events/:event/RSVPs          controllers.EventsController.todo(event: Int)
 

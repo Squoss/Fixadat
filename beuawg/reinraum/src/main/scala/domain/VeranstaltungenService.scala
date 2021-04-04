@@ -153,14 +153,14 @@ class VeranstaltungenService @Inject() (implicit
               time,
               timeZone,
               Instant.now()
-            ) // neither trim nor filter out blank
+            )
           )
           Right(true)
         }
       )
   )
 
-  override def relocateVeranstatung(
+  override def relocateVeranstaltung(
       id: Id,
       token: AccessToken,
       url: Option[URL],
@@ -179,7 +179,7 @@ class VeranstaltungenService @Inject() (implicit
               url,
               place,
               Instant.now()
-            ) // neither trim nor filter out blank
+            )
           )
           Right(true)
         }
@@ -188,27 +188,28 @@ class VeranstaltungenService @Inject() (implicit
   override def recalibrateVeranstaltung(
       id: Id,
       token: AccessToken,
-      emailAddressRequired: Boolean,
-      phoneNumberRequired: Boolean,
-      plus1Allowed: Boolean
+      emailAddressRequired: Option[Boolean],
+      phoneNumberRequired: Option[Boolean],
+      plus1Allowed: Option[Boolean]
   ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
         else if (
-          veranstaltung.emailAddressRequired == emailAddressRequired && veranstaltung.phoneNumberRequired == phoneNumberRequired && veranstaltung.plus1Allowed == plus1Allowed
+          emailAddressRequired.isEmpty && phoneNumberRequired.isEmpty && plus1Allowed.isEmpty
         ) {
           Right(false)
         } else {
           repository.logEvent(
             VeranstaltungRecalibratedEvent(
               id,
-              emailAddressRequired,
-              phoneNumberRequired,
-              plus1Allowed,
+              emailAddressRequired
+                .getOrElse(veranstaltung.emailAddressRequired),
+              phoneNumberRequired.getOrElse(veranstaltung.phoneNumberRequired),
+              plus1Allowed.getOrElse(veranstaltung.plus1Allowed),
               Instant.now()
-            ) // neither trim nor filter out blank
+            )
           )
           Right(true)
         }

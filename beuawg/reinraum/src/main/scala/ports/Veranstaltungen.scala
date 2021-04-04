@@ -24,24 +24,24 @@
 
 package ports
 
+import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 import java.util.UUID
 
 import scala.concurrent.Future
 
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.google.inject.ImplementedBy
 import domain.VeranstaltungenService
 import domain.entities.Veranstaltung
 import domain.values.AccessToken
+import domain.values.Attendance._
+import domain.values.EmailAddress
 import domain.values.Error._
 import domain.values.Id
 import domain.values.RoleVeranstaltung
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-import java.net.URL
-import domain.values.EmailAddress
-import domain.values.Attendance._
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 
 @ImplementedBy(classOf[VeranstaltungenService])
 trait Veranstaltungen {
@@ -68,7 +68,7 @@ trait Veranstaltungen {
       timeZone: Option[TimeZone]
   ): Future[Either[Error, Boolean]]
 
-  def relocateVeranstatung(
+  def relocateVeranstaltung(
       id: Id,
       token: AccessToken,
       url: Option[URL],
@@ -78,9 +78,9 @@ trait Veranstaltungen {
   def recalibrateVeranstaltung(
       id: Id,
       token: AccessToken,
-      emailAddressRequired: Boolean,
-      phoneNumberRequired: Boolean,
-      plus1Allowed: Boolean
+      emailAddressRequired: Option[Boolean],
+      phoneNumberRequired: Option[Boolean],
+      plus1Allowed: Option[Boolean]
   ): Future[Either[Error, Boolean]]
 
   def closeVeranstaltung(

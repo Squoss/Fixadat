@@ -101,4 +101,69 @@ class EventsController @Inject() (implicit
       case Failure(exception) => Future(BadRequest(exception.getMessage))
     }
   }
+
+  def putEventSchedule(event: Int) = Action.async(validateJson[Schedule]) {
+    request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          events
+            .rescheduleVeranstaltung(
+              Id(event),
+              AccessToken(accessToken),
+              request.body.date,
+              request.body.time,
+              request.body.timeZone
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(BadRequest(exception.getMessage))
+      }
+  }
+
+  def putEventLocation(event: Int) = Action.async(validateJson[Location]) {
+    request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          events
+            .relocateVeranstaltung(
+              Id(event),
+              AccessToken(accessToken),
+              request.body.url,
+              request.body.place
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(BadRequest(exception.getMessage))
+      }
+  }
+
+  def patchEvent(event: Int) = Action.async(validateJson[Calibration]) {
+    request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          events
+            .recalibrateVeranstaltung(
+              Id(event),
+              AccessToken(accessToken),
+              request.body.emailAddressRequired,
+              request.body.phoneNumberRequired,
+              request.body.plus1Allowed
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(BadRequest(exception.getMessage))
+      }
+  }
 }

@@ -25,6 +25,8 @@
 package controllers
 
 import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.TimeZone
 import java.util.UUID
 
@@ -46,6 +48,17 @@ import domain.values.Rsvp
 import play.api.libs.json._
 
 case class Text(name: String, description: Option[String])
+case class Schedule(
+    date: Option[LocalDate],
+    time: Option[LocalTime],
+    timeZone: Option[TimeZone]
+)
+case class Location(url: Option[URL], place: Option[String]) // FIXME
+case class Calibration(
+    emailAddressRequired: Option[Boolean],
+    phoneNumberRequired: Option[Boolean],
+    plus1Allowed: Option[Boolean]
+)
 
 object TransferObjects {
 
@@ -172,4 +185,7 @@ object TransferObjects {
   implicit val hostVeranstaltungFormat = Json.format[HostVeranstaltung]
 
   implicit val textReads = Json.reads[Text]
+  implicit val scheduleReads = Json.reads[Schedule]
+  implicit val locationReads = Json.reads[Location]
+  implicit val calibrationReads = Json.reads[Calibration]
 }
