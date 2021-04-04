@@ -5,7 +5,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
+import domain.values.AccessToken
+import domain.values.Error._
+import domain.values.GuestVeranstaltung
+import domain.values.HostVeranstaltung
+import domain.values.Id
 import play.api.Environment
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
@@ -14,14 +23,8 @@ import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
 import ports.Veranstaltungen
-import domain.values.AccessToken
-import domain.values.Id
-import domain.values.Error._
-import domain.values.GuestVeranstaltung
-import scala.concurrent.Future
-import scala.util.Try
-import scala.util.Failure
-import scala.util.Success
+
+import TransferObjects._
 
 class EventsController @Inject() (implicit
     ec: ExecutionContext,
@@ -60,7 +63,16 @@ class EventsController @Inject() (implicit
             Id(event),
             AccessToken(accessToken)
           )
-          .map(_.fold(toResponse(_), yada => Ok(yada.toString)))
+          .map(
+            _.fold(
+              toResponse(_),
+              rv =>
+                rv match {
+                  case gv: GuestVeranstaltung => Ok(Json.toJson(gv))
+                  case hv: HostVeranstaltung  => Ok(Json.toJson(hv))
+                }
+            )
+          )
       case Failure(exception) => Future(BadRequest(exception.getMessage))
     }
   }

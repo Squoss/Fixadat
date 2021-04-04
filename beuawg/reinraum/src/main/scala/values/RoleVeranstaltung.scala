@@ -73,11 +73,9 @@ final case class GuestVeranstaltung(
     place: Option[String], // FIXME
     emailAddressRequired: Boolean,
     phoneNumberRequired: Boolean,
-    plus1Allowed: Boolean
-) extends RoleVeranstaltung {
-
-  override val role = Guest
-}
+    plus1Allowed: Boolean,
+    role: Role = Guest
+) extends RoleVeranstaltung
 
 final case class HostVeranstaltung(
     id: Id,
@@ -96,8 +94,6 @@ final case class HostVeranstaltung(
     plus1Allowed: Boolean,
     rsvps: Seq[Rsvp],
     closed: Boolean,
-    updated: Instant
-) extends RoleVeranstaltung {
-
-  override val role = Host
-}
+    updated: Instant,
+    role: Role = Host
+) extends RoleVeranstaltung
