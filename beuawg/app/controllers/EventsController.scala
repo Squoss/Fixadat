@@ -16,8 +16,10 @@ import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
 import domain.values.Id
 import play.api.Environment
+import play.api.libs.json.JsError
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
+import play.api.libs.json.Reads
 import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
@@ -48,7 +50,7 @@ class EventsController @Inject() (implicit
       )
   }
 
-  private def toResponse(error: Error): Status = error match {
+  private def toErrorResponse(error: Error): Status = error match {
     case domain.values.Error.NotFound => NotFound
     case domain.values.Error.Gone     => Gone
     case AccessDenied                 => Forbidden
@@ -65,12 +67,35 @@ class EventsController @Inject() (implicit
           )
           .map(
             _.fold(
-              toResponse(_),
-              rv =>
-                rv match {
-                  case gv: GuestVeranstaltung => Ok(Json.toJson(gv))
-                  case hv: HostVeranstaltung  => Ok(Json.toJson(hv))
-                }
+              toErrorResponse(_),
+              _ match {
+                case gv: GuestVeranstaltung => Ok(Json.toJson(gv))
+                case hv: HostVeranstaltung  => Ok(Json.toJson(hv))
+              }
+            )
+          )
+      case Failure(exception) => Future(BadRequest(exception.getMessage))
+    }
+  }
+
+  private def validateJson[A: Reads] = parse.json.validate(
+    _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
+  )
+
+  def putEventText(event: Int) = Action.async(validateJson[Text]) { request =>
+    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      case Success(accessToken) =>
+        events
+          .retextVeranstaltung(
+            Id(event),
+            AccessToken(accessToken),
+            request.body.name,
+            request.body.description
+          )
+          .map(
+            _.fold(
+              toErrorResponse(_),
+              _ => NoContent
             )
           )
       case Failure(exception) => Future(BadRequest(exception.getMessage))
