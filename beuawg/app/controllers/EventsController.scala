@@ -74,7 +74,7 @@ class EventsController @Inject() (implicit
               }
             )
           )
-      case Failure(exception) => Future(BadRequest(exception.getMessage))
+      case Failure(exception) => Future(Forbidden(exception.getMessage))
     }
   }
 
@@ -98,7 +98,7 @@ class EventsController @Inject() (implicit
               _ => NoContent
             )
           )
-      case Failure(exception) => Future(BadRequest(exception.getMessage))
+      case Failure(exception) => Future(Forbidden(exception.getMessage))
     }
   }
 
@@ -120,7 +120,7 @@ class EventsController @Inject() (implicit
                 _ => NoContent
               )
             )
-        case Failure(exception) => Future(BadRequest(exception.getMessage))
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
   }
 
@@ -141,7 +141,7 @@ class EventsController @Inject() (implicit
                 _ => NoContent
               )
             )
-        case Failure(exception) => Future(BadRequest(exception.getMessage))
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
   }
 
@@ -163,7 +163,7 @@ class EventsController @Inject() (implicit
                 _ => NoContent
               )
             )
-        case Failure(exception) => Future(BadRequest(exception.getMessage))
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
   }
 }

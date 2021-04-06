@@ -8,7 +8,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 import domain.VeranstaltungEvent
-import domain.VeranstaltungOpenedEvent
+import domain.VeranstaltungPublishedEvent
 import domain.entities.Veranstaltung
 import domain.values.Id
 import ports.Repository
@@ -20,7 +20,7 @@ class DevRepository @Inject() (implicit ec: ExecutionContext)
   private val eventsLog =
     mutable.Map[Id, mutable.Buffer[VeranstaltungEvent]]()
 
-  override def logEvent(event: VeranstaltungOpenedEvent): Future[Boolean] =
+  override def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean] =
     if (eventsLog.contains(event.id)) {
       Future(false)
     } else {
@@ -41,4 +41,9 @@ class DevRepository @Inject() (implicit ec: ExecutionContext)
 
   override def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit] =
     Future(())
+
+  override def deleteEvents(id: Id): Future[Unit] = {
+    eventsLog -= id
+    Future(())
+  }
 }

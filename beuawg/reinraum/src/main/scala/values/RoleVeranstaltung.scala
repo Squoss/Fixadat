@@ -31,6 +31,7 @@ import java.time.LocalTime
 import java.util.TimeZone
 
 import domain.values.Role._
+import domain.values.Visibility._
 
 sealed trait RoleVeranstaltung {
 
@@ -59,6 +60,8 @@ sealed trait RoleVeranstaltung {
   val phoneNumberRequired: Boolean
 
   val plus1Allowed: Boolean
+
+  val visibility: Visibility
 }
 
 final case class GuestVeranstaltung(
@@ -74,6 +77,7 @@ final case class GuestVeranstaltung(
     emailAddressRequired: Boolean,
     phoneNumberRequired: Boolean,
     plus1Allowed: Boolean,
+    visibility: Visibility,
     role: Role = Guest
 ) extends RoleVeranstaltung
 
@@ -92,8 +96,8 @@ final case class HostVeranstaltung(
     emailAddressRequired: Boolean,
     phoneNumberRequired: Boolean,
     plus1Allowed: Boolean,
+    visibility: Visibility,
     rsvps: Seq[Rsvp],
-    closed: Boolean,
     updated: Instant,
     role: Role = Host
 ) extends RoleVeranstaltung

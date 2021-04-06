@@ -22,25 +22,10 @@
  * THE SOFTWARE.
  */
 
-package ports
+package domain.values
 
-import scala.concurrent.Future
+object Visibility extends Enumeration {
 
-import domain.VeranstaltungEvent
-import domain.VeranstaltungPublishedEvent
-import domain.entities.Veranstaltung
-import domain.values.Id
-
-trait Repository {
-
-  def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean]
-  def logEvent(event: VeranstaltungEvent): Future[Unit]
-
-  def readEvents(
-      id: Id
-  ): Future[(Option[Veranstaltung], Seq[VeranstaltungEvent])]
-
-  def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit]
-
-  def deleteEvents(id: Id): Future[Unit]
+  type Visibility = Value
+  val Public, Protected, Private = Value
 }

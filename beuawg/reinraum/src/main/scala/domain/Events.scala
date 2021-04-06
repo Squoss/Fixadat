@@ -43,8 +43,7 @@ sealed trait VeranstaltungEvent {
   def version: Int
 }
 
-// tbd: event sourcing vs. capabilities (id) and/or secrets (key)
-final case class VeranstaltungOpenedEvent(
+final case class VeranstaltungPublishedEvent(
     id: Id,
     guestToken: AccessToken,
     hostToken: AccessToken,
@@ -96,13 +95,19 @@ final case class VeranstaltungRecalibratedEvent(
   val version = 1
 }
 
-final case class VeranstaltungClosedEvent(id: Id, occurred: Instant)
+final case class VeranstaltungProtectedEvent(id: Id, occurred: Instant)
     extends VeranstaltungEvent {
 
   val version = 1
 }
 
-final case class VeranstaltungReopenedEvent(id: Id, occurred: Instant)
+final case class VeranstaltungRepublishedEvent(id: Id, occurred: Instant)
+    extends VeranstaltungEvent {
+
+  val version = 1
+}
+
+final case class VeranstaltungDeletedEvent(id: Id, occurred: Instant)
     extends VeranstaltungEvent {
 
   val version = 1

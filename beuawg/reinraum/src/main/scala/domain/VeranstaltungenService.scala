@@ -43,12 +43,15 @@ import domain.values.EmailAddress
 import domain.values.Error._
 import domain.values.Id
 import domain.values.RoleVeranstaltung
+import domain.values.Visibility._
+import ports.Notifications
 import ports.Repository
 import ports.Veranstaltungen
 
 class VeranstaltungenService @Inject() (implicit
     ec: ExecutionContext,
-    repository: Repository
+    repository: Repository,
+    notifications: Notifications
 ) extends Veranstaltungen {
 
   override def openVeranstaltung(): Future[(Id, AccessToken)] = {
@@ -57,7 +60,7 @@ class VeranstaltungenService @Inject() (implicit
     val hostToken = AccessToken(UUID.randomUUID())
     repository
       .logEvent(
-        VeranstaltungOpenedEvent(
+        VeranstaltungPublishedEvent(
           id,
           AccessToken(UUID.randomUUID()),
           hostToken,
@@ -96,10 +99,7 @@ class VeranstaltungenService @Inject() (implicit
     readVeranstaltung(id).map(
       _.map(Right(_))
         .getOrElse(Left(NotFound))
-        .flatMap(veranstaltung =>
-          if (veranstaltung.isClosed) { Left(Gone) }
-          else { veranstaltung.toRoleVeranstaltung(token) }
-        )
+        .flatMap(_.toRoleVeranstaltung(token))
     )
 
   override def retextVeranstaltung(
@@ -224,11 +224,11 @@ class VeranstaltungenService @Inject() (implicit
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
-        else if (veranstaltung.closed) {
+        else if (veranstaltung.visibility != Public) {
           Right(false)
         } else {
           repository.logEvent(
-            VeranstaltungClosedEvent(
+            VeranstaltungProtectedEvent(
               id,
               Instant.now()
             )
@@ -246,16 +246,40 @@ class VeranstaltungenService @Inject() (implicit
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
-        else if (!veranstaltung.closed) {
+        else if (veranstaltung.visibility == Public) {
           Right(false)
         } else {
           repository.logEvent(
-            VeranstaltungReopenedEvent(
+            VeranstaltungRepublishedEvent(
               id,
               Instant.now()
             )
           )
           Right(true)
+        }
+      )
+  )
+
+  override def deleteVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      forGood: Boolean
+  ): Future[Either[Error, Unit]] = readVeranstaltung(id).map(
+    _.map(Right(_))
+      .getOrElse(Left(NotFound))
+      .flatMap(veranstaltung =>
+        if (veranstaltung.hostToken != token) { Left(AccessDenied) }
+        else if (forGood) {
+          repository.deleteEvents(id)
+          Right(())
+        } else {
+          repository.logEvent(
+            VeranstaltungDeletedEvent(
+              id,
+              Instant.now()
+            )
+          )
+          Right(())
         }
       )
   )
@@ -274,9 +298,10 @@ class VeranstaltungenService @Inject() (implicit
         if (
           veranstaltung.guestToken != token && veranstaltung.hostToken != token
         ) { Left(AccessDenied) }
-        else if (veranstaltung.isClosed) {
+        else if (veranstaltung.visibility == Private) {
           Left(Gone)
         } else if (
+          veranstaltung.visibility == Protected ||
           veranstaltung.emailAddressRequired && emailAddress.isEmpty || veranstaltung.phoneNumberRequired && phoneNumber.isEmpty || !veranstaltung.plus1Allowed && attendance == WithPlus1
         ) {
           Left(BadCommand)
@@ -291,6 +316,8 @@ class VeranstaltungenService @Inject() (implicit
               Instant.now()
             )
           )
+          veranstaltung.webhook
+            .foreach(notifications.notifyByWebhook(_, "TODO")) // fire & forget
           Right(())
         }
       )

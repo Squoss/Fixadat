@@ -45,6 +45,7 @@ import domain.values.HostVeranstaltung
 import domain.values.Id
 import domain.values.Role._
 import domain.values.Rsvp
+import domain.values.Visibility._
 import play.api.libs.json._
 
 case class Text(name: String, description: Option[String])
@@ -111,6 +112,22 @@ object TransferObjects {
     def writes(url: URL): JsValue = JsString(url.toString)
   }
   implicit val urlFormat: Format[URL] = Format(urlReads, urlWrites)
+
+  implicit val veReads = new Reads[Visibility] {
+    def reads(json: JsValue): JsResult[Visibility] = Try(
+      domain.values.Visibility.withName(json.as[String])
+    ) match {
+      case Success(value)     => JsSuccess(value)
+      case Failure(exception) => JsError(exception.getMessage)
+    }
+  }
+  implicit val veWrites = new Writes[Visibility] {
+    def writes(ve: Visibility): JsValue = JsString(
+      ve.toString
+    )
+  }
+  implicit val veFormat: Format[Visibility] =
+    Format(veReads, veWrites)
 
   implicit val reReads = new Reads[Role] {
     def reads(json: JsValue): JsResult[Role] = Try(

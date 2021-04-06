@@ -24,23 +24,9 @@
 
 package ports
 
-import scala.concurrent.Future
+import java.net.URL
 
-import domain.VeranstaltungEvent
-import domain.VeranstaltungPublishedEvent
-import domain.entities.Veranstaltung
-import domain.values.Id
+trait Notifications {
 
-trait Repository {
-
-  def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean]
-  def logEvent(event: VeranstaltungEvent): Future[Unit]
-
-  def readEvents(
-      id: Id
-  ): Future[(Option[Veranstaltung], Seq[VeranstaltungEvent])]
-
-  def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit]
-
-  def deleteEvents(id: Id): Future[Unit]
+  def notifyByWebhook(webhook: URL, text: String)
 }

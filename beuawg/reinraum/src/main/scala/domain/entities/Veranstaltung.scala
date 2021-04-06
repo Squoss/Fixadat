@@ -33,12 +33,13 @@ import java.util.TimeZone
 import scala.collection.mutable
 
 import domain.RsvpEvent
-import domain.VeranstaltungClosedEvent
+import domain.VeranstaltungDeletedEvent
 import domain.VeranstaltungEvent
-import domain.VeranstaltungOpenedEvent
+import domain.VeranstaltungProtectedEvent
+import domain.VeranstaltungPublishedEvent
 import domain.VeranstaltungRecalibratedEvent
 import domain.VeranstaltungRelocatedEvent
-import domain.VeranstaltungReopenedEvent
+import domain.VeranstaltungRepublishedEvent
 import domain.VeranstaltungRescheduledEvent
 import domain.VeranstaltungRetextedEvent
 import domain.values.AccessToken
@@ -48,6 +49,7 @@ import domain.values.HostVeranstaltung
 import domain.values.Id
 import domain.values.RoleVeranstaltung
 import domain.values.Rsvp
+import domain.values.Visibility._
 
 final class Veranstaltung private (
     val id: Id,
@@ -64,8 +66,9 @@ final class Veranstaltung private (
     var emailAddressRequired: Boolean,
     var phoneNumberRequired: Boolean,
     var plus1Allowed: Boolean,
-    var closed: Boolean,
+    var visibility: Visibility,
     val rsvps: mutable.Buffer[Rsvp],
+    var webhook: Option[URL],
     var updated: Instant,
     var replayedEvents: Int
 ) {
@@ -81,7 +84,7 @@ final class Veranstaltung private (
     events.foreach(event => {
       assert(this.id == id)
       event match {
-        case VeranstaltungOpenedEvent(_, _, _, _) => assert(false)
+        case VeranstaltungPublishedEvent(_, _, _, _) => assert(false)
         case VeranstaltungRetextedEvent(_, name, description, _) =>
           this.name = name; this.description = description
         case VeranstaltungRescheduledEvent(
@@ -104,8 +107,9 @@ final class Veranstaltung private (
           this.emailAddressRequired = emailAddressRequired;
           this.phoneNumberRequired = phoneNumberRequired;
           this.plus1Allowed = plus1Allowed
-        case VeranstaltungClosedEvent(_, _)   => closed = true
-        case VeranstaltungReopenedEvent(_, _) => closed = false
+        case VeranstaltungProtectedEvent(_, _)   => visibility = Protected
+        case VeranstaltungRepublishedEvent(_, _) => visibility = Public
+        case VeranstaltungDeletedEvent(_, _)     => visibility = Private
         case RsvpEvent(
               _,
               name,
@@ -122,8 +126,6 @@ final class Veranstaltung private (
     this
   }
 
-  def isClosed() = closed
-
   private def toGuestVeranstaltung(): GuestVeranstaltung = GuestVeranstaltung(
     id,
     guestToken,
@@ -136,7 +138,8 @@ final class Veranstaltung private (
     place,
     emailAddressRequired,
     phoneNumberRequired,
-    plus1Allowed
+    plus1Allowed,
+    visibility
   )
 
   private def toHostVeranstaltung(): HostVeranstaltung = HostVeranstaltung(
@@ -154,8 +157,8 @@ final class Veranstaltung private (
     emailAddressRequired,
     phoneNumberRequired,
     plus1Allowed,
+    visibility,
     rsvps.toSeq,
-    closed,
     updated
   )
 
@@ -163,9 +166,11 @@ final class Veranstaltung private (
       token: AccessToken
   ): Either[Error, RoleVeranstaltung] =
     token match {
-      case _ if token == guestToken => Right(toGuestVeranstaltung)
-      case _ if token == hostToken  => Right(toHostVeranstaltung)
-      case _                        => Left(AccessDenied)
+      case _ if token == guestToken && visibility != Private =>
+        Right(toGuestVeranstaltung)
+      case _ if token == guestToken && visibility == Private => Left(Gone)
+      case _ if token == hostToken                           => Right(toHostVeranstaltung)
+      case _                                                 => Left(AccessDenied)
     }
 }
 
@@ -185,8 +190,9 @@ object Veranstaltung {
       emailAddressRequired: Boolean,
       phoneNumberRequired: Boolean,
       plus1Allowed: Boolean,
+      visibility: Visibility,
       rsvps: Seq[Rsvp],
-      closed: Boolean,
+      webhook: Option[URL],
       updated: Instant,
       replayedEvents: Int
   ) =
@@ -205,15 +211,16 @@ object Veranstaltung {
       emailAddressRequired,
       phoneNumberRequired,
       plus1Allowed,
-      closed,
+      visibility,
       rsvps.toBuffer,
+      webhook,
       updated,
       replayedEvents
     )
 
   def replay(events: Seq[VeranstaltungEvent]): Veranstaltung =
     events match {
-      case VeranstaltungOpenedEvent(
+      case VeranstaltungPublishedEvent(
             id,
             guestToken,
             hostToken,
@@ -234,8 +241,9 @@ object Veranstaltung {
           false,
           false,
           false,
+          Public,
           Nil,
-          false,
+          None,
           occurred,
           1
         )

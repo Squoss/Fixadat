@@ -93,6 +93,12 @@ trait Veranstaltungen {
       token: AccessToken
   ): Future[Either[Error, Boolean]]
 
+  def deleteVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      forGood: Boolean
+  ): Future[Either[Error, Unit]]
+
   def rsvp(
       id: Id,
       token: AccessToken,
