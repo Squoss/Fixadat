@@ -42,16 +42,20 @@ import domain.values.Attendance._
 import domain.values.EmailAddress
 import domain.values.Error._
 import domain.values.Id
-import domain.values.RoleVeranstaltung
 import domain.values.Visibility._
-import ports.Notifications
+import ports.Webhooks
 import ports.Repository
 import ports.Veranstaltungen
+import domain.values.HostVeranstaltung
+import domain.values.GuestVeranstaltung
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.ZoneId
 
 class VeranstaltungenService @Inject() (implicit
     ec: ExecutionContext,
     repository: Repository,
-    notifications: Notifications
+    webhooks: Webhooks
 ) extends Veranstaltungen {
 
   override def openVeranstaltung(): Future[(Id, AccessToken)] = {
@@ -92,14 +96,99 @@ class VeranstaltungenService @Inject() (implicit
         }
       })
 
-  override def readVeranstaltung(
+  override def readGuestVeranstaltung(
       id: Id,
-      token: AccessToken
-  ): Future[Either[Error, RoleVeranstaltung]] =
+      token: AccessToken,
+      timeZone: Option[ZoneId]
+  ): Future[Either[Error, GuestVeranstaltung]] =
     readVeranstaltung(id).map(
       _.map(Right(_))
         .getOrElse(Left(NotFound))
-        .flatMap(_.toRoleVeranstaltung(token))
+        .flatMap(veranstaltung =>
+          if (
+            token == veranstaltung.guestToken || token == veranstaltung.hostToken
+          ) {
+            if (veranstaltung.visibility != Private) {
+              val guestVeranstaltung =
+                GuestVeranstaltung(
+                  veranstaltung.id,
+                  veranstaltung.guestToken,
+                  veranstaltung.name,
+                  veranstaltung.description,
+                  veranstaltung.date,
+                  veranstaltung.time,
+                  veranstaltung.timeZone,
+                  veranstaltung.url,
+                  veranstaltung.place,
+                  veranstaltung.emailAddressRequired,
+                  veranstaltung.phoneNumberRequired,
+                  veranstaltung.plus1Allowed,
+                  veranstaltung.visibility
+                )
+              if (
+                timeZone.isDefined && guestVeranstaltung.date.isDefined && guestVeranstaltung.time.isDefined && guestVeranstaltung.timeZone.isDefined
+              ) {
+                val zonedDateTime = ZonedDateTime.of(
+                  guestVeranstaltung.date.get,
+                  guestVeranstaltung.time.get,
+                  guestVeranstaltung.timeZone.get.toZoneId
+                )
+                val localDateTime = zonedDateTime
+                  .withZoneSameInstant(timeZone.get)
+                  .toLocalDateTime
+                Right(
+                  guestVeranstaltung.copy(
+                    date = Some(localDateTime.toLocalDate),
+                    time = Some(localDateTime.toLocalTime),
+                    timeZone = timeZone.map(TimeZone.getTimeZone(_))
+                  )
+                )
+              } else {
+                Right(guestVeranstaltung)
+              }
+            } else {
+              Left(Gone)
+            }
+          } else {
+            Left(AccessDenied)
+          }
+        )
+    )
+
+  override def readHostVeranstaltung(
+      id: Id,
+      token: AccessToken
+  ): Future[Either[Error, HostVeranstaltung]] =
+    readVeranstaltung(id).map(
+      _.map(Right(_))
+        .getOrElse(Left(NotFound))
+        .flatMap(veranstaltung =>
+          if (token == veranstaltung.hostToken) {
+            Right(
+              HostVeranstaltung(
+                veranstaltung.id,
+                veranstaltung.created,
+                veranstaltung.guestToken,
+                veranstaltung.hostToken,
+                veranstaltung.name,
+                veranstaltung.description,
+                veranstaltung.date,
+                veranstaltung.time,
+                veranstaltung.timeZone,
+                veranstaltung.url,
+                veranstaltung.place,
+                veranstaltung.emailAddressRequired,
+                veranstaltung.phoneNumberRequired,
+                veranstaltung.plus1Allowed,
+                veranstaltung.visibility,
+                veranstaltung.rsvps.toSeq,
+                veranstaltung.updated
+              )
+            )
+          } else {
+            Left(AccessDenied)
+          }
+        )
     )
 
   override def retextVeranstaltung(
@@ -262,23 +351,14 @@ class VeranstaltungenService @Inject() (implicit
 
   override def deleteVeranstaltung(
       id: Id,
-      token: AccessToken,
-      forGood: Boolean
+      token: AccessToken
   ): Future[Either[Error, Unit]] = readVeranstaltung(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
-        else if (forGood) {
+        else {
           repository.deleteEvents(id)
-          Right(())
-        } else {
-          repository.logEvent(
-            VeranstaltungDeletedEvent(
-              id,
-              Instant.now()
-            )
-          )
           Right(())
         }
       )
@@ -317,7 +397,7 @@ class VeranstaltungenService @Inject() (implicit
             )
           )
           veranstaltung.webhook
-            .foreach(notifications.notifyByWebhook(_, "TODO")) // fire & forget
+            .foreach(webhooks.notify(_, "TODO")) // fire & forget
           Right(())
         }
       )

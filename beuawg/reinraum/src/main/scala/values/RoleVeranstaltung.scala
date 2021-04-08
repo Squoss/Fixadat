@@ -30,41 +30,9 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.TimeZone
 
-import domain.values.Role._
 import domain.values.Visibility._
 
-sealed trait RoleVeranstaltung {
-
-  val role: Role
-
-  val id: Id
-
-  val guestToken: AccessToken
-
-  val name: String
-
-  val description: Option[String]
-
-  val date: Option[LocalDate]
-
-  val time: Option[LocalTime]
-
-  val timeZone: Option[TimeZone]
-
-  val url: Option[URL]
-
-  val place: Option[String] // FIXME
-
-  val emailAddressRequired: Boolean
-
-  val phoneNumberRequired: Boolean
-
-  val plus1Allowed: Boolean
-
-  val visibility: Visibility
-}
-
-final case class GuestVeranstaltung(
+case class GuestVeranstaltung(
     id: Id,
     guestToken: AccessToken,
     name: String,
@@ -77,11 +45,10 @@ final case class GuestVeranstaltung(
     emailAddressRequired: Boolean,
     phoneNumberRequired: Boolean,
     plus1Allowed: Boolean,
-    visibility: Visibility,
-    role: Role = Guest
-) extends RoleVeranstaltung
+    visibility: Visibility
+)
 
-final case class HostVeranstaltung(
+case class HostVeranstaltung(
     id: Id,
     created: Instant,
     guestToken: AccessToken,
@@ -98,6 +65,5 @@ final case class HostVeranstaltung(
     plus1Allowed: Boolean,
     visibility: Visibility,
     rsvps: Seq[Rsvp],
-    updated: Instant,
-    role: Role = Host
-) extends RoleVeranstaltung
+    updated: Instant
+)

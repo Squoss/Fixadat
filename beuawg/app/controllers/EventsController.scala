@@ -1,5 +1,6 @@
 package controllers
 
+import java.time.ZoneId
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -57,26 +58,44 @@ class EventsController @Inject() (implicit
     case BadCommand                   => BadRequest
   }
 
-  def getEvent(event: Int) = Action.async { request =>
-    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
-      case Success(accessToken) =>
-        events
-          .readVeranstaltung(
-            Id(event),
-            AccessToken(accessToken)
-          )
-          .map(
-            _.fold(
-              toErrorResponse(_),
-              _ match {
-                case gv: GuestVeranstaltung => Ok(Json.toJson(gv))
-                case hv: HostVeranstaltung  => Ok(Json.toJson(hv))
-              }
-            )
-          )
-      case Failure(exception) => Future(Forbidden(exception.getMessage))
+  def getEvent(event: Int, view: String, timeZone: Option[String]) =
+    Action.async { request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          if ("host".equalsIgnoreCase(view)) {
+            events
+              .readHostVeranstaltung(
+                Id(event),
+                AccessToken(accessToken)
+              )
+              .map(
+                _.fold(
+                  toErrorResponse(_),
+                  hostVeranstaltung => Ok(Json.toJson(hostVeranstaltung))
+                )
+              )
+          } else {
+            Try(timeZone.map(ZoneId.of(_))) match {
+              case Success(timeZone) =>
+                events
+                  .readGuestVeranstaltung(
+                    Id(event),
+                    AccessToken(accessToken),
+                    timeZone
+                  )
+                  .map(
+                    _.fold(
+                      toErrorResponse(_),
+                      guestVeranstaltung => Ok(Json.toJson(guestVeranstaltung))
+                    )
+                  )
+              case Failure(exception) =>
+                Future(BadRequest(exception.getMessage))
+            }
+          }
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
+      }
     }
-  }
 
   private def validateJson[A: Reads] = parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))

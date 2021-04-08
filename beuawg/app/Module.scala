@@ -30,6 +30,8 @@ import play.api.Configuration
 import play.api.Environment
 import play.api.Mode
 import ports.Repository
+import ports.Webhooks
+import communications.DevWebhooks
 
 class Module(
     env: Environment,
@@ -40,6 +42,8 @@ class Module(
     if (env.mode == Mode.Dev && config.get[Boolean]("mongodb.dev")) {
       bind(classOf[Repository])
         .to(classOf[DevRepository])
+      bind(classOf[Webhooks])
+        .to(classOf[DevWebhooks])
     } else {
       // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
       bind(classOf[Mdb]).asEagerSingleton

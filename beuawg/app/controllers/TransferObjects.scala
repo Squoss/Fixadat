@@ -43,7 +43,6 @@ import domain.values.EmailAddress
 import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
 import domain.values.Id
-import domain.values.Role._
 import domain.values.Rsvp
 import domain.values.Visibility._
 import play.api.libs.json._
@@ -128,22 +127,6 @@ object TransferObjects {
   }
   implicit val veFormat: Format[Visibility] =
     Format(veReads, veWrites)
-
-  implicit val reReads = new Reads[Role] {
-    def reads(json: JsValue): JsResult[Role] = Try(
-      domain.values.Role.withName(json.as[String])
-    ) match {
-      case Success(value)     => JsSuccess(value)
-      case Failure(exception) => JsError(exception.getMessage)
-    }
-  }
-  implicit val reWrites = new Writes[Role] {
-    def writes(re: Role): JsValue = JsString(
-      re.toString
-    )
-  }
-  implicit val reFormat: Format[Role] =
-    Format(reReads, reWrites)
 
   implicit val guestVeranstaltungReads = Json.reads[GuestVeranstaltung]
   implicit val guestVeranstaltunglWrites = Json.writes[GuestVeranstaltung]

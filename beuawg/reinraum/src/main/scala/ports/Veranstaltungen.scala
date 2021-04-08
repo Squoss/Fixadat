@@ -41,17 +41,25 @@ import domain.values.Attendance._
 import domain.values.EmailAddress
 import domain.values.Error._
 import domain.values.Id
-import domain.values.RoleVeranstaltung
+import domain.values.GuestVeranstaltung
+import domain.values.HostVeranstaltung
+import java.time.ZoneId
 
 @ImplementedBy(classOf[VeranstaltungenService])
 trait Veranstaltungen {
 
   def openVeranstaltung(): Future[(Id, AccessToken)]
 
-  def readVeranstaltung(
+  def readGuestVeranstaltung(
+      id: Id,
+      token: AccessToken,
+      timeZone: Option[ZoneId]
+  ): Future[Either[Error, GuestVeranstaltung]]
+
+  def readHostVeranstaltung(
       id: Id,
       token: AccessToken
-  ): Future[Either[Error, RoleVeranstaltung]]
+  ): Future[Either[Error, HostVeranstaltung]]
 
   def retextVeranstaltung(
       id: Id,
@@ -95,8 +103,7 @@ trait Veranstaltungen {
 
   def deleteVeranstaltung(
       id: Id,
-      token: AccessToken,
-      forGood: Boolean
+      token: AccessToken
   ): Future[Either[Error, Unit]]
 
   def rsvp(

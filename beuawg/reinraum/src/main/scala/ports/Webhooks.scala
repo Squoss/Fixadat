@@ -25,8 +25,9 @@
 package ports
 
 import java.net.URL
+import scala.concurrent.Future
 
-trait Notifications {
+trait Webhooks {
 
-  def notifyByWebhook(webhook: URL, text: String)
+  def notify(webhook: URL, text: String): Future[Unit]
 }

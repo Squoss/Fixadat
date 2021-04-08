@@ -33,8 +33,8 @@ import java.util.TimeZone
 import scala.collection.mutable
 
 import domain.RsvpEvent
-import domain.VeranstaltungDeletedEvent
 import domain.VeranstaltungEvent
+import domain.VeranstaltungPrivatizedEvent
 import domain.VeranstaltungProtectedEvent
 import domain.VeranstaltungPublishedEvent
 import domain.VeranstaltungRecalibratedEvent
@@ -44,10 +44,7 @@ import domain.VeranstaltungRescheduledEvent
 import domain.VeranstaltungRetextedEvent
 import domain.values.AccessToken
 import domain.values.Error._
-import domain.values.GuestVeranstaltung
-import domain.values.HostVeranstaltung
 import domain.values.Id
-import domain.values.RoleVeranstaltung
 import domain.values.Rsvp
 import domain.values.Visibility._
 
@@ -108,8 +105,8 @@ final class Veranstaltung private (
           this.phoneNumberRequired = phoneNumberRequired;
           this.plus1Allowed = plus1Allowed
         case VeranstaltungProtectedEvent(_, _)   => visibility = Protected
+        case VeranstaltungPrivatizedEvent(_, _)  => visibility = Private
         case VeranstaltungRepublishedEvent(_, _) => visibility = Public
-        case VeranstaltungDeletedEvent(_, _)     => visibility = Private
         case RsvpEvent(
               _,
               name,
@@ -125,53 +122,6 @@ final class Veranstaltung private (
     })
     this
   }
-
-  private def toGuestVeranstaltung(): GuestVeranstaltung = GuestVeranstaltung(
-    id,
-    guestToken,
-    name,
-    description,
-    date,
-    time,
-    timeZone,
-    url,
-    place,
-    emailAddressRequired,
-    phoneNumberRequired,
-    plus1Allowed,
-    visibility
-  )
-
-  private def toHostVeranstaltung(): HostVeranstaltung = HostVeranstaltung(
-    id,
-    created,
-    guestToken,
-    hostToken,
-    name,
-    description,
-    date,
-    time,
-    timeZone,
-    url,
-    place,
-    emailAddressRequired,
-    phoneNumberRequired,
-    plus1Allowed,
-    visibility,
-    rsvps.toSeq,
-    updated
-  )
-
-  def toRoleVeranstaltung(
-      token: AccessToken
-  ): Either[Error, RoleVeranstaltung] =
-    token match {
-      case _ if token == guestToken && visibility != Private =>
-        Right(toGuestVeranstaltung)
-      case _ if token == guestToken && visibility == Private => Left(Gone)
-      case _ if token == hostToken                           => Right(toHostVeranstaltung)
-      case _                                                 => Left(AccessDenied)
-    }
 }
 
 object Veranstaltung {

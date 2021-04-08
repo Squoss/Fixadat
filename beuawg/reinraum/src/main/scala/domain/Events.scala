@@ -101,13 +101,13 @@ final case class VeranstaltungProtectedEvent(id: Id, occurred: Instant)
   val version = 1
 }
 
-final case class VeranstaltungRepublishedEvent(id: Id, occurred: Instant)
+final case class VeranstaltungPrivatizedEvent(id: Id, occurred: Instant)
     extends VeranstaltungEvent {
 
   val version = 1
 }
 
-final case class VeranstaltungDeletedEvent(id: Id, occurred: Instant)
+final case class VeranstaltungRepublishedEvent(id: Id, occurred: Instant)
     extends VeranstaltungEvent {
 
   val version = 1
