@@ -5,6 +5,7 @@ import domain.values.Error._
 import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
 import domain.values.Id
+import domain.values.Rsvp
 import domain.values.Visibility._
 import play.api.Environment
 import play.api.libs.json.JsError
@@ -228,6 +229,28 @@ class EventsController @Inject() (implicit
           .deleteVeranstaltung(
             Id(event),
             AccessToken(accessToken)
+          )
+          .map(
+            _.fold(
+              toErrorResponse(_),
+              _ => NoContent
+            )
+          )
+      case Failure(exception) => Future(Forbidden(exception.getMessage))
+    }
+  }
+
+  def postRsvp(event: Int) = Action.async(validateJson[Rsvp]) { request =>
+    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      case Success(accessToken) =>
+        events
+          .rsvp(
+            Id(event),
+            AccessToken(accessToken),
+            request.body.name,
+            request.body.emailAddress,
+            request.body.phoneNumber,
+            request.body.attendance
           )
           .map(
             _.fold(

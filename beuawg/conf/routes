@@ -14,7 +14,7 @@ PUT     /iapi/events/:event/schedule       controllers.EventsController.putEvent
 PUT     /iapi/events/:event/location       controllers.EventsController.putEventLocation(event: Int)
 PATCH   /iapi/events/:event                controllers.EventsController.patchEvent(event: Int)
 DELETE  /iapi/events/:event                controllers.EventsController.deleteEvent(event: Int)
-POST    /iapi/events/:event/RSVPs          controllers.EventsController.todo(event: Int)
+POST    /iapi/events/:event/RSVPs          controllers.EventsController.postRsvp(event: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                      controllers.Assets.versioned(path="/public", file: Asset)
