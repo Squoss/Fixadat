@@ -1,21 +1,11 @@
 package controllers
 
-import java.time.ZoneId
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-
 import domain.values.AccessToken
 import domain.values.Error._
 import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
 import domain.values.Id
+import domain.values.Visibility._
 import play.api.Environment
 import play.api.libs.json.JsError
 import play.api.libs.json.JsObject
@@ -26,6 +16,16 @@ import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
 import ports.Veranstaltungen
+
+import java.time.ZoneId
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import TransferObjects._
 
@@ -40,7 +40,7 @@ class EventsController @Inject() (implicit
   def postEvent() = Action.async {
 
     events
-      .openVeranstaltung()
+      .publishVeranstaltung()
       .map(res =>
         Created(
           Json.obj(
@@ -53,9 +53,10 @@ class EventsController @Inject() (implicit
 
   private def toErrorResponse(error: Error): Status = error match {
     case domain.values.Error.NotFound => NotFound
-    case domain.values.Error.Gone     => Gone
     case AccessDenied                 => Forbidden
-    case BadCommand                   => BadRequest
+    case PrivateAccess                => Gone
+    case ProtectedAccess              => Conflict
+    case CommandIncomplete            => BadRequest
   }
 
   def getEvent(event: Int, view: String, timeZone: Option[String]) =
@@ -75,7 +76,7 @@ class EventsController @Inject() (implicit
                 )
               )
           } else {
-            Try(timeZone.map(ZoneId.of(_))) match {
+            Try(timeZone.map(ZoneId.of(_))) match { // TimeZone.getTimeZone(_) would resort to GMT in case of an unknown time zone
               case Success(timeZone) =>
                 events
                   .readGuestVeranstaltung(
@@ -100,6 +101,40 @@ class EventsController @Inject() (implicit
   private def validateJson[A: Reads] = parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
+
+  def putEventVisibility(event: Int) = Action.async(validateJson[P]) {
+    request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          (request.body.visibility match {
+            case Public =>
+              events
+                .republishVeranstaltung(
+                  Id(event),
+                  AccessToken(accessToken)
+                )
+            case Protected =>
+              events
+                .protectVeranstaltung(
+                  Id(event),
+                  AccessToken(accessToken)
+                )
+            case Private =>
+              events
+                .privatizeVeranstaltung(
+                  Id(event),
+                  AccessToken(accessToken)
+                )
+          })
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
+      }
+  }
 
   def putEventText(event: Int) = Action.async(validateJson[Text]) { request =>
     Try(UUID.fromString(request.headers("X-Access-Token"))) match {
@@ -184,5 +219,23 @@ class EventsController @Inject() (implicit
             )
         case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
+  }
+
+  def deleteEvent(event: Int) = Action.async { request =>
+    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      case Success(accessToken) =>
+        events
+          .deleteVeranstaltung(
+            Id(event),
+            AccessToken(accessToken)
+          )
+          .map(
+            _.fold(
+              toErrorResponse(_),
+              _ => NoContent
+            )
+          )
+      case Failure(exception) => Future(Forbidden(exception.getMessage))
+    }
   }
 }

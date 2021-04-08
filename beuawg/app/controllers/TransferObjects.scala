@@ -24,16 +24,6 @@
 
 package controllers
 
-import java.net.URL
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-import java.util.UUID
-
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
@@ -47,6 +37,16 @@ import domain.values.Rsvp
 import domain.values.Visibility._
 import play.api.libs.json._
 
+import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
+import java.util.UUID
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+case class P(visibility: Visibility)
 case class Text(name: String, description: Option[String])
 case class Schedule(
     date: Option[LocalDate],
@@ -184,6 +184,7 @@ object TransferObjects {
   implicit val hostVeranstaltunglWrites = Json.writes[HostVeranstaltung]
   implicit val hostVeranstaltungFormat = Json.format[HostVeranstaltung]
 
+  implicit val pReads = Json.reads[P]
   implicit val textReads = Json.reads[Text]
   implicit val scheduleReads = Json.reads[Schedule]
   implicit val locationReads = Json.reads[Location]

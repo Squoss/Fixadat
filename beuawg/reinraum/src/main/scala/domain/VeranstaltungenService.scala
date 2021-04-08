@@ -24,33 +24,32 @@
 
 package domain
 
-import java.net.URL
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-import java.util.UUID
-import javax.inject.Inject
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.entities.Veranstaltung
 import domain.values.AccessToken
 import domain.values.Attendance._
 import domain.values.EmailAddress
 import domain.values.Error._
+import domain.values.GuestVeranstaltung
+import domain.values.HostVeranstaltung
 import domain.values.Id
 import domain.values.Visibility._
-import ports.Webhooks
 import ports.Repository
 import ports.Veranstaltungen
-import domain.values.HostVeranstaltung
-import domain.values.GuestVeranstaltung
+import ports.Webhooks
+
+import java.net.URL
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.TimeZone
+import java.util.UUID
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class VeranstaltungenService @Inject() (implicit
     ec: ExecutionContext,
@@ -58,7 +57,7 @@ class VeranstaltungenService @Inject() (implicit
     webhooks: Webhooks
 ) extends Veranstaltungen {
 
-  override def openVeranstaltung(): Future[(Id, AccessToken)] = {
+  override def publishVeranstaltung(): Future[(Id, AccessToken)] = {
 
     val id = Id((Math.random() * Int.MaxValue).toInt)
     val hostToken = AccessToken(UUID.randomUUID())
@@ -74,7 +73,7 @@ class VeranstaltungenService @Inject() (implicit
       .flatMap(if (_) { // created
         Future((id, hostToken))
       } else { // not created
-        openVeranstaltung()
+        publishVeranstaltung()
       })
   }
 
@@ -147,7 +146,7 @@ class VeranstaltungenService @Inject() (implicit
                 Right(guestVeranstaltung)
               }
             } else {
-              Left(Gone)
+              Left(PrivateAccess)
             }
           } else {
             Left(AccessDenied)
@@ -305,7 +304,7 @@ class VeranstaltungenService @Inject() (implicit
       )
   )
 
-  override def closeVeranstaltung(
+  override def protectVeranstaltung(
       id: Id,
       token: AccessToken
   ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
@@ -313,7 +312,7 @@ class VeranstaltungenService @Inject() (implicit
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
-        else if (veranstaltung.visibility != Public) {
+        else if (veranstaltung.visibility == Protected) {
           Right(false)
         } else {
           repository.logEvent(
@@ -327,7 +326,29 @@ class VeranstaltungenService @Inject() (implicit
       )
   )
 
-  override def reopenVeranstaltung(
+  override def privatizeVeranstaltung(
+      id: Id,
+      token: AccessToken
+  ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
+    _.map(Right(_))
+      .getOrElse(Left(NotFound))
+      .flatMap(veranstaltung =>
+        if (veranstaltung.hostToken != token) { Left(AccessDenied) }
+        else if (veranstaltung.visibility == Private) {
+          Right(false)
+        } else {
+          repository.logEvent(
+            VeranstaltungPrivatizedEvent(
+              id,
+              Instant.now()
+            )
+          )
+          Right(true)
+        }
+      )
+  )
+
+  override def republishVeranstaltung(
       id: Id,
       token: AccessToken
   ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
@@ -379,12 +400,13 @@ class VeranstaltungenService @Inject() (implicit
           veranstaltung.guestToken != token && veranstaltung.hostToken != token
         ) { Left(AccessDenied) }
         else if (veranstaltung.visibility == Private) {
-          Left(Gone)
+          Left(PrivateAccess)
+        } else if (veranstaltung.visibility == Protected) {
+          Left(ProtectedAccess)
         } else if (
-          veranstaltung.visibility == Protected ||
           veranstaltung.emailAddressRequired && emailAddress.isEmpty || veranstaltung.phoneNumberRequired && phoneNumber.isEmpty || !veranstaltung.plus1Allowed && attendance == WithPlus1
         ) {
-          Left(BadCommand)
+          Left(CommandIncomplete)
         } else {
           repository.logEvent(
             RsvpEvent(

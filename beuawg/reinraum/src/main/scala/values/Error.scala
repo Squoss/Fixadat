@@ -27,5 +27,6 @@ package domain.values
 object Error extends Enumeration {
 
   type Error = Value
-  val NotFound, Gone, AccessDenied, BadCommand = Value
+  val NotFound, AccessDenied, PrivateAccess, ProtectedAccess,
+      CommandIncomplete = Value
 }

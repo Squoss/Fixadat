@@ -24,14 +24,6 @@
 
 package ports
 
-import java.net.URL
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-import java.util.UUID
-
-import scala.concurrent.Future
-
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.google.inject.ImplementedBy
 import domain.VeranstaltungenService
@@ -40,15 +32,22 @@ import domain.values.AccessToken
 import domain.values.Attendance._
 import domain.values.EmailAddress
 import domain.values.Error._
-import domain.values.Id
 import domain.values.GuestVeranstaltung
 import domain.values.HostVeranstaltung
+import domain.values.Id
+
+import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
+import java.util.TimeZone
+import java.util.UUID
+import scala.concurrent.Future
 
 @ImplementedBy(classOf[VeranstaltungenService])
 trait Veranstaltungen {
 
-  def openVeranstaltung(): Future[(Id, AccessToken)]
+  def publishVeranstaltung(): Future[(Id, AccessToken)]
 
   def readGuestVeranstaltung(
       id: Id,
@@ -91,12 +90,17 @@ trait Veranstaltungen {
       plus1Allowed: Option[Boolean]
   ): Future[Either[Error, Boolean]]
 
-  def closeVeranstaltung(
+  def protectVeranstaltung(
       id: Id,
       token: AccessToken
   ): Future[Either[Error, Boolean]]
 
-  def reopenVeranstaltung(
+  def privatizeVeranstaltung(
+      id: Id,
+      token: AccessToken
+  ): Future[Either[Error, Boolean]]
+
+  def republishVeranstaltung(
       id: Id,
       token: AccessToken
   ): Future[Either[Error, Boolean]]
