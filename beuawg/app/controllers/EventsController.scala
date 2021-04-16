@@ -36,8 +36,6 @@ class EventsController @Inject() (implicit
     val events: Veranstaltungen
 ) extends BaseController {
 
-  def todo(event: Int) = TODO
-
   def postEvent() = Action.async {
 
     events
@@ -60,14 +58,14 @@ class EventsController @Inject() (implicit
     case CommandIncomplete            => BadRequest
   }
 
-  def getEvent(event: Int, view: String, timeZone: Option[String]) =
+  def getEvent(event: Id, view: String, timeZone: Option[String]) =
     Action.async { request =>
       Try(UUID.fromString(request.headers("X-Access-Token"))) match {
         case Success(accessToken) =>
           if ("host".equalsIgnoreCase(view)) {
             events
               .readHostVeranstaltung(
-                Id(event),
+                event,
                 AccessToken(accessToken)
               )
               .map(
@@ -81,7 +79,7 @@ class EventsController @Inject() (implicit
               case Success(timeZone) =>
                 events
                   .readGuestVeranstaltung(
-                    Id(event),
+                    event,
                     AccessToken(accessToken),
                     timeZone
                   )
@@ -103,46 +101,45 @@ class EventsController @Inject() (implicit
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
 
-  def putEventVisibility(event: Int) = Action.async(validateJson[P]) {
-    request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
-        case Success(accessToken) =>
-          (request.body.visibility match {
-            case Public =>
-              events
-                .republishVeranstaltung(
-                  Id(event),
-                  AccessToken(accessToken)
-                )
-            case Protected =>
-              events
-                .protectVeranstaltung(
-                  Id(event),
-                  AccessToken(accessToken)
-                )
-            case Private =>
-              events
-                .privatizeVeranstaltung(
-                  Id(event),
-                  AccessToken(accessToken)
-                )
-          })
-            .map(
-              _.fold(
-                toErrorResponse(_),
-                _ => NoContent
+  def putEventVisibility(event: Id) = Action.async(validateJson[P]) { request =>
+    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      case Success(accessToken) =>
+        (request.body.visibility match {
+          case Public =>
+            events
+              .republishVeranstaltung(
+                event,
+                AccessToken(accessToken)
               )
+          case Protected =>
+            events
+              .protectVeranstaltung(
+                event,
+                AccessToken(accessToken)
+              )
+          case Private =>
+            events
+              .privatizeVeranstaltung(
+                event,
+                AccessToken(accessToken)
+              )
+        })
+          .map(
+            _.fold(
+              toErrorResponse(_),
+              _ => NoContent
             )
-        case Failure(exception) => Future(Forbidden(exception.getMessage))
-      }
+          )
+      case Failure(exception) => Future(Forbidden(exception.getMessage))
+    }
   }
 
-  def putEventText(event: Int) = Action.async(validateJson[Text]) { request =>
+  def putEventText(event: Id) = Action.async(validateJson[Text]) { request =>
     Try(UUID.fromString(request.headers("X-Access-Token"))) match {
       case Success(accessToken) =>
         events
           .retextVeranstaltung(
-            Id(event),
+            event,
             AccessToken(accessToken),
             request.body.name,
             request.body.description
@@ -157,13 +154,13 @@ class EventsController @Inject() (implicit
     }
   }
 
-  def putEventSchedule(event: Int) = Action.async(validateJson[Schedule]) {
+  def putEventSchedule(event: Id) = Action.async(validateJson[Schedule]) {
     request =>
       Try(UUID.fromString(request.headers("X-Access-Token"))) match {
         case Success(accessToken) =>
           events
             .rescheduleVeranstaltung(
-              Id(event),
+              event,
               AccessToken(accessToken),
               request.body.date,
               request.body.time,
@@ -179,13 +176,13 @@ class EventsController @Inject() (implicit
       }
   }
 
-  def putEventLocation(event: Int) = Action.async(validateJson[Location]) {
+  def putEventLocation(event: Id) = Action.async(validateJson[Location]) {
     request =>
       Try(UUID.fromString(request.headers("X-Access-Token"))) match {
         case Success(accessToken) =>
           events
             .relocateVeranstaltung(
-              Id(event),
+              event,
               AccessToken(accessToken),
               request.body.url,
               request.body.place
@@ -200,13 +197,13 @@ class EventsController @Inject() (implicit
       }
   }
 
-  def patchEvent(event: Int) = Action.async(validateJson[Calibration]) {
+  def patchEvent(event: Id) = Action.async(validateJson[Calibration]) {
     request =>
       Try(UUID.fromString(request.headers("X-Access-Token"))) match {
         case Success(accessToken) =>
           events
             .recalibrateVeranstaltung(
-              Id(event),
+              event,
               AccessToken(accessToken),
               request.body.emailAddressRequired,
               request.body.phoneNumberRequired,
@@ -222,12 +219,12 @@ class EventsController @Inject() (implicit
       }
   }
 
-  def deleteEvent(event: Int) = Action.async { request =>
+  def deleteEvent(event: Id) = Action.async { request =>
     Try(UUID.fromString(request.headers("X-Access-Token"))) match {
       case Success(accessToken) =>
         events
           .deleteVeranstaltung(
-            Id(event),
+            event,
             AccessToken(accessToken)
           )
           .map(
@@ -240,12 +237,12 @@ class EventsController @Inject() (implicit
     }
   }
 
-  def postRsvp(event: Int) = Action.async(validateJson[Rsvp]) { request =>
+  def postRsvp(event: Id) = Action.async(validateJson[Rsvp]) { request =>
     Try(UUID.fromString(request.headers("X-Access-Token"))) match {
       case Success(accessToken) =>
         events
           .rsvp(
-            Id(event),
+            event,
             AccessToken(accessToken),
             request.body.name,
             request.body.emailAddress,
