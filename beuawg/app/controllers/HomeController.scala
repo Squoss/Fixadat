@@ -1,8 +1,9 @@
 package controllers
 
-import jsmessages.JsMessagesFactory
 import play.api.Environment
 import play.api.i18n.I18nSupport
+import play.api.i18n.Lang
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
@@ -17,8 +18,7 @@ import scala.io.Source
 @Singleton
 class HomeController @Inject() (
     val controllerComponents: ControllerComponents,
-    val env: Environment,
-    jsMessagesFactory: JsMessagesFactory
+    val env: Environment
 ) extends BaseController
     with I18nSupport {
 
@@ -37,7 +37,20 @@ class HomeController @Inject() (
       .as("text/html")
   }
 
-  def jsMessages = Action { implicit request =>
-    Ok(jsMessagesFactory.all(Some("window.jsMessages")))
+  def jsonMessages = Action { implicit request =>
+    val lang = request.lang
+    val default = messagesApi.messages.get("default").getOrElse(Map())
+    val language =
+      messagesApi.messages.get(Lang(lang.language).code).getOrElse(Map())
+    val country = messagesApi.messages
+      .get(Lang(lang.language, lang.country).code)
+      .getOrElse(Map())
+    val script = messagesApi.messages
+      .get(Lang(lang.language, lang.country, lang.script).code)
+      .getOrElse(Map())
+    val variant = messagesApi.messages
+      .get(Lang(lang.language, lang.country, lang.script, lang.variant).code)
+      .getOrElse(Map())
+    Ok(Json.toJson(default ++ language ++ country ++ script ++ variant))
   }
 }

@@ -4,7 +4,7 @@
 # ~~~~
 
 GET     /                                  controllers.HomeController.index
-GET     /jsMessages                        controllers.HomeController.jsMessages
+GET     /jsonMessages                      controllers.HomeController.jsonMessages
 
 POST    /iapi/events                       controllers.EventsController.postEvent()
 # cf. "AnyVal wrappers for other supported types" at "https://www.playframework.com/documentation/latest/ScalaRouting#Parameter-types

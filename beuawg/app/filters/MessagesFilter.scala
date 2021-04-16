@@ -28,6 +28,7 @@ class MessagesFilter @Inject() (implicit
 
     // cannot use I18nSupport above (this is a filter, not a controller) and therefore not result.withLang below
     // https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support
+    // for future reference: https://www.playframework.com/documentation/latest/api/scala/play/api/i18n/MessagesApi.html#setLang(result:play.api.mvc.Result,lang:play.api.i18n.Lang):play.api.mvc.Result
     val cookieName = config
       .getOptional[String]("play.i18n.langCookieName")
       .getOrElse("PLAY_LANG")
