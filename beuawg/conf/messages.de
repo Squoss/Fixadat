@@ -1,1 +1,9 @@
-yada = BLA
+locale = de
+
+legalese = Juristenjargon
+legalese.masthead = Impressum
+legalese.pp = Datenschutzrichtlinie
+legalese.tos = Allgemeine Geschäftsbedingungen
+
+acknowledgements = Danksagung
+price = Preis

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 
-function NotFound() {
+function NotFound(props: {}) {
+  console.log("NotFound props: " + JSON.stringify(props));
+
   return (
     <div className="alert alert-info" role="alert">
       <h4 className="alert-heading">Not Found</h4>

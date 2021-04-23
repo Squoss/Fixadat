@@ -1,11 +1,24 @@
-import React from 'react';
-import { Link, NavLink, Redirect, Route, Switch } from 'react-router-dom';
-
+import React, { useContext } from 'react';
+import { Link, NavLink, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Abode from './Abode';
+import Event from './Event';
+import { l10nContext } from './l10nContext';
 import NotFound from './NotFound';
 import ToDo from './ToDo';
 
-function App() {
+
+function App(props: {}) {
+  console.log("App props: " + JSON.stringify(props));
+
+  const localizations = useContext(l10nContext);
+  const location = useLocation();
+  let locationString = location.pathname;
+  locationString += "?";
+  new URLSearchParams(location.search).forEach((v, k) => locationString += k !== "locale" ? `${k}=${v}&` : "");
+  locationString += "locale=NEWLOCALE";
+  locationString += location.hash;
+
+
   return (
     <React.Fragment>
       <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -20,25 +33,25 @@ function App() {
                 <NavLink className="nav-link" exact={true} activeClassName="active" aria-current="page" to="/"><i className="bi-house"></i></NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" activeClassName="active" to="/acknowledgements">Acknowledgements</NavLink>
+                <NavLink className="nav-link" activeClassName="active" to="/acknowledgements">{localizations['acknowledgements']}</NavLink>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="legalese" role="button" data-bs-toggle="dropdown" aria-expanded="false">Legalese</a>
+                <a className="nav-link dropdown-toggle" href="#" id="legalese" role="button" data-bs-toggle="dropdown" aria-expanded="false">{localizations['legalese']}</a>
                 <ul className="dropdown-menu" aria-labelledby="legalese">
-                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/im">Imprint / Masthead</NavLink></li>
-                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/pp">Privacy Policy</NavLink></li>
-                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/tos">Terms of Service</NavLink></li>
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/im">{localizations['legalese.masthead']}</NavLink></li>
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/pp">{localizations['legalese.pp']}</NavLink></li>
+                  <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/tos">{localizations['legalese.tos']}</NavLink></li>
                 </ul>
               </li>
               <li className="nav-item">
-                <a className="nav-link disabled" href="#" tabIndex={-1} aria-disabled="true">Prices</a>
+                <a className="nav-link disabled" href="#" tabIndex={-1} aria-disabled="true">{localizations['price']}</a>
               </li>
             </ul>
             <div className="dropdown">
               <a className="btn btn-primary dropdown-toggle" href="#" role="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi-globe"></i></a>
               <ul className="dropdown-menu" aria-labelledby="language">
-                <li><a className="dropdown-item disabled" href="#">Deutsch</a></li>
-                <li><a className="dropdown-item" href="#">English</a></li>
+                <li><a className={localizations['locale'] === "de" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "de")}>Deutsch</a></li>
+                <li><a className={localizations['locale'] === "en" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "en")}>English</a></li>
               </ul>
             </div>
               &nbsp;
@@ -49,17 +62,17 @@ function App() {
 
       <main className="container">
         <Switch>
-          <Route exact path="/" component={Abode} />
-          <Route path="/events/:event" component={ToDo} />
-          <Route path="/acknowledgements" component={ToDo} />
+          <Route exact path="/"><Abode /></Route>
+          <Route path="/events/:event"><Event /></Route>
+          <Route path="/acknowledgements" ><ToDo /></Route>
           <Route exact path="/legalese">
             <Redirect to="/legalese/im" />
           </Route>
-          <Route path="/legalese/im" component={ToDo} />
-          <Route path="/legalese/pp" component={ToDo} />
-          <Route path="/legalese/tos" component={ToDo} />
+          <Route path="/legalese/im" ><ToDo /></Route>
+          <Route path="/legalese/pp"><ToDo /></Route>
+          <Route path="/legalese/tos" ><ToDo /></Route>
           {/* when none of the above match, <NotFound> will be rendered */}
-          <Route component={NotFound} />
+          <Route ><NotFound /></Route>
         </Switch>
       </main>
 

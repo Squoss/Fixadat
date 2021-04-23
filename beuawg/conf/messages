@@ -1,1 +1,9 @@
-yada = YADA
+locale = en
+
+legalese = Legalese
+legalese.masthead = Imprint
+legalese.pp = Privacy Policy
+legalese.tos = Terms of Service
+
+acknowledgements = Acknowledgements
+price = Price

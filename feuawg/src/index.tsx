@@ -1,21 +1,18 @@
+import 'bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
+import I18nApp from './I18nApp';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import App from './App';
-
-import 'bootstrap';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
-
-import 'bootstrap-icons/font/bootstrap-icons.css'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <I18nApp />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

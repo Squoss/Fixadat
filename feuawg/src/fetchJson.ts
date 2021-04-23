@@ -13,7 +13,7 @@ export async function fetchJson<T>(request: Request): Promise<HttpResponse<T>> {
   const response: HttpResponse<T> = await fetch(request);
   try {
     response.parsedBody = await response.json();
-  } catch (ex) {}
+  } catch (ex) { }
 
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -21,7 +21,7 @@ export async function fetchJson<T>(request: Request): Promise<HttpResponse<T>> {
   return response;
 }
 
-export async function get<T>(path: string, args: RequestInit = { method: "get", mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error" }): Promise<HttpResponse<T>> {
+export async function get<T>(path: string, accessToken: string, args: RequestInit = { method: "get", mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "X-Access-Token": accessToken } }): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }
 
