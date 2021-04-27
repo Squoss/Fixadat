@@ -1,7 +1,8 @@
 import { Modal } from "bootstrap";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { post } from "./fetchJson";
+import { l10nContext } from "./l10nContext";
 
 interface PostEventResponse {
   id: number;
@@ -10,6 +11,8 @@ interface PostEventResponse {
 
 function Abode(props: {}) {
   console.log("Abode props: " + JSON.stringify(props));
+
+  const localizations = useContext(l10nContext);
 
   const [redirect, setRedirect] = useState<undefined | string>(undefined);
 
@@ -36,27 +39,27 @@ function Abode(props: {}) {
       <React.Fragment>
         <div className="bg-light p-5 rounded">
           <h1>répondez s'il vous plaît</h1>
-          <p className="lead">Use your favorite off-line &amp; on-line channels for invitations and let invitees conveniently RSVP in one place.</p>
+          <p className="lead">{localizations['executiveSummary']}</p>
           <button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
-            Create a basic page for RSVPing &raquo;
+            {localizations['createEventPage']} &raquo;
       </button>
-          <p>It's free of charge and requires no signing up.</p>
+          <p>{localizations['reassurance']}</p>
         </div>
 
         <div className="modal fade" id="postEventModal" tabIndex={-1} aria-labelledby="postEventModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="postEventModalLabel">First things first</h5>
+                <h5 className="modal-title" id="postEventModalLabel"><i className="bi bi-shield-exclamation"></i></h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
-                I have read, understand and accept the Privacy Policy as well as the Terms of Service.
-            </div>
+                {localizations['legalese.cya']}
+              </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">{localizations['no']}</button>
                 <form onSubmit={handlePostEvent}>
-                  <button type="submit" className="btn btn-primary">Yes</button>
+                  <button type="submit" className="btn btn-primary">{localizations['yes']}</button>
                 </form>
               </div>
             </div>

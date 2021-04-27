@@ -4,6 +4,15 @@ legalese = Juristenjargon
 legalese.masthead = Impressum
 legalese.pp = Datenschutzrichtlinie
 legalese.tos = Allgemeine Geschäftsbedingungen
+legalese.cya = Ich habe die Datenschutzrichtlinie sowie die Allgemeinen Geschäftsbedingungen gelesen und verstehe und akzeptiere sie.
 
 acknowledgements = Danksagung
-price = Preis
+prices = Preise
+
+yes = Ja
+no = Nein
+cancel = Abbrechen
+
+executiveSummary = Verwenden Sie Ihre bevorzugten Offline- und Online-Kanäle für Einladungen und lassen Sie eingeladene Personen bequem an einem Ort antworten.
+createEventPage = Basale Antwort-Seite erstellen
+reassurance = Es ist kostenlos und setzt keine Registrierung voraus.

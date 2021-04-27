@@ -4,6 +4,15 @@ legalese = Legalese
 legalese.masthead = Imprint
 legalese.pp = Privacy Policy
 legalese.tos = Terms of Service
+legalese.cya = I have read the Privacy Policy as well as the Terms of Service and understand and accept them.
 
 acknowledgements = Acknowledgements
-price = Price
+prices = Prices
+
+yes = Yes
+no = No
+cancel = Cancel
+
+executiveSummary = Use your favorite off-line & on-line channels for invitations and let invitees conveniently RSVP in one place.
+createEventPage = Create basic RSVP page
+reassurance = It's free of charge and requires no signing up.
