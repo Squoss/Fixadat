@@ -1,14 +1,13 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { HostEventt } from './Events';
 import HostEventLinks from './HostEventLinks';
-import HostEventMeta from './HostEventMeta';
 import HostEventRsvps from './HostEventRsvps';
+import { l10nContext } from './l10nContext';
 
 
 export enum ACTIVE_TAB {
   LINKS = "links",
-  META = "meta",
   RSVPS = "RSVPs"
 }
 
@@ -20,15 +19,17 @@ interface HostEventProps {
 function HostEvent(props: HostEventProps) {
   console.log("HostEvent props: " + JSON.stringify(props));
 
-  const { id, guestToken, hostToken, name } = props.event;
+  const localizations = useContext(l10nContext);
+
+  const { id, guestToken, hostToken, name, description, emailAddressRequired, phoneNumberRequired, plus1Allowed, visibility } = props.event;
+
+  const location = useLocation();
+  const brandNew = new URLSearchParams(location.search).has("brandNew");
 
   let content;
   switch (props.activeTab) {
     case ACTIVE_TAB.LINKS:
       content = <HostEventLinks id={id} hostToken={hostToken} guestToken={guestToken} />;
-      break;
-    case ACTIVE_TAB.META:
-      content = <HostEventMeta />;
       break;
     case ACTIVE_TAB.RSVPS:
       content = <HostEventRsvps />;
@@ -39,16 +40,23 @@ function HostEvent(props: HostEventProps) {
       return _exhaustiveCheck;
   }
 
+  const brandNewAlert = <div className="alert alert-success" role="alert">{localizations['repliesPageCreated']}</div>
+
   return (
     <React.Fragment>
-      <h1>HostEvent {name} with {hostToken}</h1>
-      <mark>To Do</mark>
+      <h1>{name}</h1>
+      {brandNew ? brandNewAlert : <span></span>}
+      <dl>
+        <dt>Name</dt><dd>{name}</dd>
+        <dt>Description</dt><dd>{description}</dd>
+        <dt>E-mail address required</dt><dd>{emailAddressRequired}</dd>
+        <dt>Phone number required</dt><dd>{phoneNumberRequired}</dd>
+        <dt>+1 allowed</dt><dd>{plus1Allowed}</dd>
+        <dt>Visibility</dt><dd>{visibility}</dd>
+      </dl>
       <ul className="nav nav-tabs">
         <li className="nav-item">
           <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/links#${hostToken}`}>Links</NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/meta#${hostToken}`}>Meta</NavLink>
         </li>
         <li className="nav-item">
           <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/RSVPs#${hostToken}`}>RSVPs</NavLink>

@@ -21,7 +21,7 @@ function Abode(props: {}) {
       const responseJson = await post<PostEventResponse>("/iapi/events", {}).then();
       console.debug(responseJson.status);
       console.debug(responseJson.parsedBody);
-      setRedirect(`/events/${responseJson.parsedBody?.id}?view=host#${responseJson.parsedBody?.hostToken}`);
+      setRedirect(`/events/${responseJson.parsedBody?.id}?brandNew=true&view=host#${responseJson.parsedBody?.hostToken}`);
     } catch (error) {
       console.error(error);
     }
@@ -41,7 +41,7 @@ function Abode(props: {}) {
           <h1>répondez s'il vous plaît</h1>
           <p className="lead">{localizations['executiveSummary']}</p>
           <button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
-            {localizations['createEventPage']} &raquo;
+            {localizations['createRepliesPage']} &raquo;
       </button>
           <p>{localizations['reassurance']}</p>
         </div>

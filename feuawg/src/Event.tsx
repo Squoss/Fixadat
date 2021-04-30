@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Redirect, Route, RouteProps, Switch, useLocation, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import { Eventt, GuestEventt, HostEventt } from './Events';
 import { get } from './fetchJson';
 import GuestEvent from './GuestEvent';
@@ -12,10 +12,11 @@ function Event(props: {}) {
 
   const location = useLocation();
   const id = useRouteMatch<{id: string}>({path:"/events/:id"})!.params.id;
-  const token = location.hash;
-  const view = useRouteMatch<{id: string; hostish:string}>({path:"/events/:id/:hostish"})?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
   console.debug(id);
+  const token = location.hash;
   console.debug(token);
+  const brandNew = new URLSearchParams(location.search).has("brandNew");
+  const view = useRouteMatch<{id: string; hostish:string}>({path:"/events/:id/:hostish"})?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
   console.debug(view);
 
   const [event, setEvent] = useState<Eventt | undefined>(undefined);
@@ -63,10 +64,9 @@ function Event(props: {}) {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? <Redirect to={`/events/${id}/RSVPs${token}`} /> : <GuestEvent event={event as GuestEventt} />}
+          {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEvent event={event as GuestEventt} />}
         </Route>
         <Route path="/events/:event/links"><HostEvent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventt} /></Route>
-        <Route path="/events/:event/meta"><HostEvent activeTab={ACTIVE_TAB.META} event={event as HostEventt} /></Route>
         <Route path="/events/:event/RSVPs"><HostEvent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventt} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
