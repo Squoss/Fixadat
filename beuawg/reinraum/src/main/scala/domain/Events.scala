@@ -31,10 +31,10 @@ import java.time.LocalTime
 import java.util.TimeZone
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.values.AccessToken
-import domain.values.Attendance._
-import domain.values.EmailAddress
-import domain.values.Id
+import domain.value_objects.AccessToken
+import domain.value_objects.Attendance._
+import domain.value_objects.EmailAddress
+import domain.value_objects.Id
 
 sealed trait VeranstaltungEvent {
 

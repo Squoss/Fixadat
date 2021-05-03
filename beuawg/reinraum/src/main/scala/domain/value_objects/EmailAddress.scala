@@ -22,6 +22,6 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
 case class EmailAddress(wert: String) extends AnyVal

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
 object Visibility extends Enumeration {
 

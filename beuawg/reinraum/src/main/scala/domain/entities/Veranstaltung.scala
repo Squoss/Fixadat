@@ -42,11 +42,11 @@ import domain.VeranstaltungRelocatedEvent
 import domain.VeranstaltungRepublishedEvent
 import domain.VeranstaltungRescheduledEvent
 import domain.VeranstaltungRetextedEvent
-import domain.values.AccessToken
-import domain.values.Error._
-import domain.values.Id
-import domain.values.Rsvp
-import domain.values.Visibility._
+import domain.value_objects.AccessToken
+import domain.value_objects.Error._
+import domain.value_objects.Id
+import domain.value_objects.Rsvp
+import domain.value_objects.Visibility._
 
 final class Veranstaltung private (
     val id: Id,

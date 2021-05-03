@@ -22,12 +22,8 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
-object Attendance extends Enumeration {
+import java.util.UUID
 
-  type Attendance = Value
-  val Not = Value(0)
-  val Alone = Value(1)
-  val WithPlus1 = Value(2)
-}
+case class AccessToken(wert: UUID) extends AnyVal

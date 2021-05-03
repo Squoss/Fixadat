@@ -28,13 +28,13 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.google.inject.ImplementedBy
 import domain.VeranstaltungenService
 import domain.entities.Veranstaltung
-import domain.values.AccessToken
-import domain.values.Attendance._
-import domain.values.EmailAddress
-import domain.values.Error._
-import domain.values.GuestVeranstaltung
-import domain.values.HostVeranstaltung
-import domain.values.Id
+import domain.value_objects.AccessToken
+import domain.value_objects.Attendance._
+import domain.value_objects.EmailAddress
+import domain.value_objects.Error._
+import domain.value_objects.GuestVeranstaltung
+import domain.value_objects.HostVeranstaltung
+import domain.value_objects.Id
 
 import java.net.URL
 import java.time.LocalDate

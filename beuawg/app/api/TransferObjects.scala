@@ -22,19 +22,19 @@
  * THE SOFTWARE.
  */
 
-package controllers
+package api
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.values.AccessToken
-import domain.values.Attendance._
-import domain.values.EmailAddress
-import domain.values.GuestVeranstaltung
-import domain.values.HostVeranstaltung
-import domain.values.Id
-import domain.values.Rsvp
-import domain.values.Visibility._
+import domain.value_objects.AccessToken
+import domain.value_objects.Attendance._
+import domain.value_objects.EmailAddress
+import domain.value_objects.GuestVeranstaltung
+import domain.value_objects.HostVeranstaltung
+import domain.value_objects.Id
+import domain.value_objects.Rsvp
+import domain.value_objects.Visibility._
 import play.api.libs.json._
 
 import java.net.URL
@@ -114,7 +114,7 @@ object TransferObjects {
 
   implicit val veReads = new Reads[Visibility] {
     def reads(json: JsValue): JsResult[Visibility] = Try(
-      domain.values.Visibility.withName(json.as[String])
+      domain.value_objects.Visibility.withName(json.as[String])
     ) match {
       case Success(value)     => JsSuccess(value)
       case Failure(exception) => JsError(exception.getMessage)
@@ -162,7 +162,7 @@ object TransferObjects {
 
   implicit val aeReads = new Reads[Attendance] {
     def reads(json: JsValue): JsResult[Attendance] = Try(
-      domain.values.Attendance.withName(json.as[String])
+      domain.value_objects.Attendance.withName(json.as[String])
     ) match {
       case Success(value)     => JsSuccess(value)
       case Failure(exception) => JsError(exception.getMessage)

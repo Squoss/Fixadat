@@ -22,48 +22,6 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
-import java.net.URL
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-
-import domain.values.Visibility._
-
-case class GuestVeranstaltung(
-    id: Id,
-    guestToken: AccessToken,
-    name: String,
-    description: Option[String],
-    date: Option[LocalDate],
-    time: Option[LocalTime],
-    timeZone: Option[TimeZone],
-    url: Option[URL],
-    place: Option[String], // FIXME
-    emailAddressRequired: Boolean,
-    phoneNumberRequired: Boolean,
-    plus1Allowed: Boolean,
-    visibility: Visibility
-)
-
-case class HostVeranstaltung(
-    id: Id,
-    created: Instant,
-    guestToken: AccessToken,
-    hostToken: AccessToken,
-    name: String,
-    description: Option[String],
-    date: Option[LocalDate],
-    time: Option[LocalTime],
-    timeZone: Option[TimeZone],
-    url: Option[URL],
-    place: Option[String], // FIXME
-    emailAddressRequired: Boolean,
-    phoneNumberRequired: Boolean,
-    plus1Allowed: Boolean,
-    visibility: Visibility,
-    rsvps: Seq[Rsvp],
-    updated: Instant
-)
+case class Id(wert: Int) extends AnyVal

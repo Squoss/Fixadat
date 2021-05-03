@@ -22,6 +22,11 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
-case class Id(wert: Int) extends AnyVal
+object Error extends Enumeration {
+
+  type Error = Value
+  val NotFound, AccessDenied, PrivateAccess, ProtectedAccess,
+      CommandIncomplete = Value
+}

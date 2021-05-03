@@ -1,12 +1,36 @@
-package controllers
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2021 Squeng AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
-import domain.values.AccessToken
-import domain.values.Error._
-import domain.values.GuestVeranstaltung
-import domain.values.HostVeranstaltung
-import domain.values.Id
-import domain.values.Rsvp
-import domain.values.Visibility._
+package api
+
+import domain.value_objects.AccessToken
+import domain.value_objects.Error._
+import domain.value_objects.GuestVeranstaltung
+import domain.value_objects.HostVeranstaltung
+import domain.value_objects.Id
+import domain.value_objects.Rsvp
+import domain.value_objects.Visibility._
 import play.api.Environment
 import play.api.libs.json.JsError
 import play.api.libs.json.JsObject
@@ -51,7 +75,7 @@ class EventsController @Inject() (implicit
   }
 
   private def toErrorResponse(error: Error): Status = error match {
-    case domain.values.Error.NotFound => NotFound
+    case domain.value_objects.Error.NotFound => NotFound
     case AccessDenied                 => Forbidden
     case PrivateAccess                => Gone
     case ProtectedAccess              => Conflict

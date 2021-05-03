@@ -29,7 +29,7 @@ import scala.concurrent.Future
 import domain.VeranstaltungEvent
 import domain.VeranstaltungPublishedEvent
 import domain.entities.Veranstaltung
-import domain.values.Id
+import domain.value_objects.Id
 
 trait Repository {
 

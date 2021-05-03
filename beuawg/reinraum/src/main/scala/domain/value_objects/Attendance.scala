@@ -22,14 +22,12 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.values.Attendance._
+object Attendance extends Enumeration {
 
-case class Rsvp(
-    name: String,
-    emailAddress: Option[EmailAddress],
-    phoneNumber: Option[PhoneNumber],
-    attendance: Attendance
-)
+  type Attendance = Value
+  val Not = Value(0)
+  val Alone = Value(1)
+  val WithPlus1 = Value(2)
+}

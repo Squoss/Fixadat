@@ -22,11 +22,14 @@
  * THE SOFTWARE.
  */
 
-package domain.values
+package domain.value_objects
 
-object Error extends Enumeration {
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import domain.value_objects.Attendance._
 
-  type Error = Value
-  val NotFound, AccessDenied, PrivateAccess, ProtectedAccess,
-      CommandIncomplete = Value
-}
+case class Rsvp(
+    name: String,
+    emailAddress: Option[EmailAddress],
+    phoneNumber: Option[PhoneNumber],
+    attendance: Attendance
+)

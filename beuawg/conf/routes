@@ -3,20 +3,20 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-GET     /                                  controllers.HomeController.index
-GET     /jsonMessages                      controllers.HomeController.jsonMessages
+GET     /                                  api.HomeController.index
+GET     /jsonMessages                      api.HomeController.jsonMessages
 
-POST    /iapi/events                       controllers.EventsController.postEvent()
+POST    /iapi/events                       api.EventsController.postEvent()
 # cf. "AnyVal wrappers for other supported types" at "https://www.playframework.com/documentation/latest/ScalaRouting#Parameter-types
 # timeZone could also be mapped to a ZoneId by Play: https://www.playframework.com/documentation/latest/ScalaRequestBinders#QueryStringBindable
-GET     /iapi/events/:event                controllers.EventsController.getEvent(event: domain.values.Id, view: String ?= "guest", timeZone: Option[String])
-PUT     /iapi/events/:event/visibility     controllers.EventsController.putEventVisibility(event: domain.values.Id)
-PUT     /iapi/events/:event/text           controllers.EventsController.putEventText(event: domain.values.Id)
-PUT     /iapi/events/:event/schedule       controllers.EventsController.putEventSchedule(event: domain.values.Id)
-PUT     /iapi/events/:event/location       controllers.EventsController.putEventLocation(event: domain.values.Id)
-PATCH   /iapi/events/:event                controllers.EventsController.patchEvent(event: domain.values.Id)
-DELETE  /iapi/events/:event                controllers.EventsController.deleteEvent(event: domain.values.Id)
-POST    /iapi/events/:event/RSVPs          controllers.EventsController.postRsvp(event: domain.values.Id)
+GET     /iapi/events/:event                api.EventsController.getEvent(event: domain.value_objects.Id, view: String ?= "guest", timeZone: Option[String])
+PUT     /iapi/events/:event/visibility     api.EventsController.putEventVisibility(event: domain.value_objects.Id)
+PUT     /iapi/events/:event/text           api.EventsController.putEventText(event: domain.value_objects.Id)
+PUT     /iapi/events/:event/schedule       api.EventsController.putEventSchedule(event: domain.value_objects.Id)
+PUT     /iapi/events/:event/location       api.EventsController.putEventLocation(event: domain.value_objects.Id)
+PATCH   /iapi/events/:event                api.EventsController.patchEvent(event: domain.value_objects.Id)
+DELETE  /iapi/events/:event                api.EventsController.deleteEvent(event: domain.value_objects.Id)
+POST    /iapi/events/:event/RSVPs          api.EventsController.postRsvp(event: domain.value_objects.Id)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                      controllers.Assets.versioned(path="/public", file: Asset)
