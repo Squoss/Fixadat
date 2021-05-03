@@ -21,7 +21,7 @@ lazy val reinraum = project
 scalaVersion := "2.13.5"
 
 libraryDependencies += guice
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.2.2"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.2.3"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.18.0" % Test
 
