@@ -24,17 +24,10 @@
 
 package dev
 
-import domain.entities.Veranstaltung
-import domain.persistence.Repository
-import domain.persistence.VeranstaltungEvent
-import domain.persistence.VeranstaltungPublishedEvent
-import domain.value_objects.Id
 import thirdparty_apis.Webhooks
 
 import java.net.URL
 import javax.inject.Inject
-import javax.inject.Singleton
-import scala.collection.mutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 

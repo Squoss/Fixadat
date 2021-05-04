@@ -23,10 +23,11 @@
  */
 
 import com.google.inject.AbstractModule
-import com.google.inject.name.Names
 import dev.DevRepository
 import dev.DevWebhooks
 import domain.persistence.Repository
+import domain.services.VeranstaltungenService
+import domain.spi.Veranstaltungen
 import mongodb.Mdb
 import play.api.Configuration
 import play.api.Environment
@@ -40,13 +41,13 @@ class Module(
   override def configure() = {
 
     if (env.mode == Mode.Dev && config.get[Boolean]("mongodb.dev")) {
-      bind(classOf[Repository])
-        .to(classOf[DevRepository])
-      bind(classOf[Webhooks])
-        .to(classOf[DevWebhooks])
+      bind(classOf[Repository]).to(classOf[DevRepository])
+      bind(classOf[Webhooks]).to(classOf[DevWebhooks])
     } else {
       // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
       bind(classOf[Mdb]).asEagerSingleton
     }
+
+    bind(classOf[Veranstaltungen]).to(classOf[VeranstaltungenService])
   }
 }

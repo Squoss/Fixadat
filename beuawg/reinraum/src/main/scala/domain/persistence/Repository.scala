@@ -25,6 +25,8 @@
 package domain.persistence
 
 import domain.entities.Veranstaltung
+import domain.event_sourcing.VeranstaltungEvent
+import domain.event_sourcing.VeranstaltungPublishedEvent
 import domain.value_objects.Id
 
 import scala.concurrent.Future

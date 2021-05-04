@@ -24,16 +24,16 @@
 
 package domain.entities
 
-import domain.persistence.RsvpEvent
-import domain.persistence.VeranstaltungEvent
-import domain.persistence.VeranstaltungPrivatizedEvent
-import domain.persistence.VeranstaltungProtectedEvent
-import domain.persistence.VeranstaltungPublishedEvent
-import domain.persistence.VeranstaltungRecalibratedEvent
-import domain.persistence.VeranstaltungRelocatedEvent
-import domain.persistence.VeranstaltungRepublishedEvent
-import domain.persistence.VeranstaltungRescheduledEvent
-import domain.persistence.VeranstaltungRetextedEvent
+import domain.event_sourcing.RsvpEvent
+import domain.event_sourcing.VeranstaltungEvent
+import domain.event_sourcing.VeranstaltungPrivatizedEvent
+import domain.event_sourcing.VeranstaltungProtectedEvent
+import domain.event_sourcing.VeranstaltungPublishedEvent
+import domain.event_sourcing.VeranstaltungRecalibratedEvent
+import domain.event_sourcing.VeranstaltungRelocatedEvent
+import domain.event_sourcing.VeranstaltungRepublishedEvent
+import domain.event_sourcing.VeranstaltungRescheduledEvent
+import domain.event_sourcing.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.Id

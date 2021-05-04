@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package domain.persistence
+package domain.event_sourcing
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.value_objects.AccessToken

@@ -26,16 +26,16 @@ package domain.services
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.entities.Veranstaltung
+import domain.event_sourcing.RsvpEvent
+import domain.event_sourcing.VeranstaltungPrivatizedEvent
+import domain.event_sourcing.VeranstaltungProtectedEvent
+import domain.event_sourcing.VeranstaltungPublishedEvent
+import domain.event_sourcing.VeranstaltungRecalibratedEvent
+import domain.event_sourcing.VeranstaltungRelocatedEvent
+import domain.event_sourcing.VeranstaltungRepublishedEvent
+import domain.event_sourcing.VeranstaltungRescheduledEvent
+import domain.event_sourcing.VeranstaltungRetextedEvent
 import domain.persistence.Repository
-import domain.persistence.RsvpEvent
-import domain.persistence.VeranstaltungPrivatizedEvent
-import domain.persistence.VeranstaltungProtectedEvent
-import domain.persistence.VeranstaltungPublishedEvent
-import domain.persistence.VeranstaltungRecalibratedEvent
-import domain.persistence.VeranstaltungRelocatedEvent
-import domain.persistence.VeranstaltungRepublishedEvent
-import domain.persistence.VeranstaltungRescheduledEvent
-import domain.persistence.VeranstaltungRetextedEvent
 import domain.spi.Veranstaltungen
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._

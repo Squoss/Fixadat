@@ -25,7 +25,6 @@
 package domain.spi
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import com.google.inject.ImplementedBy
 import domain.entities.Veranstaltung
 import domain.services.VeranstaltungenService
 import domain.value_objects.AccessToken
@@ -44,7 +43,6 @@ import java.util.TimeZone
 import java.util.UUID
 import scala.concurrent.Future
 
-@ImplementedBy(classOf[VeranstaltungenService])
 trait Veranstaltungen {
 
   def publishVeranstaltung(): Future[(Id, AccessToken)]

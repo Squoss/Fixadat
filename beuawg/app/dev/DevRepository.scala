@@ -25,9 +25,9 @@
 package dev
 
 import domain.entities.Veranstaltung
+import domain.event_sourcing.VeranstaltungEvent
+import domain.event_sourcing.VeranstaltungPublishedEvent
 import domain.persistence.Repository
-import domain.persistence.VeranstaltungEvent
-import domain.persistence.VeranstaltungPublishedEvent
 import domain.value_objects.Id
 
 import javax.inject.Inject
