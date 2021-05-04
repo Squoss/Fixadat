@@ -22,31 +22,25 @@
  * THE SOFTWARE.
  */
 
-import com.google.inject.AbstractModule
-import com.google.inject.name.Names
-import dev.DevRepository
-import dev.DevWebhooks
+package dev
+
+import domain.entities.Veranstaltung
 import domain.persistence.Repository
-import mongodb.Mdb
-import play.api.Configuration
-import play.api.Environment
-import play.api.Mode
+import domain.persistence.VeranstaltungEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.value_objects.Id
 import thirdparty_apis.Webhooks
 
-class Module(
-    env: Environment,
-    config: Configuration
-) extends AbstractModule {
-  override def configure() = {
+import java.net.URL
+import javax.inject.Inject
+import javax.inject.Singleton
+import scala.collection.mutable
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
-    if (env.mode == Mode.Dev && config.get[Boolean]("mongodb.dev")) {
-      bind(classOf[Repository])
-        .to(classOf[DevRepository])
-      bind(classOf[Webhooks])
-        .to(classOf[DevWebhooks])
-    } else {
-      // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
-      bind(classOf[Mdb]).asEagerSingleton
-    }
-  }
+class DevWebhooks @Inject() (implicit ec: ExecutionContext) extends Webhooks {
+
+  def notify(webhook: URL, text: String): Future[Unit] = Future(
+    System.out.println(s"$webhook <= $text")
+  )
 }

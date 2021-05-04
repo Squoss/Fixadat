@@ -24,29 +24,28 @@
 
 package domain.entities
 
-import java.net.URL
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
-
-import scala.collection.mutable
-
-import domain.RsvpEvent
-import domain.VeranstaltungEvent
-import domain.VeranstaltungPrivatizedEvent
-import domain.VeranstaltungProtectedEvent
-import domain.VeranstaltungPublishedEvent
-import domain.VeranstaltungRecalibratedEvent
-import domain.VeranstaltungRelocatedEvent
-import domain.VeranstaltungRepublishedEvent
-import domain.VeranstaltungRescheduledEvent
-import domain.VeranstaltungRetextedEvent
+import domain.persistence.RsvpEvent
+import domain.persistence.VeranstaltungEvent
+import domain.persistence.VeranstaltungPrivatizedEvent
+import domain.persistence.VeranstaltungProtectedEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.persistence.VeranstaltungRecalibratedEvent
+import domain.persistence.VeranstaltungRelocatedEvent
+import domain.persistence.VeranstaltungRepublishedEvent
+import domain.persistence.VeranstaltungRescheduledEvent
+import domain.persistence.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.Id
 import domain.value_objects.Rsvp
 import domain.value_objects.Visibility._
+
+import java.net.URL
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
+import scala.collection.mutable
 
 final class Veranstaltung private (
     val id: Id,

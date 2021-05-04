@@ -22,24 +22,24 @@
  * THE SOFTWARE.
  */
 
-package persistence
-
-import javax.inject.Inject
-import javax.inject.Singleton
-
-import scala.concurrent._
-
-import play.api._
-import play.api.inject.ApplicationLifecycle
-
-// In general, you should only need the org.mongodb.scala and org.bson namespaces in your code.
-import org.mongodb.scala.{Document, MongoClient, MongoCollection}
+package mongodb
 
 // Replaces the default UuidCodec with one that uses the new standard UUID representation
 // cf. https://mongodb.github.io/mongo-java-driver/4.2/driver-scala/tutorials/databases-collections/
 import org.bson.UuidRepresentation
 import org.bson.codecs.UuidCodec
 import org.bson.codecs.configuration.CodecRegistries
+// In general, you should only need the org.mongodb.scala and org.bson namespaces in your code.
+import org.mongodb.scala.Document
+import org.mongodb.scala.MongoClient
+import org.mongodb.scala.MongoCollection
+import play.api.Configuration
+import play.api.Logging
+import play.api.inject.ApplicationLifecycle
+
+import javax.inject.Inject
+import javax.inject.Singleton
+import scala.concurrent._
 
 @Singleton
 class Mdb @Inject() (

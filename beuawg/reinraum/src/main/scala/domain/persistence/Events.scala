@@ -22,19 +22,19 @@
  * THE SOFTWARE.
  */
 
-package domain
-
-import java.net.URL
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.TimeZone
+package domain.persistence
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
+
+import java.net.URL
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 
 sealed trait VeranstaltungEvent {
 

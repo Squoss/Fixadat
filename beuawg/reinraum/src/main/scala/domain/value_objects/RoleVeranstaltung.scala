@@ -24,13 +24,13 @@
 
 package domain.value_objects
 
+import domain.value_objects.Visibility._
+
 import java.net.URL
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.TimeZone
-
-import domain.value_objects.Visibility._
 
 case class GuestVeranstaltung(
     id: Id,

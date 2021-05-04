@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-package ports
+package domain.spi
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.google.inject.ImplementedBy
-import domain.VeranstaltungenService
 import domain.entities.Veranstaltung
+import domain.services.VeranstaltungenService
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress

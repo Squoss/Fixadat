@@ -24,6 +24,8 @@
 
 package api
 
+import api.TransferObjects._
+import domain.spi.Veranstaltungen
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.GuestVeranstaltung
@@ -40,7 +42,6 @@ import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
-import ports.Veranstaltungen
 
 import java.time.ZoneId
 import java.util.UUID
@@ -51,8 +52,6 @@ import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-
-import TransferObjects._
 
 class EventsController @Inject() (implicit
     ec: ExecutionContext,
@@ -76,10 +75,10 @@ class EventsController @Inject() (implicit
 
   private def toErrorResponse(error: Error): Status = error match {
     case domain.value_objects.Error.NotFound => NotFound
-    case AccessDenied                 => Forbidden
-    case PrivateAccess                => Gone
-    case ProtectedAccess              => Conflict
-    case CommandIncomplete            => BadRequest
+    case AccessDenied                        => Forbidden
+    case PrivateAccess                       => Gone
+    case ProtectedAccess                     => Conflict
+    case CommandIncomplete                   => BadRequest
   }
 
   def getEvent(event: Id, view: String, timeZone: Option[String]) =

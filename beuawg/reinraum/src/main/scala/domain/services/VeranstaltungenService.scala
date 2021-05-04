@@ -22,10 +22,21 @@
  * THE SOFTWARE.
  */
 
-package domain
+package domain.services
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.entities.Veranstaltung
+import domain.persistence.Repository
+import domain.persistence.RsvpEvent
+import domain.persistence.VeranstaltungPrivatizedEvent
+import domain.persistence.VeranstaltungProtectedEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.persistence.VeranstaltungRecalibratedEvent
+import domain.persistence.VeranstaltungRelocatedEvent
+import domain.persistence.VeranstaltungRepublishedEvent
+import domain.persistence.VeranstaltungRescheduledEvent
+import domain.persistence.VeranstaltungRetextedEvent
+import domain.spi.Veranstaltungen
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
@@ -34,9 +45,7 @@ import domain.value_objects.GuestVeranstaltung
 import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
 import domain.value_objects.Visibility._
-import ports.Repository
-import ports.Veranstaltungen
-import ports.Webhooks
+import thirdparty_apis.Webhooks
 
 import java.net.URL
 import java.time.Instant

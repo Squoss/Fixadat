@@ -22,25 +22,12 @@
  * THE SOFTWARE.
  */
 
-package ports
+package thirdparty_apis
 
+import java.net.URL
 import scala.concurrent.Future
 
-import domain.VeranstaltungEvent
-import domain.VeranstaltungPublishedEvent
-import domain.entities.Veranstaltung
-import domain.value_objects.Id
+trait Webhooks {
 
-trait Repository {
-
-  def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean]
-  def logEvent(event: VeranstaltungEvent): Future[Unit]
-
-  def readEvents(
-      id: Id
-  ): Future[(Option[Veranstaltung], Seq[VeranstaltungEvent])]
-
-  def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit]
-
-  def deleteEvents(id: Id): Future[Unit]
+  def notify(webhook: URL, text: String): Future[Unit]
 }
