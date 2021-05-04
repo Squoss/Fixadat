@@ -22,36 +22,158 @@
  * THE SOFTWARE.
  */
 
-import api.EventsController
 import com.tngtech.archunit.core.importer.ClassFileImporter
-import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import org.scalatest.funsuite.AnyFunSuite
 
 class DependencyRulesTestSuite extends AnyFunSuite {
 
-  test("ArchUnit PoC") {
-    val classes =
-      new ClassFileImporter().importPackagesOf(classOf[EventsController])
+  val AKKA = "akka.."
+  val API = "api.."
+  val DEFAULT = ""
+  val DEV = "dev.."
+  val DOMAIN_SPI = "domain.spi.."
+  val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
+  val FILTERS = "filters.."
+  val JAVA = "java.."
+  val JAVAX = "javax.."
+  val MONGODB_ADAPTER =
+    "mongodb.." // the MongoDB driver starts its packages with com or org
+  val MONGODB_DRIVER = Seq("org.bson..", "org.mongodb..")
+  val PLAY_API = "play.api.." // "play.." would also include Play's Java API
+  val PLAY_CORE = "play.core.."
+  val PLAY_FILTERS = "play.filters.."
+  val PHONENUMBERS = "com.google.i18n.phonenumbers.."
+  val ROUTER = "router.."
+  val SCALA = "scala.."
+  val THIRDPARTY_SERVICES = "thirdparty_services.."
+
+  val NOT_THE_APP =
+    Seq(JAVA, JAVAX, SCALA, AKKA, PLAY_API, PLAY_CORE, PLAY_FILTERS, ROUTER)
+  val THE_APP_OUTSIDE_OF_THE_DOMAIN =
+    Seq(DEFAULT, API, DEV, FILTERS, MONGODB_ADAPTER, THIRDPARTY_SERVICES)
+
+  val classes =
+    new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN: _*)
+
+  test(
+    "the controllers depend on themselves, the SPI, and the value objects only"
+  ) {
 
     noClasses()
       .that()
-      .resideInAPackage("api..")
+      .resideInAPackage(API)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        "java..",
-        "javax..",
-        "scala..",
-        "play.api..",
-        "play.core..",
-        "play.filters..",
-        "router..",
-        "com.google.i18n.phonenumbers..",
-        "api..",
-        "domain.spi..",
-        "domain.value_objects.."
+        (NOT_THE_APP :+ PHONENUMBERS :+ API :+ DOMAIN_SPI :+ DOMAIN_VALUEOBJECTS): _*
       )
+      .check(classes)
+  }
+
+  test("nothing depends on the controllers") {
+
+    noClasses()
+      .that()
+      .resideOutsideOfPackages(API, ROUTER)
+      .should()
+      .dependOnClassesThat()
+      .resideInAPackage(API)
+      .check(classes)
+  }
+
+  // we don't care what DEV implementations depend on
+
+  test("nothing depends on DEV implementations") {
+
+    noClasses()
+      .that()
+      .resideOutsideOfPackage(DEV)
+      .and()
+      .doNotHaveSimpleName("Module")
+      .should()
+      .dependOnClassesThat()
+      .resideInAPackage(DEV)
+      .check(classes)
+  }
+
+  test("the filters depend on themselves only") {
+
+    noClasses()
+      .that()
+      .resideInAPackage(FILTERS)
+      .should()
+      .dependOnClassesThat()
+      .resideOutsideOfPackages(
+        (NOT_THE_APP :+ "play.mvc.."): _*
+      ) // "play.mvc.." covers play.mvc.EssentialFilter
+      .check(classes)
+  }
+
+  test("nothing depends on the filters") {
+
+    noClasses()
+      .that()
+      .resideOutsideOfPackage(FILTERS)
+      .should()
+      .dependOnClassesThat()
+      .resideInAPackage(FILTERS)
+      .check(classes)
+  }
+
+  test(
+    "the MongoDB adapter depends on itself and the repositories only"
+  ) {
+
+    noClasses()
+      .that()
+      .resideInAPackage(MONGODB_ADAPTER)
+      .should()
+      .dependOnClassesThat()
+      .resideOutsideOfPackages(
+        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER): _*
+      )
+      .check(classes)
+  }
+
+  test("nothing depends on the MongoDB adapter") {
+
+    noClasses()
+      .that()
+      .resideOutsideOfPackage(MONGODB_ADAPTER)
+      .and()
+      .doNotHaveSimpleName("Module")
+      .should()
+      .dependOnClassesThat()
+      .resideInAPackage(MONGODB_ADAPTER)
+      .check(classes)
+  }
+
+  test(
+    "third-party services depend on themselves and the third-party APIs only"
+  ) {
+
+    noClasses()
+      .that()
+      .resideInAPackage(THIRDPARTY_SERVICES)
+      .should()
+      .dependOnClassesThat()
+      .resideOutsideOfPackages(
+        (NOT_THE_APP :+ THIRDPARTY_SERVICES): _*
+      )
+      .check(classes)
+  }
+
+  test("nothing depends on third-party services") {
+
+    noClasses()
+      .that()
+      .resideOutsideOfPackage(THIRDPARTY_SERVICES)
+      .and()
+      .doNotHaveSimpleName("Module")
+      .should()
+      .dependOnClassesThat()
+      .resideInAPackage(THIRDPARTY_SERVICES)
       .check(classes)
   }
 }
