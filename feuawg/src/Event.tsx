@@ -66,8 +66,9 @@ function Event(props: {}) {
         <Route exact path="/events/:event">
           {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEvent event={event as GuestEventt} />}
         </Route>
-        <Route path="/events/:event/links"><HostEvent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventt} /></Route>
+        <Route path="/events/:event/settings"><HostEvent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventt} /></Route>
         <Route path="/events/:event/RSVPs"><HostEvent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventt} /></Route>
+        <Route path="/events/:event/links"><HostEvent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventt} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
       </Switch>

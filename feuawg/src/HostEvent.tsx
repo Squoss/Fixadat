@@ -3,12 +3,14 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { HostEventt } from './Events';
 import HostEventLinks from './HostEventLinks';
 import HostEventRsvps from './HostEventRsvps';
+import HostEventSettings from './HostEventSettings';
 import { l10nContext } from './l10nContext';
 
 
 export enum ACTIVE_TAB {
   LINKS = "links",
-  RSVPS = "RSVPs"
+  RSVPS = "RSVPs",
+  SETTINGS = "settings"
 }
 
 interface HostEventProps {
@@ -34,6 +36,9 @@ function HostEvent(props: HostEventProps) {
     case ACTIVE_TAB.RSVPS:
       content = <HostEventRsvps />;
       break;
+    case ACTIVE_TAB.SETTINGS:
+      content = <HostEventSettings event={props.event} />;
+      break;
     default:
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
       const _exhaustiveCheck: never = props.activeTab;
@@ -46,20 +51,15 @@ function HostEvent(props: HostEventProps) {
     <React.Fragment>
       <h1>{name}</h1>
       {brandNew ? brandNewAlert : <span></span>}
-      <dl>
-        <dt>Name</dt><dd>{name}</dd>
-        <dt>Description</dt><dd>{description}</dd>
-        <dt>E-mail address required</dt><dd>{emailAddressRequired}</dd>
-        <dt>Phone number required</dt><dd>{phoneNumberRequired}</dd>
-        <dt>+1 allowed</dt><dd>{plus1Allowed}</dd>
-        <dt>Visibility</dt><dd>{visibility}</dd>
-      </dl>
       <ul className="nav nav-tabs">
         <li className="nav-item">
-          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/links#${hostToken}`}>Links</NavLink>
+          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/settings#${hostToken}`}><i className="bi bi-sliders"></i> Settings</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/RSVPs#${hostToken}`}>RSVPs</NavLink>
+          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/RSVPs#${hostToken}`}><i className="bi bi-person-lines-fill"></i> RSVPs</NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/links#${hostToken}`}><i className="bi bi-share"></i> Links</NavLink>
         </li>
       </ul>
       {content}
