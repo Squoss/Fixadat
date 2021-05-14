@@ -9,6 +9,9 @@ export interface Eventt {
   guestToken: string;
   name: string;
   description: string | undefined;
+  date: string | undefined;
+  time: string | undefined;
+  timeZone: string | undefined;
   emailAddressRequired: boolean;
   phoneNumberRequired: boolean;
   plus1Allowed: boolean;

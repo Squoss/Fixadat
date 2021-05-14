@@ -34,6 +34,7 @@ import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
 import play.filters.csrf.CSRF
 
+import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
 import scala.io.Codec
@@ -76,5 +77,10 @@ class HomeController @Inject() (
       .get(Lang(lang.language, lang.country, lang.script, lang.variant).code)
       .getOrElse(Map())
     Ok(Json.toJson(default ++ language ++ country ++ script ++ variant))
+  }
+
+  def timeZones = Action { implicit request =>
+    val timeZones = TimeZone.getAvailableIDs
+    Ok(Json.toJson(timeZones))
   }
 }
