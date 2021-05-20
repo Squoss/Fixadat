@@ -1,4 +1,4 @@
-scalaVersion := "2.13.5"
+scalaVersion := "2.13.6"
 
 libraryDependencies += guice
 libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.12.22"

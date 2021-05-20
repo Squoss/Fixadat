@@ -1,4 +1,4 @@
-name := "beuawg"
+name := "Squawg"
 
 organization := "com.squeng"
 organizationName := "Squeng AG"
@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
     .dependsOn(reinraum)
 lazy val reinraum = project
 
-scalaVersion := "2.13.5"
+scalaVersion := "2.13.6"
 
 libraryDependencies += guice
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.2.3"
