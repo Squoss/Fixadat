@@ -1,0 +1,10 @@
+# https://docs.docker.com/engine/reference/builder/#dockerignore-file
+
+# the following lists need not be exhaustive but should at least include the worst offenders (i.e., largest directories)
+
+feuwag/build
+feuwag/node_modules
+
+**/.bloop
+**/.metals
+**/target
