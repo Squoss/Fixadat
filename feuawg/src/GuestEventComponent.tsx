@@ -1,9 +1,9 @@
 import React from 'react';
-import { GuestEventt } from './Events';
+import { GuestEventType } from './Events';
 
 
 interface GuestEventProps {
-  event: GuestEventt;
+  event: GuestEventType;
 }
 
 function GuestEvent(props: GuestEventProps) {

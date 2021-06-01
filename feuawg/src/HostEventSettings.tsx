@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { HostEventt, Visibility } from "./Events";
+import { HostEventType, Visibility } from "./Events";
 
 interface HostEventSettingsProps {
-  event: HostEventt;
+  event: HostEventType;
   timeZones: Array<string>;
 }
 

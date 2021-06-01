@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, NavLink, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Abode from './Abode';
-import Event from './Event';
+import EventComponent from './EventComponent';
 import { l10nContext } from './l10nContext';
 import NotFound from './NotFound';
 import ToDo from './ToDo';
@@ -63,7 +63,7 @@ function App(props: {}) {
       <main className="container">
         <Switch>
           <Route exact path="/"><Abode /></Route>
-          <Route path="/events/:event"><Event /></Route>
+          <Route path="/events/:event"><EventComponent /></Route>
           <Route path="/acknowledgements" ><ToDo /></Route>
           <Route exact path="/legalese">
             <Redirect to="/legalese/im" />

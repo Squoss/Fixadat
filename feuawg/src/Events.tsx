@@ -4,7 +4,7 @@ export enum Visibility {
   PRIVATE = "Private"
 }
 
-export interface Eventt {
+export interface EventType {
   id: number;
   guestToken: string;
   name: string;
@@ -18,9 +18,9 @@ export interface Eventt {
   visibility: Visibility;
 }
 
-export interface GuestEventt extends Eventt {
+export interface GuestEventType extends EventType {
 }
 
-export interface HostEventt extends Eventt {
+export interface HostEventType extends EventType {
   hostToken: string
 }

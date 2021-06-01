@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { HostEventt } from './Events';
+import { HostEventType } from './Events';
 import HostEventLinks from './HostEventLinks';
 import HostEventRsvps from './HostEventRsvps';
 import HostEventSettings from './HostEventSettings';
@@ -14,7 +14,7 @@ export enum ACTIVE_TAB {
 }
 
 interface HostEventProps {
-  event: HostEventt;
+  event: HostEventType;
   activeTab: ACTIVE_TAB;
 }
 

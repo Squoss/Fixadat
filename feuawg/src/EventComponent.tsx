@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
-import { Eventt, GuestEventt, HostEventt } from './Events';
+import { EventType, GuestEventType, HostEventType } from './Events';
 import { get } from './fetchJson';
-import GuestEvent from './GuestEvent';
-import HostEvent, { ACTIVE_TAB } from './HostEvent';
+import GuestEventComponent from './GuestEventComponent';
+import HostEventComponent, { ACTIVE_TAB } from './HostEventComponent';
 import NotFound from './NotFound';
 
 
-function Event(props: {}) {
+function EventComponent(props: {}) {
   console.log("Event props: " + JSON.stringify(props));
 
   const location = useLocation();
@@ -19,13 +19,13 @@ function Event(props: {}) {
   const view = useRouteMatch<{id: string; hostish:string}>({path:"/events/:id/:hostish"})?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
   console.debug(view);
 
-  const [event, setEvent] = useState<Eventt | undefined>(undefined);
+  const [event, setEvent] = useState<EventType | undefined>(undefined);
   const [responseStatusCode, setResponseStatusCode] = useState<number>(200);
 
   useEffect(() => {
     const getEvent = async () => {
       try {
-        const responseJson = await get<Eventt>(`/iapi/events/${id}${view !== null ? "?view="+view:""}`, token.substring(1)).then();
+        const responseJson = await get<EventType>(`/iapi/events/${id}${view !== null ? "?view="+view:""}`, token.substring(1)).then();
         console.debug(responseJson.status);
         console.debug(responseJson.parsedBody);
         setResponseStatusCode(responseJson.status);
@@ -64,11 +64,11 @@ function Event(props: {}) {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEvent event={event as GuestEventt} />}
+          {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEventComponent event={event as GuestEventType} />}
         </Route>
-        <Route path="/events/:event/settings"><HostEvent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventt} /></Route>
-        <Route path="/events/:event/RSVPs"><HostEvent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventt} /></Route>
-        <Route path="/events/:event/links"><HostEvent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventt} /></Route>
+        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} /></Route>
+        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} /></Route>
+        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
       </Switch>
@@ -76,4 +76,4 @@ function Event(props: {}) {
   }
 }
 
-export default Event;
+export default EventComponent;
