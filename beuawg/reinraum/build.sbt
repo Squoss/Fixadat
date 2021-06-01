@@ -1,7 +1,7 @@
 scalaVersion := "2.13.6"
 
 libraryDependencies += guice
-libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.12.22"
+libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.12.24"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.18.0" % Test
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.19.0" % Test
