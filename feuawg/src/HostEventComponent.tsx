@@ -18,6 +18,7 @@ interface HostEventProps {
   activeTab: ACTIVE_TAB;
   saveEventText: (name: string, description?: string) => void;
   saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
+  saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
 }
 
 function HostEvent(props: HostEventProps) {
@@ -39,7 +40,7 @@ function HostEvent(props: HostEventProps) {
       content = <HostEventRsvps />;
       break;
     case ACTIVE_TAB.SETTINGS:
-      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} />;
+      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventEaPnP1={props.saveEventEaPnP1} />;
       break;
     default:
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking

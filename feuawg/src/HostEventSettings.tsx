@@ -6,6 +6,7 @@ interface HostEventSettingsProps {
   saveEventText: (name: string, description?: string) => void;
   timeZones: Array<string>;
   saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
+  saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
 }
 
 function tte(s?: string) { // trim to empty
@@ -60,6 +61,19 @@ function HostEventSettings(props: HostEventSettingsProps) {
   const saveSchedule = () => {
     setEditSchedule(false);
     props.saveEventSchedule(ttu(date), ttu(time), ttu(timeZone));
+  }
+
+  const cancelEaPnP1 = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setEditEaPnP1(false);
+    setEmailAddressRequired(props.event.emailAddressRequired);
+    setPhoneNumberRequired(props.event.phoneNumberRequired);
+    setPlus1Allowed(props.event.plus1Allowed);
+  }
+
+  const saveEaPnP1 = () => {
+    setEditEaPnP1(false);
+    props.saveEventEaPnP1(emailAddressRequired, phoneNumberRequired, plus1Allowed);
   }
 
   return (
@@ -136,8 +150,8 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editEaPnP1 ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={() => setEditEaPnP1(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => setEditEaPnP1(false)} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelEaPnP1}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveEaPnP1} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>Save</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditEaPnP1(true); }}><i className="bi bi-pencil-square"></i></button>

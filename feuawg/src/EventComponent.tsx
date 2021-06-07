@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import { EventType, GuestEventType, HostEventType } from './Events';
-import { get, put } from './fetchJson';
+import { get, patch, put } from './fetchJson';
 import GuestEventComponent from './GuestEventComponent';
 import HostEventComponent, { ACTIVE_TAB } from './HostEventComponent';
 import NotFound from './NotFound';
@@ -59,13 +59,28 @@ function EventComponent(props: {}) {
   
   const saveEventSchedule = async (date?: string, time?: string, timeZone?: string) => {
     try {
-      const body = {date, time, timeZone};
-      const responseJson = await put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1),body).then();
+      const body = { date, time, timeZone };
+      const responseJson = await put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1), body).then();
       console.debug(responseJson.status);
       if (responseJson.status !== 204) {
         alert(responseJson.status);
       } else {
         setEvent({...event,date,time,timeZone} as EventType)
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const saveEventEaPnP1 = async (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => {
+    try {
+      const body = { emailAddressRequired, phoneNumberRequired, plus1Allowed };
+      const responseJson = await patch<EventType>(`/iapi/events/${id}`, token.substring(1), body).then();
+      console.debug(responseJson.status);
+      if (responseJson.status !== 204) {
+        alert(responseJson.status);
+      } else {
+        setEvent({...event,emailAddressRequired,phoneNumberRequired,plus1Allowed} as EventType)
       }
     } catch (error) {
       console.error(error);
@@ -98,9 +113,9 @@ function EventComponent(props: {}) {
         <Route exact path="/events/:event">
           {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEventComponent event={event as GuestEventType} />}
         </Route>
-        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} /></Route>
-        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} /></Route>
-        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} /></Route>
+        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventEaPnP1={saveEventEaPnP1} /></Route>
+        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventEaPnP1={saveEventEaPnP1} /></Route>
+        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventEaPnP1={saveEventEaPnP1} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
       </Switch>

@@ -25,10 +25,19 @@ export async function get<T>(path: string, accessToken: string, args: RequestIni
   return await fetchJson<T>(new Request(path, args));
 }
 
+export async function patch<T>(
+  path: string,
+  accessToken: string,
+  body: any,
+  args: RequestInit = { method: "PATCH", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
+): Promise<HttpResponse<T>> {
+  return await fetchJson<T>(new Request(path, args));
+}
+
 export async function post<T>(
   path: string,
   body: any,
-  args: RequestInit = { method: "post", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json" } },
+  args: RequestInit = { method: "POST", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json" } },
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }
@@ -37,7 +46,7 @@ export async function put<T>(
   path: string,
   accessToken: string,
   body: any,
-  args: RequestInit = { method: "put", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
+  args: RequestInit = { method: "PUT", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }
