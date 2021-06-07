@@ -13,7 +13,7 @@ function GuestEvent(props: GuestEventProps) {
   return (
     <React.Fragment>
       <h1>{name}</h1>
-      <p>{description !== undefined ? description : ""}</p>
+      {description?.split('\n').map(line => <p>{line}</p>)}
       <mark>To Do</mark>
     </React.Fragment>
   );

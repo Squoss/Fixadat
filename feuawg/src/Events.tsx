@@ -8,10 +8,10 @@ export interface EventType {
   id: number;
   guestToken: string;
   name: string;
-  description: string | undefined;
-  date: string | undefined;
-  time: string | undefined;
-  timeZone: string | undefined;
+  description?: string;
+  date?: string;
+  time?: string;
+  timeZone?: string;
   emailAddressRequired: boolean;
   phoneNumberRequired: boolean;
   plus1Allowed: boolean;

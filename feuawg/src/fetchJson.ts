@@ -35,8 +35,9 @@ export async function post<T>(
 
 export async function put<T>(
   path: string,
+  accessToken: string,
   body: any,
-  args: RequestInit = { method: "put", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json" } },
+  args: RequestInit = { method: "put", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }

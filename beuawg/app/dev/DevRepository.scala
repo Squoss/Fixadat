@@ -29,6 +29,7 @@ import domain.event_sourcing.VeranstaltungEvent
 import domain.event_sourcing.VeranstaltungPublishedEvent
 import domain.persistence.Repository
 import domain.value_objects.Id
+import play.api.Logging
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,7 +39,8 @@ import scala.concurrent.Future
 
 @Singleton
 class DevRepository @Inject() (implicit ec: ExecutionContext)
-    extends Repository {
+    extends Repository
+    with Logging {
 
   private val eventsLog =
     mutable.Map[Id, mutable.Buffer[VeranstaltungEvent]]()
@@ -52,6 +54,8 @@ class DevRepository @Inject() (implicit ec: ExecutionContext)
     }
 
   override def logEvent(event: VeranstaltungEvent): Future[Unit] = {
+    logger.warn(s"adding event ${event}")
+
     eventsLog(event.id) += event
     Future(())
   }

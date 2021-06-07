@@ -3,7 +3,17 @@ import { HostEventType, Visibility } from "./Events";
 
 interface HostEventSettingsProps {
   event: HostEventType;
+  saveEventText: (name: string, description?: string) => void;
   timeZones: Array<string>;
+  saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
+}
+
+function tte(s?: string) { // trim to empty
+  return s === undefined ? "" : s.trim();
+}
+
+function ttu(s?: string) { // trim to undefined
+  return s === undefined || s.trim() === "" ? undefined : s.trim();
 }
 
 function HostEventSettings(props: HostEventSettingsProps) {
@@ -11,12 +21,12 @@ function HostEventSettings(props: HostEventSettingsProps) {
 
   const [editText, setEditText] = useState(false);
   const [name, setName] = useState(props.event.name);
-  const [description, setDescription] = useState(props.event.description);
+  const [description, setDescription] = useState(tte(props.event.description));
 
   const [editSchedule, setEditSchedule] = useState(false);
-  const [date, setDate] = useState(props.event.date);
-  const [time, setTime] = useState(props.event.time);
-  const [timeZone, setTimeZone] = useState<string>(props.event.timeZone === undefined ? "" : props.event.timeZone);
+  const [date, setDate] = useState(tte(props.event.date));
+  const [time, setTime] = useState(tte(props.event.time));
+  const [timeZone, setTimeZone] = useState(tte(props.event.timeZone));
   const timeZones = props.timeZones.map((tz) => <option key={tz} value={tz}>{tz}</option>);
 
   const [editEaPnP1, setEditEaPnP1] = useState(false);
@@ -26,6 +36,31 @@ function HostEventSettings(props: HostEventSettingsProps) {
 
   const [editVisibility, setEditVisibility] = useState(false);
   const [visibility, setVisibility] = useState<Visibility>(props.event.visibility);
+
+  const cancelText = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setEditText(false);
+    setName(props.event.name);
+    setDescription(tte(props.event.description));
+  }
+
+  const saveText = () => {
+    setEditText(false);
+    props.saveEventText(name.trim(), ttu(description));
+  }
+
+  const cancelSchedule = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setEditSchedule(false);
+    setDate(tte(props.event.date));
+    setTime(tte(props.event.time));
+    setTimeZone(tte(props.event.timeZone));
+  }
+
+  const saveSchedule = () => {
+    setEditSchedule(false);
+    props.saveEventSchedule(ttu(date), ttu(time), ttu(timeZone));
+  }
 
   return (
     <form className="d-grid gap-4">
@@ -43,12 +78,12 @@ function HostEventSettings(props: HostEventSettingsProps) {
         </div>
         <div className="card-footer">
           {editText ?
-            <React.Fragment>
-              <button className="btn btn-secondary" onClick={() => setEditText(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => setEditText(false)} disabled={name.trim() === "" || props.event.name === name && props.event.description === description}>Save</button>
-            </React.Fragment>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button className="btn btn-secondary" onClick={cancelText}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveText} disabled={name === "" || props.event.name === name && tte(props.event.description) === description}>Save</button>
+            </div>
             :
-            <button className="btn btn-light" onClick={() => setEditText(true)}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditText(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -73,12 +108,12 @@ function HostEventSettings(props: HostEventSettingsProps) {
         </div>
         <div className="card-footer">
           {editSchedule ?
-            <React.Fragment>
-              <button className="btn btn-secondary" onClick={() => setEditSchedule(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => setEditSchedule(false)} disabled={props.event.date === date && props.event.time === time && (props.event.timeZone === timeZone || props.event.timeZone === undefined && timeZone === "")}>Save</button>
-            </React.Fragment>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button className="btn btn-secondary" onClick={cancelSchedule}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveSchedule} disabled={tte(props.event.date) === date && tte(props.event.time) === time && tte(props.event.timeZone) === timeZone}>Save</button>
+            </div>
             :
-            <button className="btn btn-light" onClick={() => setEditSchedule(true)}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditSchedule(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -100,12 +135,12 @@ function HostEventSettings(props: HostEventSettingsProps) {
         </div>
         <div className="card-footer">
           {editEaPnP1 ?
-            <React.Fragment>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button className="btn btn-secondary" onClick={() => setEditEaPnP1(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={() => setEditEaPnP1(false)} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>Save</button>
-            </React.Fragment>
+            </div>
             :
-            <button className="btn btn-light" onClick={() => setEditEaPnP1(true)}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditEaPnP1(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -120,16 +155,16 @@ function HostEventSettings(props: HostEventSettingsProps) {
         </div>
         <div className="card-footer">
           {editVisibility ?
-            <React.Fragment>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button className="btn btn-secondary" onClick={() => setEditVisibility(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={() => setEditVisibility(false)} disabled={props.event.visibility === visibility}>Save</button>
-            </React.Fragment>
+            </div>
             :
-            <button className="btn btn-light" onClick={() => setEditVisibility(true)}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditVisibility(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
-    </form>
+    </form >
   );
 }
 
