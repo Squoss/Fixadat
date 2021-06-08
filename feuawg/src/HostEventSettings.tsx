@@ -7,6 +7,7 @@ interface HostEventSettingsProps {
   timeZones: Array<string>;
   saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
   saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
+  saveEventVisibility: (visibility: Visibility) => void;
 }
 
 function tte(s?: string) { // trim to empty
@@ -74,6 +75,17 @@ function HostEventSettings(props: HostEventSettingsProps) {
   const saveEaPnP1 = () => {
     setEditEaPnP1(false);
     props.saveEventEaPnP1(emailAddressRequired, phoneNumberRequired, plus1Allowed);
+  }
+
+  const cancelVisibility = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setEditVisibility(false);
+    setVisibility(props.event.visibility); 
+  }
+
+  const saveVisibility = () => {
+    setEditVisibility(false);
+    props.saveEventVisibility(visibility);
   }
 
   return (
@@ -170,8 +182,8 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editVisibility ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={() => setEditVisibility(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => setEditVisibility(false)} disabled={props.event.visibility === visibility}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelVisibility}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveVisibility} disabled={props.event.visibility === visibility}>Save</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditVisibility(true); }}><i className="bi bi-pencil-square"></i></button>
