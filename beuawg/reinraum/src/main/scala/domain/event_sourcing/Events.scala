@@ -28,6 +28,7 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
+import domain.value_objects.Geo
 import domain.value_objects.Id
 
 import java.net.URL
@@ -77,7 +78,7 @@ final case class VeranstaltungRescheduledEvent(
 final case class VeranstaltungRelocatedEvent(
     id: Id,
     url: Option[URL],
-    place: Option[String], // FIXME
+    geo: Option[Geo],
     occurred: Instant
 ) extends VeranstaltungEvent {
 

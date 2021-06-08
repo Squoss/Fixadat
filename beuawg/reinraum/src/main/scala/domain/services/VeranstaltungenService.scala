@@ -41,6 +41,7 @@ import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error._
+import domain.value_objects.Geo
 import domain.value_objects.GuestVeranstaltung
 import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
@@ -127,7 +128,7 @@ class VeranstaltungenService @Inject() (implicit
                   veranstaltung.time,
                   veranstaltung.timeZone,
                   veranstaltung.url,
-                  veranstaltung.place,
+                  veranstaltung.geo,
                   veranstaltung.emailAddressRequired,
                   veranstaltung.phoneNumberRequired,
                   veranstaltung.plus1Allowed,
@@ -184,7 +185,7 @@ class VeranstaltungenService @Inject() (implicit
                 veranstaltung.time,
                 veranstaltung.timeZone,
                 veranstaltung.url,
-                veranstaltung.place,
+                veranstaltung.geo,
                 veranstaltung.emailAddressRequired,
                 veranstaltung.phoneNumberRequired,
                 veranstaltung.plus1Allowed,
@@ -261,20 +262,20 @@ class VeranstaltungenService @Inject() (implicit
       id: Id,
       token: AccessToken,
       url: Option[URL],
-      place: Option[String] // FIXME
+      geo: Option[Geo]
   ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
-        else if (veranstaltung.url == url && veranstaltung.place == place) {
+        else if (veranstaltung.url == url && veranstaltung.geo == geo) {
           Right(false)
         } else {
           repository.logEvent(
             VeranstaltungRelocatedEvent(
               id,
               url,
-              place,
+              geo,
               Instant.now()
             )
           )

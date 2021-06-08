@@ -36,6 +36,7 @@ import domain.event_sourcing.VeranstaltungRescheduledEvent
 import domain.event_sourcing.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
+import domain.value_objects.Geo
 import domain.value_objects.Id
 import domain.value_objects.Rsvp
 import domain.value_objects.Visibility._
@@ -58,7 +59,7 @@ final class Veranstaltung private (
     var time: Option[LocalTime],
     var timeZone: Option[TimeZone],
     var url: Option[URL],
-    var place: Option[String],
+    var geo: Option[Geo],
     var emailAddressRequired: Boolean,
     var phoneNumberRequired: Boolean,
     var plus1Allowed: Boolean,
@@ -91,8 +92,8 @@ final class Veranstaltung private (
               _
             ) =>
           this.date = date; this.time = time; this.timeZone = timeZone
-        case VeranstaltungRelocatedEvent(_, url, place, _) =>
-          this.url = url; this.place = place
+        case VeranstaltungRelocatedEvent(_, url, geo, _) =>
+          this.url = url; this.geo = geo
         case VeranstaltungRecalibratedEvent(
               _,
               emailAddressRequired,
@@ -135,7 +136,7 @@ object Veranstaltung {
       time: Option[LocalTime],
       timeZone: Option[TimeZone],
       url: Option[URL],
-      place: Option[String],
+      geo: Option[Geo],
       emailAddressRequired: Boolean,
       phoneNumberRequired: Boolean,
       plus1Allowed: Boolean,
@@ -156,7 +157,7 @@ object Veranstaltung {
       time,
       timeZone,
       url,
-      place,
+      geo,
       emailAddressRequired,
       phoneNumberRequired,
       plus1Allowed,

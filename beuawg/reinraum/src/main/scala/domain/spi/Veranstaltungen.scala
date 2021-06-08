@@ -31,6 +31,7 @@ import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error._
+import domain.value_objects.Geo
 import domain.value_objects.GuestVeranstaltung
 import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
@@ -77,7 +78,7 @@ trait Veranstaltungen {
       id: Id,
       token: AccessToken,
       url: Option[URL],
-      place: Option[String] // FIXME
+      geo: Option[Geo]
   ): Future[Either[Error, Boolean]]
 
   def recalibrateVeranstaltung(

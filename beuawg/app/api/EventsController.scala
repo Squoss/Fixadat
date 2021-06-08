@@ -208,7 +208,7 @@ class EventsController @Inject() (implicit
               event,
               AccessToken(accessToken),
               request.body.url,
-              request.body.place
+              request.body.geo
             )
             .map(
               _.fold(

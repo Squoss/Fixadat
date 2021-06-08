@@ -30,6 +30,7 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
+import domain.value_objects.Geo
 import domain.value_objects.GuestVeranstaltung
 import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
@@ -53,7 +54,7 @@ case class Schedule(
     time: Option[LocalTime],
     timeZone: Option[TimeZone]
 )
-case class Location(url: Option[URL], place: Option[String]) // FIXME
+case class Location(url: Option[URL], geo: Option[Geo])
 case class Calibration(
     emailAddressRequired: Option[Boolean],
     phoneNumberRequired: Option[Boolean],
@@ -111,6 +112,10 @@ object TransferObjects {
     def writes(url: URL): JsValue = JsString(url.toString)
   }
   implicit val urlFormat: Format[URL] = Format(urlReads, urlWrites)
+  
+  implicit val geoVeranstaltungReads = Json.reads[Geo]
+  implicit val geoVeranstaltunglWrites = Json.writes[Geo]
+  implicit val geoVeranstaltungFormat = Json.format[Geo]
 
   implicit val veReads = new Reads[Visibility] {
     def reads(json: JsValue): JsResult[Visibility] = Try(
