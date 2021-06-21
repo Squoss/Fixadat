@@ -1,5 +1,6 @@
 import React from 'react';
 import { GuestEventType } from './Events';
+import MapDisplayClass from './MapDisplayClass';
 
 
 interface GuestEventProps {
@@ -14,7 +15,7 @@ function GuestEvent(props: GuestEventProps) {
     <React.Fragment>
       <h1>{name}</h1>
       {description?.split('\n').map(line => <p>{line}</p>)}
-      <mark>To Do</mark>
+      <MapDisplayClass value={props.event.geo}/>
     </React.Fragment>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { HostEventType, Visibility } from './Events';
+import { Geo, HostEventType, Visibility } from './Events';
 import HostEventLinks from './HostEventLinks';
 import HostEventRsvps from './HostEventRsvps';
 import HostEventSettings from './HostEventSettings';
@@ -20,6 +20,7 @@ interface HostEventProps {
   saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
   saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
   saveEventVisibility: (visibility: Visibility) => void;
+  saveEventLocation: (url?: string, location?: Geo) => void;
 }
 
 function HostEvent(props: HostEventProps) {
@@ -41,7 +42,7 @@ function HostEvent(props: HostEventProps) {
       content = <HostEventRsvps />;
       break;
     case ACTIVE_TAB.SETTINGS:
-      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
+      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
       break;
     default:
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking

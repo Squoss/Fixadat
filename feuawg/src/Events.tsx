@@ -1,3 +1,9 @@
+export interface Geo {
+  name?: string;
+  longitude: number;
+  latitude: number;
+}
+
 export enum Visibility {
   PUBLIC = "Public",
   PROTECTED = "Protected",
@@ -12,6 +18,8 @@ export interface EventType {
   date?: string;
   time?: string;
   timeZone?: string;
+  url?: string;
+  geo?: Geo;
   emailAddressRequired: boolean;
   phoneNumberRequired: boolean;
   plus1Allowed: boolean;
@@ -22,5 +30,7 @@ export interface GuestEventType extends EventType {
 }
 
 export interface HostEventType extends EventType {
-  hostToken: string
+  created: Date;
+  hostToken: string;
+  updated: Date;
 }

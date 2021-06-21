@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { HostEventType, Visibility } from "./Events";
+import { Geo, HostEventType, Visibility } from "./Events";
+import MapSearchClass from "./MapSearchClass";
 
 interface HostEventSettingsProps {
   event: HostEventType;
@@ -8,6 +9,7 @@ interface HostEventSettingsProps {
   saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
   saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
   saveEventVisibility: (visibility: Visibility) => void;
+  saveEventLocation: (url?: string, location?: Geo) => void;
 }
 
 function tte(s?: string) { // trim to empty
@@ -30,6 +32,10 @@ function HostEventSettings(props: HostEventSettingsProps) {
   const [time, setTime] = useState(tte(props.event.time));
   const [timeZone, setTimeZone] = useState(tte(props.event.timeZone));
   const timeZones = props.timeZones.map((tz) => <option key={tz} value={tz}>{tz}</option>);
+
+  const [editLocation, setEditLocation] = useState(false);
+  const [url, setUrl] = useState(props.event.url);
+  const [geo, setGeo] = useState(props.event.geo);
 
   const [editEaPnP1, setEditEaPnP1] = useState(false);
   const [emailAddressRequired, setEmailAddressRequired] = useState(props.event.emailAddressRequired);
@@ -64,6 +70,18 @@ function HostEventSettings(props: HostEventSettingsProps) {
     props.saveEventSchedule(ttu(date), ttu(time), ttu(timeZone));
   }
 
+  const cancelLocation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setEditLocation(false);
+    setUrl(props.event.url);
+    setGeo(props.event.geo);
+  }
+
+  const saveLocation = () => {
+    setEditLocation(false);
+    props.saveEventLocation(url, geo);
+  }
+
   const cancelEaPnP1 = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setEditEaPnP1(false);
@@ -80,7 +98,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
   const cancelVisibility = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setEditVisibility(false);
-    setVisibility(props.event.visibility); 
+    setVisibility(props.event.visibility);
   }
 
   const saveVisibility = () => {
@@ -140,6 +158,26 @@ function HostEventSettings(props: HostEventSettingsProps) {
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditSchedule(true); }}><i className="bi bi-pencil-square"></i></button>
+          }
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">Location</h5>
+          <div>
+            <label htmlFor="mapSearchClass" className="form-label">Geo</label>
+            <MapSearchClass disabled={!editLocation} value={geo} setValue={setGeo} />
+          </div>
+        </div>
+        <div className="card-footer">
+          {editLocation ?
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button className="btn btn-secondary" onClick={cancelLocation}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveLocation} disabled={props.event.url === url && props.event.geo?.name === geo?.name && props.event.geo?.longitude
+                === geo?.longitude && props.event.geo?.latitude === geo?.latitude}>Save</button>
+            </div>
+            :
+            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditLocation(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
