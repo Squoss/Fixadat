@@ -24,6 +24,7 @@
 
 package api
 
+import play.api.Configuration
 import play.api.Environment
 import play.api.i18n.I18nSupport
 import play.api.i18n.Lang
@@ -42,6 +43,7 @@ import scala.io.Source
 
 @Singleton
 class HomeController @Inject() (
+    val config: Configuration,
     val controllerComponents: ControllerComponents,
     val env: Environment
 ) extends BaseController
@@ -53,7 +55,10 @@ class HomeController @Inject() (
     close = () => is.close()
   )(Codec.UTF8)
   val stringBuilder = bufferedSource.addString(new StringBuilder())
-  val string = stringBuilder.mkString
+  val string = stringBuilder.mkString.replace(
+    "REPLACE_HERE_API_KEY",
+    config.get[String]("here.api.key")
+  )
 
   def index() = Action { implicit request: Request[AnyContent] =>
     val token =
