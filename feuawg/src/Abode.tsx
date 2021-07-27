@@ -30,7 +30,7 @@ function Abode(props: {}) {
 
   const handlePostEvent = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    Modal.getInstance(document.getElementById('postEventModal')!).hide();
+    Modal.getInstance(document.getElementById('postEventModal')!)!.hide();
     postEvent();
   };
 
