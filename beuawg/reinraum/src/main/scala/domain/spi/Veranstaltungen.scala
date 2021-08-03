@@ -43,6 +43,7 @@ import java.time.ZoneId
 import java.util.TimeZone
 import java.util.UUID
 import scala.concurrent.Future
+import java.util.Locale
 
 trait Veranstaltungen {
 
@@ -112,9 +113,18 @@ trait Veranstaltungen {
   def rsvp(
       id: Id,
       token: AccessToken,
+      locale: Locale,
       name: String,
       emailAddress: Option[EmailAddress],
       phoneNumber: Option[PhoneNumber],
       attendance: Attendance
+  ): Future[Either[Error, Unit]]
+
+  def sendLinksReminder(
+      id: Id,
+      token: AccessToken,
+      locale: Locale,
+      emailAddress: Option[EmailAddress],
+      phoneNumber: Option[PhoneNumber]
   ): Future[Either[Error, Unit]]
 }

@@ -24,6 +24,7 @@
 
 package dev
 
+import play.api.Logging
 import thirdparty_apis.Webhooks
 
 import java.net.URL
@@ -31,9 +32,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class DevWebhooks @Inject() (implicit ec: ExecutionContext) extends Webhooks {
+class DevWebhooks @Inject() (implicit ec: ExecutionContext)
+    extends Webhooks
+    with Logging {
 
-  def notify(webhook: URL, text: String): Future[Unit] = Future(
-    System.out.println(s"$webhook <= $text")
+  override def notify(webhook: URL, text: String): Future[Unit] = Future(
+    logger.warn(s"$webhook <= $text")
   )
 }

@@ -11,6 +11,7 @@ POST    /iapi/events                       api.EventsController.postEvent()
 # cf. "AnyVal wrappers for other supported types" at "https://www.playframework.com/documentation/latest/ScalaRouting#Parameter-types
 # timeZone could also be mapped to a ZoneId by Play: https://www.playframework.com/documentation/latest/ScalaRequestBinders#QueryStringBindable
 GET     /iapi/events/:event                api.EventsController.getEvent(event: domain.value_objects.Id, view: String ?= "guest", timeZone: Option[String])
+POST    /iapi/events/:event/reminders      api.EventsController.sendLinksReminder(event: domain.value_objects.Id)
 PUT     /iapi/events/:event/visibility     api.EventsController.putEventVisibility(event: domain.value_objects.Id)
 PUT     /iapi/events/:event/text           api.EventsController.putEventText(event: domain.value_objects.Id)
 PUT     /iapi/events/:event/schedule       api.EventsController.putEventSchedule(event: domain.value_objects.Id)

@@ -52,12 +52,14 @@ import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+import play.api.i18n.I18nSupport
 
 class EventsController @Inject() (implicit
     ec: ExecutionContext,
     val controllerComponents: ControllerComponents,
     val events: Veranstaltungen
-) extends BaseController {
+) extends BaseController
+    with I18nSupport {
 
   def postEvent() = Action.async {
 
@@ -267,6 +269,7 @@ class EventsController @Inject() (implicit
           .rsvp(
             event,
             AccessToken(accessToken),
+            request.lang.locale,
             request.body.name,
             request.body.emailAddress,
             request.body.phoneNumber,
@@ -280,5 +283,27 @@ class EventsController @Inject() (implicit
           )
       case Failure(exception) => Future(Forbidden(exception.getMessage))
     }
+  }
+
+  def sendLinksReminder(event: Id) = Action.async(validateJson[LinksReminderRecipient]) {
+    request =>
+      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+        case Success(accessToken) =>
+          events
+            .sendLinksReminder(
+              event,
+              AccessToken(accessToken),
+              request.lang.locale,
+              request.body.emailAddress,
+              request.body.phoneNumber
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
+      }
   }
 }

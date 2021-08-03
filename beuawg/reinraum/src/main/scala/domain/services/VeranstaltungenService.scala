@@ -46,6 +46,8 @@ import domain.value_objects.GuestVeranstaltung
 import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
 import domain.value_objects.Visibility._
+import thirdparty_apis.Email
+import thirdparty_apis.Sms
 import thirdparty_apis.Webhooks
 
 import java.net.URL
@@ -55,6 +57,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Locale
 import java.util.TimeZone
 import java.util.UUID
 import javax.inject.Inject
@@ -64,6 +67,8 @@ import scala.concurrent.Future
 class VeranstaltungenService @Inject() (implicit
     ec: ExecutionContext,
     repository: Repository,
+    email: Email,
+    sms: Sms,
     webhooks: Webhooks
 ) extends Veranstaltungen {
 
@@ -398,6 +403,7 @@ class VeranstaltungenService @Inject() (implicit
   override def rsvp(
       id: Id,
       token: AccessToken,
+      locale: Locale,
       name: String,
       emailAddress: Option[EmailAddress],
       phoneNumber: Option[PhoneNumber],
@@ -430,6 +436,25 @@ class VeranstaltungenService @Inject() (implicit
           )
           veranstaltung.webhook
             .foreach(webhooks.notify(_, "TODO")) // fire & forget
+          Right(())
+        }
+      )
+  )
+
+  override def sendLinksReminder(
+      id: Id,
+      token: AccessToken,
+      locale: Locale,
+      emailAddress: Option[EmailAddress],
+      phoneNumber: Option[PhoneNumber]
+  ): Future[Either[Error, Unit]] = readVeranstaltung(id).map(
+    _.map(Right(_))
+      .getOrElse(Left(NotFound))
+      .flatMap(veranstaltung =>
+        if (veranstaltung.hostToken != token) { Left(AccessDenied) }
+        else {
+          emailAddress.foreach(ea => email.send(ea, "TODO", "TODO"))
+          phoneNumber.foreach(pn => sms.send(pn, "TODO"))
           Right(())
         }
       )

@@ -22,38 +22,22 @@
  * THE SOFTWARE.
  */
 
-import com.google.inject.AbstractModule
-import dev.DevEmail
-import dev.DevRepository
-import dev.DevSms
-import dev.DevWebhooks
-import domain.persistence.Repository
-import domain.services.VeranstaltungenService
-import domain.spi.Veranstaltungen
-import mongodb.Mdb
-import play.api.Configuration
-import play.api.Environment
-import play.api.Mode
-import thirdparty_apis.Email
+package dev
+
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import play.api.Logging
 import thirdparty_apis.Sms
-import thirdparty_apis.Webhooks
 
-class Module(
-    env: Environment,
-    config: Configuration
-) extends AbstractModule {
-  override def configure() = {
+import java.net.URL
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
-    if (env.mode == Mode.Dev && config.get[Boolean]("mongodb.dev")) {
-      bind(classOf[Repository]).to(classOf[DevRepository])
-      bind(classOf[Email]).to(classOf[DevEmail])
-      bind(classOf[Sms]).to(classOf[DevSms])
-      bind(classOf[Webhooks]).to(classOf[DevWebhooks])
-    } else {
-      // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
-      bind(classOf[Mdb]).asEagerSingleton
-    }
+class DevSms @Inject() (implicit ec: ExecutionContext)
+    extends Sms
+    with Logging {
 
-    bind(classOf[Veranstaltungen]).to(classOf[VeranstaltungenService])
-  }
+  override def send(to: PhoneNumber, text: String): Future[Unit] = Future(
+    logger.warn(s"Text to $to <= $text")
+  )
 }

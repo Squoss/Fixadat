@@ -22,38 +22,14 @@
  * THE SOFTWARE.
  */
 
-import com.google.inject.AbstractModule
-import dev.DevEmail
-import dev.DevRepository
-import dev.DevSms
-import dev.DevWebhooks
-import domain.persistence.Repository
-import domain.services.VeranstaltungenService
-import domain.spi.Veranstaltungen
-import mongodb.Mdb
-import play.api.Configuration
-import play.api.Environment
-import play.api.Mode
-import thirdparty_apis.Email
-import thirdparty_apis.Sms
-import thirdparty_apis.Webhooks
+package thirdparty_apis
 
-class Module(
-    env: Environment,
-    config: Configuration
-) extends AbstractModule {
-  override def configure() = {
+import domain.value_objects.EmailAddress
 
-    if (env.mode == Mode.Dev && config.get[Boolean]("mongodb.dev")) {
-      bind(classOf[Repository]).to(classOf[DevRepository])
-      bind(classOf[Email]).to(classOf[DevEmail])
-      bind(classOf[Sms]).to(classOf[DevSms])
-      bind(classOf[Webhooks]).to(classOf[DevWebhooks])
-    } else {
-      // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
-      bind(classOf[Mdb]).asEagerSingleton
-    }
+import java.net.URL
+import scala.concurrent.Future
 
-    bind(classOf[Veranstaltungen]).to(classOf[VeranstaltungenService])
-  }
+trait Email {
+
+  def send(to: EmailAddress, subject: String, plainText: String): Future[Unit]
 }

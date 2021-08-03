@@ -61,6 +61,11 @@ case class Calibration(
     plus1Allowed: Option[Boolean]
 )
 
+case class LinksReminderRecipient(
+    emailAddress: Option[EmailAddress],
+    phoneNumber: Option[PhoneNumber]
+)
+
 object TransferObjects {
 
   implicit val idReads = new Reads[Id] {
@@ -112,7 +117,7 @@ object TransferObjects {
     def writes(url: URL): JsValue = JsString(url.toString)
   }
   implicit val urlFormat: Format[URL] = Format(urlReads, urlWrites)
-  
+
   implicit val geoVeranstaltungReads = Json.reads[Geo]
   implicit val geoVeranstaltunglWrites = Json.writes[Geo]
   implicit val geoVeranstaltungFormat = Json.format[Geo]
@@ -194,4 +199,6 @@ object TransferObjects {
   implicit val scheduleReads = Json.reads[Schedule]
   implicit val locationReads = Json.reads[Location]
   implicit val calibrationReads = Json.reads[Calibration]
+
+  implicit val linksReminderRecipient = Json.reads[LinksReminderRecipient]
 }
