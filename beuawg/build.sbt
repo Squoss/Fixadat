@@ -21,10 +21,10 @@ lazy val reinraum = project
 scalaVersion := "2.13.6"
 
 libraryDependencies += guice
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.2.3"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.3.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.20.0" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.20.1" % Test
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
