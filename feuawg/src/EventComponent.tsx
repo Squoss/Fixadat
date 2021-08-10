@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import { EventType, Geo, GuestEventType, HostEventType, Visibility } from './Events';
-import { get, patch, put } from './fetchJson';
+import { get, patch, post, put } from './fetchJson';
 import GuestEventComponent from './GuestEventComponent';
 import HostEventComponent, { ACTIVE_TAB } from './HostEventComponent';
 import NotFound from './NotFound';
@@ -11,12 +11,12 @@ function EventComponent(props: {}) {
   console.log("Event props: " + JSON.stringify(props));
 
   const location = useLocation();
-  const id = useRouteMatch<{id: string}>({path:"/events/:id"})!.params.id;
+  const id = useRouteMatch<{ id: string }>({ path: "/events/:id" })!.params.id;
   console.debug(id);
   const token = location.hash;
   console.debug(token);
   const brandNew = new URLSearchParams(location.search).has("brandNew");
-  const view = useRouteMatch<{id: string; hostish:string}>({path:"/events/:id/:hostish"})?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
+  const view = useRouteMatch<{ id: string; hostish: string }>({ path: "/events/:id/:hostish" })?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
   console.debug(view);
 
   const [event, setEvent] = useState<EventType | undefined>(undefined);
@@ -25,11 +25,11 @@ function EventComponent(props: {}) {
   useEffect(() => {
     const getEvent = async () => {
       try {
-        const responseJson = await get<EventType>(`/iapi/events/${id}${view !== null ? "?view="+view:""}`, token.substring(1)).then();
+        const responseJson = await get<EventType>(`/iapi/events/${id}${view !== null ? "?view=" + view : ""}`, token.substring(1)).then();
         console.debug(responseJson.status);
         console.debug(responseJson.parsedBody);
         setResponseStatusCode(responseJson.status);
-        if (responseJson.status === 200 ) {
+        if (responseJson.status === 200) {
           setEvent(responseJson.parsedBody);
         }
       } catch (error) {
@@ -43,8 +43,8 @@ function EventComponent(props: {}) {
 
   const saveEventText = async (name: string, description?: string) => {
     try {
-      const body = {name, description};
-      const responseJson = await put<EventType>(`/iapi/events/${id}/text`, token.substring(1),body).then();
+      const body = { name, description };
+      const responseJson = await put<EventType>(`/iapi/events/${id}/text`, token.substring(1), body).then();
       console.debug(responseJson.status);
       if (responseJson.status !== 204) {
         alert(responseJson.status);
@@ -116,6 +116,19 @@ function EventComponent(props: {}) {
     }
   }
 
+  const sendLinksReminder = async (emailAddress?: string, phoneNumber?: string) => {
+    try {
+      const body = { emailAddress, phoneNumber };
+      const responseJson = await post<void>(`/iapi/events/${id}/reminders`, token.substring(1), body).then();
+      console.debug(responseJson.status);
+      if (responseJson.status !== 204) {
+        alert(responseJson.status);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   if (token === "") {
     return (<p>Dude, where's my token?!</p>);
   }
@@ -125,26 +138,26 @@ function EventComponent(props: {}) {
       <div className="spinner-border" role="status">
         <span className="visually-hidden">Loading...</span>
       </div>);
-  } else if (responseStatusCode!== 200 ){
-    switch(responseStatusCode){
+  } else if (responseStatusCode !== 200) {
+    switch (responseStatusCode) {
       case 403:
         return (<p>Forbidden</p>);
       case 404:
         return (<p>Not Found</p>);
-        case 410:
-          return (<p>Gone</p>);
-          default:
+      case 410:
+        return (<p>Gone</p>);
+      default:
         return (<p>{responseStatusCode}</p>);
     }
   } else {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? ( brandNew?<Redirect to={`/events/${id}/links?brandNew=true${token}`} />:<Redirect to={`/events/${id}/RSVPs${token}`} /> ): <GuestEventComponent event={event as GuestEventType} />}
+          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} />}
         </Route>
-        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} /></Route>
-        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} /></Route>
-        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} /></Route>
+        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
+        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
+        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
       </Switch>

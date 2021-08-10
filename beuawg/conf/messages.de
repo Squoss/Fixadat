@@ -20,8 +20,10 @@ repliesPageCreated = Antworten-Seite erstellt!
 
 links.guests = Kopieren und fügen Sie den folgenden Link in die Einladung ein:
 links.meta = Denken Sie daran, wenigstens das Datum & die Zeit sowie die Örtlichkeit durchzusehen, bevor Ihre Gäste ihre Einladung erhalten.
-links.hosts = Kopieren und teilen Sie den folgenden Link nur mit weiteren Gastgebern:
-links.kiss = Verlieren Sie ihn nicht!
+links.hosts = Teilen Sie den folgenden Link nur mit weiteren Gastgebern:
+links.reminderTo = Schicken Sie ihn sich selbst per …
+links.byEmail = … E-Mail
+links.bySms = … SMS
 
 reloadNotice = Eine neue Version von Squawg ist verfügbar.
 reloadLink = Squawg neu laden!

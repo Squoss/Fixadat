@@ -228,7 +228,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
           }
         </div>
       </div>
-    </form >
+    </form>
   );
 }
 

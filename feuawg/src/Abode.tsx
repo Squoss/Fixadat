@@ -18,7 +18,7 @@ function Abode(props: {}) {
 
   const postEvent = async () => {
     try {
-      const responseJson = await post<PostEventResponse>("/iapi/events", {}).then();
+      const responseJson = await post<PostEventResponse>("/iapi/events").then();
       console.debug(responseJson.status);
       console.debug(responseJson.parsedBody);
       setRedirect(`/events/${responseJson.parsedBody?.id}?brandNew=true&view=host#${responseJson.parsedBody?.hostToken}`);

@@ -21,6 +21,7 @@ interface HostEventProps {
   saveEventEaPnP1: (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => void;
   saveEventVisibility: (visibility: Visibility) => void;
   saveEventLocation: (url?: string, location?: Geo) => void;
+  sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
 }
 
 function HostEvent(props: HostEventProps) {
@@ -36,7 +37,7 @@ function HostEvent(props: HostEventProps) {
   let content;
   switch (props.activeTab) {
     case ACTIVE_TAB.LINKS:
-      content = <HostEventLinks id={id} hostToken={hostToken} guestToken={guestToken} />;
+      content = <HostEventLinks id={id} hostToken={hostToken} guestToken={guestToken} sendLinksReminder={props.sendLinksReminder} />;
       break;
     case ACTIVE_TAB.RSVPS:
       content = <HostEventRsvps />;

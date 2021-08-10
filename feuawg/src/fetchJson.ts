@@ -36,8 +36,9 @@ export async function patch<T>(
 
 export async function post<T>(
   path: string,
-  body: any,
-  args: RequestInit = { method: "POST", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json" } },
+  accessToken="",
+  body={},
+  args: RequestInit = { method: "POST", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }

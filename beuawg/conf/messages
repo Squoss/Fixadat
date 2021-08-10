@@ -19,9 +19,11 @@ reassurance = It's free of charge and requires no signing up.
 repliesPageCreated = Replies page created!
 
 links.guests = Copy and paste the following link into the invitation:
-links.meta = Remember to at least review the date & the time as well as the location before your guests receive their invitation!
-links.hosts = Copy and only share the following link with other hosts:
-links.kiss = Do not lose it!
+links.meta = Remember to at least review the date & the time as well as the location before your guests receive their invitation.
+links.hosts = Only share the following link with other hosts:
+links.reminderTo = Send it to yourself by …
+links.byEmail = … e-mail
+links.bySms = … SMS
 
 reloadNotice = A new version of {0} is available.
 reloadLink = Reload {0}!
