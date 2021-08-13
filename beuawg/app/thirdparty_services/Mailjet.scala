@@ -5,7 +5,10 @@ import com.google.i18n.phonenumbers.Phonenumber
 import domain.value_objects.EmailAddress
 import play.api.Configuration
 import play.api.Logging
+import play.api.libs.json.JsArray
+import play.api.libs.json.JsObject
 import play.api.libs.json.Json
+import play.api.libs.ws.WSAuthScheme
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.WSRequest
 import play.api.libs.ws.WSResponse
@@ -15,11 +18,7 @@ import thirdparty_apis.Sms
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import play.api.libs.ws.WSAuthScheme
-import play.api.libs.json.JsArray
-import play.api.libs.json.JsObject
 
-// e912366272ef460895bbcb8673fa04ea
 class Mailjet @Inject() (implicit
     ec: ExecutionContext,
     config: Configuration,
@@ -44,6 +43,8 @@ class Mailjet @Inject() (implicit
       subject: String,
       plainText: String
   ): Future[Unit] = {
+
+    logger.debug(s"trying to send $subject to $to via Mailjet")
 
     val data = Json.obj(
       "Messages" -> Json.arr(
@@ -71,12 +72,20 @@ class Mailjet @Inject() (implicit
       )
       .post(data)
 
-    responseFuture.map(response => {
-      logger.debug(response.json("Status").toString)
-    })
+    responseFuture.transform(
+      response => {
+        logger.debug(response.json("Status").toString)
+      },
+      exception => {
+        logger.error("e-mailing failed", exception)
+        exception
+      }
+    )
   }
 
   override def send(to: Phonenumber.PhoneNumber, text: String): Future[Unit] = {
+
+    logger.debug(s"trying to send to $to via Mailjet")
 
     val data = Json.obj(
       "From" -> "Squawg",
@@ -94,8 +103,14 @@ class Mailjet @Inject() (implicit
         )
         .post(data)
 
-    responseFuture.map(response => {
-      logger.debug(response.json("Status").toString)
-    })
+    responseFuture.transform(
+      response => {
+        logger.debug(response.json("Status").toString)
+      },
+      exception => {
+        logger.error("texting failed", exception)
+        exception
+      }
+    )
   }
 }

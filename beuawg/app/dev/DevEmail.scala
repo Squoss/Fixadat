@@ -41,6 +41,6 @@ class DevEmail @Inject() (implicit ec: ExecutionContext)
       subject: String,
       plainText: String
   ): Future[Unit] = Future(
-    logger.warn(s"Email with subject $subject to $to <= $plainText")
+    logger.info(s"Email with subject $subject to $to <= $plainText")
   )
 }

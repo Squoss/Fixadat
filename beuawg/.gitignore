@@ -16,4 +16,4 @@ metals.sbt
 /null
 /.vscode
 
-/conf/insecure.conf
+/conf/delicate.conf

@@ -37,6 +37,6 @@ class DevWebhooks @Inject() (implicit ec: ExecutionContext)
     with Logging {
 
   override def notify(webhook: URL, text: String): Future[Unit] = Future(
-    logger.warn(s"$webhook <= $text")
+    logger.info(s"$webhook <= $text")
   )
 }

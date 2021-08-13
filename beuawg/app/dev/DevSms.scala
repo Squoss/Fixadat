@@ -38,6 +38,6 @@ class DevSms @Inject() (implicit ec: ExecutionContext)
     with Logging {
 
   override def send(to: PhoneNumber, text: String): Future[Unit] = Future(
-    logger.warn(s"Text to $to <= $text")
+    logger.info(s"Text to $to <= $text")
   )
 }

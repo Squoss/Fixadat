@@ -54,7 +54,7 @@ class DevRepository @Inject() (implicit ec: ExecutionContext)
     }
 
   override def logEvent(event: VeranstaltungEvent): Future[Unit] = {
-    logger.warn(s"adding event ${event}")
+    logger.info(s"adding event ${event}")
 
     eventsLog(event.id) += event
     Future(())
