@@ -24,6 +24,16 @@ function HostEventLinks(props: HostEventLinksProps) {
   const [emailAddress, setEmailAddress] = useState("");
   const [cellPhoneNumber, setCellPhoneNumber] = useState("");
 
+  const sendLinksReminderEmail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    props.sendLinksReminder(emailAddress, undefined)
+  }
+
+  const sendLinksReminderSms = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    props.sendLinksReminder(undefined, cellPhoneNumber)
+  }
+
   return (
     <React.Fragment>
       <div className="card text-dark bg-warning mb-3" >
@@ -45,7 +55,7 @@ function HostEventLinks(props: HostEventLinksProps) {
                   <input id="emailAddress" type="email" className="form-control" placeholder="yours.truly@squawg.com" aria-label="e-mail address" value={emailAddress} onChange={event => setEmailAddress(event.target.value)} required />
                 </div>
                 <div className="col-auto">
-                  <button className="btn btn-light" onClick={() => props.sendLinksReminder(emailAddress, undefined)} disabled={emailAddress === ""}>{localizations['links.byEmail']}</button>
+                  <button className="btn btn-light" onClick={sendLinksReminderEmail} disabled={emailAddress === ""}>{localizations['links.byEmail']}</button>
                 </div>
               </div>
             </form>
@@ -55,7 +65,7 @@ function HostEventLinks(props: HostEventLinksProps) {
                   <input id="cellPhoneNumber" type="tel" className="form-control" placeholder="078 965 43 21" aria-label="cell-phone number" value={cellPhoneNumber} onChange={event => setCellPhoneNumber(event.target.value)} required />
                 </div>
                 <div className="col-auto">
-                  <button className="btn btn-light" onClick={() => props.sendLinksReminder(undefined, cellPhoneNumber)} disabled={cellPhoneNumber === ""}>{localizations['links.bySms']}</button>
+                  <button className="btn btn-light" onClick={sendLinksReminderSms} disabled={cellPhoneNumber === ""}>{localizations['links.bySms']}</button>
                 </div>
               </div>
             </form>

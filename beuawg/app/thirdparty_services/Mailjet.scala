@@ -50,7 +50,7 @@ class Mailjet @Inject() (implicit
       "Messages" -> Json.arr(
         Json.obj(
           "From" -> Json.obj(
-            "Email" -> "squawg@squeng.com",
+            "Email" -> "squeng@outlook.com", // needs to be on the allowlist at https://app.mailjet.com/account/sender
             "Name" -> "Squawg"
           ),
           "To" -> Json.arr(

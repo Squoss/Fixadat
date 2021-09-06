@@ -54,8 +54,8 @@ function App(props: {}) {
                 <li><a className={localizations['locale'] === "en" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "en")}>English</a></li>
               </ul>
             </div>
-              &nbsp;
-              <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi bi-github"></i></a>
+            &nbsp;
+            <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi bi-github"></i></a>
           </div>
         </div>
       </nav>
@@ -77,9 +77,22 @@ function App(props: {}) {
       </main>
 
       <footer className="fixed-bottom">
-        <div className="card text-end">
+        <div className="card text-center">
           <div className="card-body">
-            Copyright &copy; <time dateTime="2021">2021</time> Squeng AG
+            <div className="row">
+              <div className="col">
+                <Link to="/legalese/im">{localizations['legalese.masthead']}</Link>
+              </div>
+              <div className="col">
+                <Link to="/legalese/pp">{localizations['legalese.pp']}</Link>
+              </div>
+              <div className="col">
+                <Link to="/legalese/tos">{localizations['legalese.tos']}</Link>
+              </div>
+              <div className="col">
+                Copyright &copy; <time dateTime="2021">2021</time> Squeng AG
+              </div>
+            </div>
           </div>
         </div>
       </footer>
