@@ -15,8 +15,10 @@ function EventComponent(props: {}) {
   console.debug(id);
   const token = location.hash;
   console.debug(token);
-  const brandNew = new URLSearchParams(location.search).has("brandNew");
-  const view = useRouteMatch<{ id: string; hostish: string }>({ path: "/events/:id/:hostish" })?.params.hostish ? "host" : (new URLSearchParams(location.search)).get("view");
+  const urlSearchParams = new URLSearchParams(location.search)
+  const brandNew = urlSearchParams.has("brandNew");
+  const timeZone = urlSearchParams.get("timeZone");
+  const view = useRouteMatch<{ id: string; hostish: string }>({ path: "/events/:id/:hostish" })?.params.hostish ? "host" : urlSearchParams.get("view");
   console.debug(view);
 
   const [event, setEvent] = useState<EventType | undefined>(undefined);
@@ -25,7 +27,7 @@ function EventComponent(props: {}) {
   useEffect(() => {
     const getEvent = async () => {
       try {
-        const responseJson = await get<EventType>(`/iapi/events/${id}${view !== null ? "?view=" + view : ""}`, token.substring(1)).then();
+        const responseJson = await get<EventType>(`/iapi/events/${id}?${view !== null ? "&view=" + view : ""}${timeZone != null ? "&timeZone=" + timeZone : ""}`, token.substring(1)).then();
         console.debug(responseJson.status);
         console.debug(responseJson.parsedBody);
         setResponseStatusCode(responseJson.status);
@@ -153,7 +155,7 @@ function EventComponent(props: {}) {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} />}
+          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} timeZones={["Europe/Zurich", "US/Pacific", "FIXME/TODO"]} />}
         </Route>
         <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
         <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>

@@ -43,7 +43,7 @@ function HostEvent(props: HostEventProps) {
       content = <HostEventRsvps />;
       break;
     case ACTIVE_TAB.SETTINGS:
-      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
+      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "US/Pacific", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
       break;
     default:
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
