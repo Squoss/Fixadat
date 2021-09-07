@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Geo, HostEventType, Visibility } from "./Events";
+import { l10nContext } from "./l10nContext";
 import MapSearchClass from "./MapSearchClass";
 
 interface HostEventSettingsProps {
@@ -22,6 +23,8 @@ function ttu(s?: string) { // trim to undefined
 
 function HostEventSettings(props: HostEventSettingsProps) {
   console.log("HostEventSettings props: " + JSON.stringify(props));
+
+  const localizations = useContext(l10nContext);
 
   const [editText, setEditText] = useState(false);
   const [name, setName] = useState(props.event.name);
@@ -110,21 +113,21 @@ function HostEventSettings(props: HostEventSettingsProps) {
     <form className="d-grid gap-4">
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Text</h5>
+          <h5 className="card-title">{localizations['settings.what']}</h5>
           <div>
-            <label htmlFor="nameText" className="form-label">Name</label>
+            <label htmlFor="nameText" className="form-label">{localizations['settings.name']}</label>
             <input type="text" className="form-control" id="nameText" placeholder="Event Name" value={name} onChange={event => setName(event.target.value)} readOnly={!editText} />
           </div>
           <div>
-            <label htmlFor="descriptionText" className="form-label">Description</label>
+            <label htmlFor="descriptionText" className="form-label">{localizations['settings.description']}</label>
             <textarea className="form-control" id="descriptionText" rows={3} value={description} onChange={event => setDescription(event.target.value)} readOnly={!editText} />
           </div>
         </div>
         <div className="card-footer">
           {editText ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelText}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveText} disabled={name === "" || props.event.name === name && tte(props.event.description) === description}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelText}>{localizations['cancel']}</button>
+              <button className="btn btn-primary" onClick={saveText} disabled={name === "" || props.event.name === name && tte(props.event.description) === description}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditText(true); }}><i className="bi bi-pencil-square"></i></button>
@@ -133,18 +136,18 @@ function HostEventSettings(props: HostEventSettingsProps) {
       </div>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Schedule</h5>
+          <h5 className="card-title">{localizations['settings.when']}</h5>
           <div>
-            <label htmlFor="dateSchedule" className="form-label">Date</label>
+            <label htmlFor="dateSchedule" className="form-label">{localizations['settings.date']}</label>
             <input type="date" className="form-control" id="dateSchedule" value={date} onChange={event => setDate(event.target.value)} readOnly={!editSchedule} />
           </div>
           <div>
-            <label htmlFor="timeSchedule" className="form-label">Time</label>
+            <label htmlFor="timeSchedule" className="form-label">{localizations['settings.time']}</label>
             <input type="time" className="form-control" id="timeSchedule" value={time} onChange={event => setTime(event.target.value)} readOnly={!editSchedule} />
           </div>
         </div>
         <div className="input-group">
-          <span className="input-group-text">Time Zone</span>
+          <span className="input-group-text">{localizations['settings.timeZone']}</span>
           <select className="form-select" id="timeZoneSelect" required={false} value={timeZone} onChange={event => setTimeZone(event.target.value)} disabled={!editSchedule}>
             <option key="noTimeZone" value={undefined}></option>
             {timeZones}
@@ -153,8 +156,8 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editSchedule ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelSchedule}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveSchedule} disabled={tte(props.event.date) === date && tte(props.event.time) === time && tte(props.event.timeZone) === timeZone}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelSchedule}>{localizations['cancel']}</button>
+              <button className="btn btn-primary" onClick={saveSchedule} disabled={tte(props.event.date) === date && tte(props.event.time) === time && tte(props.event.timeZone) === timeZone}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditSchedule(true); }}><i className="bi bi-pencil-square"></i></button>
@@ -163,7 +166,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
       </div>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Location</h5>
+          <h5 className="card-title">{localizations['settings.where']}</h5>
           <div>
             <label htmlFor="mapSearchClass" className="form-label">Geo</label>
             <MapSearchClass disabled={!editLocation} value={geo} setValue={setGeo} />
@@ -172,9 +175,9 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editLocation ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelLocation}>Cancel</button>
+              <button className="btn btn-secondary" onClick={cancelLocation}>{localizations['cancel']}</button>
               <button className="btn btn-primary" onClick={saveLocation} disabled={props.event.url === url && props.event.geo?.name === geo?.name && props.event.geo?.longitude
-                === geo?.longitude && props.event.geo?.latitude === geo?.latitude}>Save</button>
+                === geo?.longitude && props.event.geo?.latitude === geo?.latitude}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditLocation(true); }}><i className="bi bi-pencil-square"></i></button>
@@ -200,8 +203,8 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editEaPnP1 ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelEaPnP1}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveEaPnP1} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelEaPnP1}>{localizations['cancel']}</button>
+              <button className="btn btn-primary" onClick={saveEaPnP1} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditEaPnP1(true); }}><i className="bi bi-pencil-square"></i></button>
@@ -220,8 +223,8 @@ function HostEventSettings(props: HostEventSettingsProps) {
         <div className="card-footer">
           {editVisibility ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelVisibility}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveVisibility} disabled={props.event.visibility === visibility}>Save</button>
+              <button className="btn btn-secondary" onClick={cancelVisibility}>{localizations['cancel']}</button>
+              <button className="btn btn-primary" onClick={saveVisibility} disabled={props.event.visibility === visibility}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditVisibility(true); }}><i className="bi bi-pencil-square"></i></button>

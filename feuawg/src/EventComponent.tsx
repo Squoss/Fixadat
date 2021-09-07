@@ -23,6 +23,7 @@ function EventComponent(props: {}) {
 
   const [event, setEvent] = useState<EventType | undefined>(undefined);
   const [responseStatusCode, setResponseStatusCode] = useState<number>(200);
+  const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
   useEffect(() => {
     const getEvent = async () => {
@@ -42,6 +43,22 @@ function EventComponent(props: {}) {
       getEvent();
     }
   }, [id, token, view]);
+
+  useEffect(() => {
+    const getTimeZones = async () => {
+      try {
+        const responseJson = await get<Array<string>>("/timeZones", "").then();
+        console.debug(responseJson.status);
+        console.debug(responseJson.parsedBody);
+        if (responseJson.status === 200) {
+          setTimeZones(responseJson.parsedBody!);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+      getTimeZones();
+  }, []);
 
   const saveEventText = async (name: string, description?: string) => {
     try {
@@ -155,11 +172,11 @@ function EventComponent(props: {}) {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} timeZones={["Europe/Zurich", "US/Pacific", "FIXME/TODO"]} />}
+          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} timeZones={timeZones} />}
         </Route>
-        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
-        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
-        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} /></Route>
+        <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} timeZones={timeZones} /></Route>
+        <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} timeZones={timeZones} /></Route>
+        <Route path="/events/:event/links"><HostEventComponent activeTab={ACTIVE_TAB.LINKS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} timeZones={timeZones} /></Route>
         {/* when none of the above match, <NotFound> will be rendered */}
         <Route ><NotFound /></Route>
       </Switch>

@@ -81,13 +81,13 @@ function App(props: {}) {
           <div className="card-body">
             <div className="row">
               <div className="col">
-                <Link to="/legalese/im">{localizations['legalese.masthead']}</Link>
+                <Link className="link-info text-decoration-none" to="/legalese/im">{localizations['legalese.masthead']}</Link>
               </div>
               <div className="col">
-                <Link to="/legalese/pp">{localizations['legalese.pp']}</Link>
+                <Link className="link-info text-decoration-none" to="/legalese/pp">{localizations['legalese.pp']}</Link>
               </div>
               <div className="col">
-                <Link to="/legalese/tos">{localizations['legalese.tos']}</Link>
+                <Link className="link-info text-decoration-none" to="/legalese/tos">{localizations['legalese.tos']}</Link>
               </div>
               <div className="col">
                 Copyright &copy; <time dateTime="2021">2021</time> Squeng AG

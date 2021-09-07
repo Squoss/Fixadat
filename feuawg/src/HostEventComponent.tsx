@@ -22,6 +22,7 @@ interface HostEventProps {
   saveEventVisibility: (visibility: Visibility) => void;
   saveEventLocation: (url?: string, location?: Geo) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
+  timeZones: Array<string>;
 }
 
 function HostEvent(props: HostEventProps) {
@@ -43,7 +44,7 @@ function HostEvent(props: HostEventProps) {
       content = <HostEventRsvps />;
       break;
     case ACTIVE_TAB.SETTINGS:
-      content = <HostEventSettings event={props.event} timeZones={["Europe/Zurich", "US/Pacific", "FIXME/TODO"]} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
+      content = <HostEventSettings event={props.event} timeZones={props.timeZones} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
       break;
     default:
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
@@ -59,13 +60,13 @@ function HostEvent(props: HostEventProps) {
       {brandNew ? brandNewAlert : <span></span>}
       <ul className="nav nav-tabs">
         <li className="nav-item">
-          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/settings#${hostToken}`}><i className="bi bi-sliders"></i> Settings</NavLink>
+          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/settings#${hostToken}`}><i className="bi bi-sliders"></i> {localizations['settings']}</NavLink>
         </li>
         <li className="nav-item">
           <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/RSVPs#${hostToken}`}><i className="bi bi-person-lines-fill"></i> RSVPs</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/links#${hostToken}`}><i className="bi bi-share"></i> Links</NavLink>
+          <NavLink className="nav-link" activeClassName="active" to={`/events/${id}/links#${hostToken}`}><i className="bi bi-share"></i> {localizations['links']}</NavLink>
         </li>
       </ul>
       {content}

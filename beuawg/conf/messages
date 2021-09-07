@@ -11,19 +11,33 @@ prices = Prices
 
 yes = Yes
 no = No
+save = Save
 cancel = Cancel
 
 executiveSummary = Invite to an event via your favorite off-line & on-line channels and collect replies in one place.
 createRepliesPage = Create a replies page for your event
 reassurance = It's free of charge and requires no signing up.
 repliesPageCreated = Replies page created!
+convertToDifferentTimeZone = Convert to different time zone
 
+links = Links
 links.guests = Copy and paste the following link into the invitation:
 links.meta = Remember to at least review the date & the time as well as the location before your guests receive their invitation.
 links.hosts = Only share the following link with other hosts:
 links.reminderTo = Send it to yourself by …
 links.byEmail = … e-mail
 links.bySms = … SMS
+
+settings = What, when, where, etc.
+settings.what = What
+settings.name = Name
+settings.description = Description
+settings.when = When
+settings.date = Date
+settings.time = Time
+settings.timeZone = Time zone
+settings.where = Where
+settings.seeInvitation = see invitation
 
 reloadNotice = A new version of {0} is available.
 reloadLink = Reload {0}!

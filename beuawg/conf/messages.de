@@ -11,19 +11,33 @@ prices = Preise
 
 yes = Ja
 no = Nein
+save = Speichern
 cancel = Abbrechen
 
 executiveSummary = Laden Sie über Ihre bevorzugten Offline- und Online-Kanäle zu einem Anlass ein und sammeln Sie Antworten an einem Ort.
 createRepliesPage = Antworten-Seite für Ihren Anlass erstellen
 reassurance = Es ist kostenlos und setzt keine Registrierung voraus.
 repliesPageCreated = Antworten-Seite erstellt!
+convertToDifferentTimeZone = In andere Zeitzone umwandeln
 
+links = Links
 links.guests = Kopieren und fügen Sie den folgenden Link in die Einladung ein:
 links.meta = Denken Sie daran, wenigstens das Datum & die Zeit sowie die Örtlichkeit durchzusehen, bevor Ihre Gäste ihre Einladung erhalten.
 links.hosts = Teilen Sie den folgenden Link nur mit weiteren Gastgebern:
 links.reminderTo = Schicken Sie ihn sich selbst per …
 links.byEmail = … E-Mail
 links.bySms = … SMS
+
+settings = Was, wann, wo usw.
+settings.what = Was
+settings.name = Name
+settings.description = Beschreibung
+settings.when = Wann
+settings.date = Datum
+settings.time = Zeit
+settings.timeZone = Zeitzone
+settings.where = Wo
+settings.seeInvitation = siehe Einladung
 
 reloadNotice = Eine neue Version von Squawg ist verfügbar.
 reloadLink = Squawg neu laden!
