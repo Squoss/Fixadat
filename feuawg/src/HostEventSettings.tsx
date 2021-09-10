@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Geo, HostEventType, Visibility } from "./Events";
 import { l10nContext } from "./l10nContext";
 import MapSearchClass from "./MapSearchClass";
+import UrlInput from "./UrlInput";
 
 interface HostEventSettingsProps {
   event: HostEventType;
@@ -169,7 +170,11 @@ function HostEventSettings(props: HostEventSettingsProps) {
           <h5 className="card-title">{localizations['settings.where']}</h5>
           <div>
             <label htmlFor="mapSearchClass" className="form-label">Geo</label>
-            <MapSearchClass disabled={!editLocation} value={geo} setValue={setGeo} />
+            <MapSearchClass id="mapSearchClass" disabled={!editLocation} value={geo} setValue={setGeo} />
+          </div>
+          <div>
+            <label htmlFor="urlLocation" className="form-label">URL</label>
+            <UrlInput id="urlLocation" url={props.event.url} setUrl={setUrl} readOnly={!editLocation} />
           </div>
         </div>
         <div className="card-footer">
