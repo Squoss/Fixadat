@@ -3,7 +3,7 @@
 interface HttpResponse<T> extends Response {
   parsedBody?: T;
 }
-export async function fetchJson<T>(request: Request): Promise<HttpResponse<T>> {
+async function fetchJson<T>(request: Request): Promise<HttpResponse<T>> {
   // https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#xmlhttprequest-native-javascript
   if (!/^(GET|HEAD|OPTIONS)$/.test(request.method)) {
     const csrf_token = document.querySelector("meta[name='csrf-token']")!.getAttribute("content");
@@ -36,8 +36,8 @@ export async function patch<T>(
 
 export async function post<T>(
   path: string,
-  accessToken="",
-  body={},
+  accessToken = "",
+  body = {},
   args: RequestInit = { method: "POST", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
@@ -51,5 +51,3 @@ export async function put<T>(
 ): Promise<HttpResponse<T>> {
   return await fetchJson<T>(new Request(path, args));
 }
-
-export default fetchJson;

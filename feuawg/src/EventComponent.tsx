@@ -42,7 +42,7 @@ function EventComponent(props: {}) {
     if (token !== "") {
       getEvent();
     }
-  }, [id, token, view]);
+  }, [id, token, view, timeZone]);
 
   useEffect(() => {
     const getTimeZones = async () => {
@@ -57,7 +57,7 @@ function EventComponent(props: {}) {
         console.error(error);
       }
     };
-      getTimeZones();
+    getTimeZones();
   }, []);
 
   const saveEventText = async (name: string, description?: string) => {

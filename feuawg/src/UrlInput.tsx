@@ -43,7 +43,7 @@ function UrlInput(props: UrlInputProps) {
     } else {
       getValidity();
     }
-  }, [potentiallyInvalidUrl]);
+  }, [potentiallyInvalidUrl, props]);
 
 
   return (

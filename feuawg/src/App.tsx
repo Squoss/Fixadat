@@ -36,7 +36,7 @@ function App(props: {}) {
                 <NavLink className="nav-link" activeClassName="active" to="/acknowledgements">{localizations['acknowledgements']}</NavLink>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="legalese" role="button" data-bs-toggle="dropdown" aria-expanded="false">{localizations['legalese']}</a>
+                <button className="nav-link btn btn-link dropdown-toggle" id="legalese" type="button" data-bs-toggle="dropdown" aria-expanded="false">{localizations['legalese']}</button>
                 <ul className="dropdown-menu" aria-labelledby="legalese">
                   <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/im">{localizations['legalese.masthead']}</NavLink></li>
                   <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/pp">{localizations['legalese.pp']}</NavLink></li>
@@ -44,11 +44,11 @@ function App(props: {}) {
                 </ul>
               </li>
               <li className="nav-item">
-                <a className="nav-link disabled" href="#" tabIndex={-1} aria-disabled="true">{localizations['prices']}</a>
+                <NavLink className="nav-link disabled" tabIndex={-1} aria-disabled="true" activeClassName="active" to="/prices">{localizations['prices']}</NavLink>
               </li>
             </ul>
             <div className="dropdown">
-              <a className="btn btn-primary dropdown-toggle" href="#" role="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-globe"></i></a>
+              <button className="btn btn-primary dropdown-toggle" type="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-globe"></i></button>
               <ul className="dropdown-menu" aria-labelledby="language">
                 <li><a className={localizations['locale'] === "de" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "de")}>Deutsch</a></li>
                 <li><a className={localizations['locale'] === "en" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "en")}>English</a></li>

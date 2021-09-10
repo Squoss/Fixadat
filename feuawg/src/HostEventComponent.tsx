@@ -30,7 +30,7 @@ function HostEvent(props: HostEventProps) {
 
   const localizations = useContext(l10nContext);
 
-  const { id, guestToken, hostToken, name, description, emailAddressRequired, phoneNumberRequired, plus1Allowed, visibility } = props.event;
+  const { id, guestToken, hostToken, name } = props.event;
 
   const location = useLocation();
   const brandNew = new URLSearchParams(location.search).has("brandNew");

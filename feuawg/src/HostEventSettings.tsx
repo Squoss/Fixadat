@@ -128,7 +128,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
           {editText ?
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button className="btn btn-secondary" onClick={cancelText}>{localizations['cancel']}</button>
-              <button className="btn btn-primary" onClick={saveText} disabled={name === "" || props.event.name === name && tte(props.event.description) === description}>{localizations['save']}</button>
+              <button className="btn btn-primary" onClick={saveText} disabled={name === "" || (props.event.name === name && tte(props.event.description) === description)}>{localizations['save']}</button>
             </div>
             :
             <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditText(true); }}><i className="bi bi-pencil-square"></i></button>

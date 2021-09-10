@@ -40,7 +40,7 @@ function GuestEvent(props: GuestEventProps) {
       <h2>{localizations['settings.when']}</h2>
       {prettyLocalDateTimeString(localizations, date, time, timeZone)}
       {timeZone ? <div className="dropdown">
-        <a className="dropdown-toggle" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">{localizations['convertToDifferentTimeZone']}</a>
+        <button className="btn btn-link dropdown-toggle" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">{localizations['convertToDifferentTimeZone']}</button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
           {timeZones}
         </ul>
