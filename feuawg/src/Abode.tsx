@@ -16,16 +16,11 @@ function Abode(props: {}) {
 
   const [redirect, setRedirect] = useState<undefined | string>(undefined);
 
-  const postEvent = async () => {
-    try {
-      const responseJson = await post<PostEventResponse>("/iapi/events").then();
-      console.debug(responseJson.status);
-      console.debug(responseJson.parsedBody);
-      setRedirect(`/events/${responseJson.parsedBody?.id}?brandNew=true&view=host#${responseJson.parsedBody?.hostToken}`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const postEvent = () => post<PostEventResponse>("/iapi/events").then(responseJson => {
+    console.debug(responseJson.status);
+    console.debug(responseJson.parsedBody);
+    setRedirect(`/events/${responseJson.parsedBody?.id}?brandNew=true&view=host#${responseJson.parsedBody?.hostToken}`);
+  }).catch(error => console.error(`failed to post event: ${error}`));
 
 
   const handlePostEvent = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +37,7 @@ function Abode(props: {}) {
           <p className="lead">{localizations['executiveSummary']}</p>
           <button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
             {localizations['createRepliesPage']} &raquo;
-      </button>
+          </button>
           <p>{localizations['reassurance']}</p>
         </div>
 

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import App from "./App";
-
 import { get } from "./fetchJson";
-import { Localizations, l10nContext } from "./l10nContext";
+import { l10nContext, Localizations } from "./l10nContext";
+
 
 function I18nApp(props: {}) {
   console.log("I18nApp props: " + JSON.stringify(props));
@@ -10,15 +10,12 @@ function I18nApp(props: {}) {
   const [localizations, setLocalizations] = useState<Localizations>({});
 
   useEffect(() => {
-    const fetchLocalizations = async () => {
-      try {
-        const responseJson = await get<Localizations>("/jsonMessages", "").then();
-        setLocalizations(responseJson.parsedBody!);
-        console.debug(responseJson.status);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    const fetchLocalizations = () => get<Localizations>("/jsonMessages", "").then(responseJson => {
+      console.debug(responseJson.status);
+      console.debug(responseJson.parsedBody);
+      setLocalizations(responseJson.parsedBody!);
+    }).catch(error => console.error(`failed to get time zones: ${error}`));
+
     fetchLocalizations();
   }, []);
 

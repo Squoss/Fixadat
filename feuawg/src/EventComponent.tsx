@@ -26,127 +26,84 @@ function EventComponent(props: {}) {
   const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
   useEffect(() => {
-    const getEvent = async () => {
-      try {
-        const responseJson = await get<EventType>(`/iapi/events/${id}?${view !== null ? "&view=" + view : ""}${timeZone != null ? "&timeZone=" + timeZone : ""}`, token.substring(1)).then();
-        console.debug(responseJson.status);
-        console.debug(responseJson.parsedBody);
-        setResponseStatusCode(responseJson.status);
-        if (responseJson.status === 200) {
-          setEvent(responseJson.parsedBody);
-        }
-      } catch (error) {
-        console.error(error);
+    const getEvent = () => get<EventType>(`/iapi/events/${id}?${view !== null ? "&view=" + view : ""}${timeZone != null ? "&timeZone=" + timeZone : ""}`, token.substring(1)).then(responseJson => {
+      console.debug(responseJson.status);
+      console.debug(responseJson.parsedBody);
+      setResponseStatusCode(responseJson.status);
+      if (responseJson.status === 200) {
+        setEvent(responseJson.parsedBody);
       }
-    };
+    }).catch(error => console.error(`failed to get event: ${error}`));
+
     if (token !== "") {
       getEvent();
     }
   }, [id, token, view, timeZone]);
 
   useEffect(() => {
-    const getTimeZones = async () => {
-      try {
-        const responseJson = await get<Array<string>>("/timeZones", "").then();
-        console.debug(responseJson.status);
-        console.debug(responseJson.parsedBody);
-        if (responseJson.status === 200) {
-          setTimeZones(responseJson.parsedBody!);
-        }
-      } catch (error) {
-        console.error(error);
+    const getTimeZones = () => get<Array<string>>("/timeZones", "").then(responseJson => {
+      console.debug(responseJson.status);
+      console.debug(responseJson.parsedBody);
+      if (responseJson.status === 200) {
+        setTimeZones(responseJson.parsedBody!);
       }
-    };
+    }).catch(error => console.error(`failed to get time zones: ${error}`));
+
     getTimeZones();
   }, []);
 
-  const saveEventText = async (name: string, description?: string) => {
-    try {
-      const body = { name, description };
-      const responseJson = await put<EventType>(`/iapi/events/${id}/text`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      } else {
-        setEvent({ ...event, name, description } as EventType)
-      }
-    } catch (error) {
-      console.error(error);
+  const saveEventText = (name: string, description?: string) => put<EventType>(`/iapi/events/${id}/text`, token.substring(1), { name, description }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    } else {
+      setEvent({ ...event, name, description } as EventType)
     }
-  }
+  }).catch(error => console.error(`failed to put event text: ${error}`));
 
-  const saveEventSchedule = async (date?: string, time?: string, timeZone?: string) => {
-    try {
-      const body = { date, time, timeZone };
-      const responseJson = await put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      } else {
-        setEvent({ ...event, date, time, timeZone } as EventType)
-      }
-    } catch (error) {
-      console.error(error);
+  const saveEventSchedule = (date?: string, time?: string, timeZone?: string) => put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1), { date, time, timeZone }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    } else {
+      setEvent({ ...event, date, time, timeZone } as EventType)
     }
-  }
+  }).catch(error => console.error(`failed to put event schedule: ${error}`));
 
-  const saveEventLocation = async (url?: string, geo?: Geo) => {
-    try {
-      const body = { url, geo };
-      const responseJson = await put<EventType>(`/iapi/events/${id}/location`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      } else {
-        setEvent({ ...event, url, geo } as EventType)
-      }
-    } catch (error) {
-      console.error(error);
+  const saveEventLocation = (url?: string, geo?: Geo) => put<EventType>(`/iapi/events/${id}/location`, token.substring(1), { url, geo }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    } else {
+      setEvent({ ...event, url, geo } as EventType)
     }
-  }
+  }).catch(error => console.error(`failed to put event location: ${error}`));
 
-  const saveEventEaPnP1 = async (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => {
-    try {
-      const body = { emailAddressRequired, phoneNumberRequired, plus1Allowed };
-      const responseJson = await patch<EventType>(`/iapi/events/${id}`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      } else {
-        setEvent({ ...event, emailAddressRequired, phoneNumberRequired, plus1Allowed } as EventType)
-      }
-    } catch (error) {
-      console.error(error);
+  const saveEventEaPnP1 = (emailAddressRequired: boolean, phoneNumberRequired: boolean, plus1Allowed: boolean) => patch<EventType>(`/iapi/events/${id}`, token.substring(1), { emailAddressRequired, phoneNumberRequired, plus1Allowed }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    } else {
+      setEvent({ ...event, emailAddressRequired, phoneNumberRequired, plus1Allowed } as EventType)
     }
-  }
+  }).catch(error => console.error(`failed to patch event: ${error}`));
 
-  const saveEventVisibility = async (visibility: Visibility) => {
-    try {
-      const body = { visibility };
-      const responseJson = await put<EventType>(`/iapi/events/${id}/visibility`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      } else {
-        setEvent({ ...event, visibility } as EventType)
-      }
-    } catch (error) {
-      console.error(error);
+  const saveEventVisibility = (visibility: Visibility) => put<EventType>(`/iapi/events/${id}/visibility`, token.substring(1), { visibility }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    } else {
+      setEvent({ ...event, visibility } as EventType)
     }
-  }
+  }).catch(error => console.error(`failed to put event visibility: ${error}`));
 
-  const sendLinksReminder = async (emailAddress?: string, phoneNumber?: string) => {
-    try {
-      const body = { emailAddress, phoneNumber };
-      const responseJson = await post<void>(`/iapi/events/${id}/reminders`, token.substring(1), body).then();
-      console.debug(responseJson.status);
-      if (responseJson.status !== 204) {
-        alert(responseJson.status);
-      }
-    } catch (error) {
-      console.error(error);
+
+  const sendLinksReminder = (emailAddress?: string, phoneNumber?: string) => post<void>(`/iapi/events/${id}/reminders`, token.substring(1), { emailAddress, phoneNumber }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
     }
-  }
+  }).catch(error => console.error(`failed to post event reminders: ${error}`));
 
   if (token === "") {
     return (<p>Dude, where's my token?!</p>);

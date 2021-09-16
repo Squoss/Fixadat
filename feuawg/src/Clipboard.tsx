@@ -10,25 +10,22 @@ function Clipboard(props: ClipboardProps) {
 
   const [copied, setCopied] = useState<boolean>(false);
 
-  const writeToClipboard = async () => {
-    navigator.clipboard.writeText(props.text).then(() => {
-      console.log("succeeded in copying link to clipboard");
-      setCopied(true);
-    }, () => {
-      console.error("failed to copy link to clipboard");
-      setCopied(false);
-    });
-  };
+  const writeToClipboard = () => navigator.clipboard.writeText(props.text).then(() => {
+    console.log("succeeded in copying link to clipboard");
+    setCopied(true);
+  }).catch(error => {
+    console.error(`failed to copy link to clipboard: ${error}`);
+    setCopied(false);
+  });
 
   /*
-  const readFromClipboard = async () => {
+  const readFromClipboard = () => {
     navigator.clipboard.readText().then(text => {
       setCopied(text === props.text);
     }, () => {
       setCopied(false);
     });
   }
-
 
   useEffect(() => {
     const thisInterval = setTimeout(readFromClipboard, 1000);

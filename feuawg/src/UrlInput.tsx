@@ -20,23 +20,19 @@ function UrlInput(props: UrlInputProps) {
   const [urlValid, setUrlValid] = useState(true);
 
   useEffect(() => {
-    const getValidity = async () => {
-      try {
-        const responseJson = await get<ValidityType>(`/validity?url=${potentiallyInvalidUrl}`, "").then();
-        console.debug(responseJson.status);
-        console.debug(responseJson.parsedBody);
-        if (responseJson.status === 200) {
-          setUrlValid(responseJson.parsedBody!.valid);
-          if (responseJson.parsedBody!.valid) {
-            props.setUrl(potentiallyInvalidUrl);
-          } else {
-            props.setUrl(props.url);
-          }
+    const getValidity = () => get<ValidityType>(`/validity?url=${potentiallyInvalidUrl}`, "").then(responseJson => {
+      console.debug(responseJson.status);
+      console.debug(responseJson.parsedBody);
+      if (responseJson.status === 200) {
+        setUrlValid(responseJson.parsedBody!.valid);
+        if (responseJson.parsedBody!.valid) {
+          props.setUrl(potentiallyInvalidUrl);
+        } else {
+          props.setUrl(props.url);
         }
-      } catch (error) {
-        console.error(error);
       }
-    };
+    }).catch(error => console.error(`failed to get validity: ${error}`));
+
     if (potentiallyInvalidUrl === "") {
       setUrlValid(true);
       props.setUrl(undefined);
