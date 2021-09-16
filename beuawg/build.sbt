@@ -22,10 +22,10 @@ scalaVersion := "2.13.6"
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.3.1"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.3.2"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.20.1" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.21.0" % Test
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
