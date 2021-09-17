@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
 import { GuestEventType } from './Events';
+import GuestEventRsvp from './GuestEventRsvp';
 import { l10nContext, Localizations } from './l10nContext';
 import MapDisplayClass from './MapDisplayClass';
 
@@ -27,27 +27,46 @@ function GuestEvent(props: GuestEventProps) {
   console.log("GuestEvent props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);
-  const location = useLocation();
 
-  const { id, name, description, date, time, timeZone, geo } = props.event;
-  const timeZones = props.timeZones.map((tz) => <li key={tz}><a className="dropdonw-item" href={`/events/${id}?timeZone=${tz}${location.hash}`}>{tz}</a></li>);
+  const { id, guestToken, name, description, date, time, timeZone, geo } = props.event;
+  const timeZones = props.timeZones.map((tz) => <li key={tz}><a className="dropdonw-item" href={`/events/${id}?timeZone=${tz}#${guestToken}`}>{tz}</a></li>);
 
   return (
     <React.Fragment>
       <h1>{name}</h1>
-      <h2>{localizations['settings.what']}</h2>
-      {description ? description.split('\n').map(line => <p>{line}</p>) : localizations['settings.seeInvitation']}
-      <h2>{localizations['settings.when']}</h2>
-      {prettyLocalDateTimeString(localizations, date, time, timeZone)}
-      {timeZone ? <div className="dropdown">
-        <button className="btn btn-sm btn-link dropdown-toggle" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">{localizations['convertToDifferentTimeZone']}</button>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          {timeZones}
-        </ul>
+      <div className="d-grid gap-4">
+        <div className="card" >
+          <div className="card-body">
+            <h5 className="card-title">{localizations['settings.what']}</h5>
+            {description ? description.split('\n').map(line => <p className="card-Text">{line}</p>) : localizations['settings.seeInvitation']}  </div>
+        </div>
+        <div className="card" >
+          <div className="card-body">
+            <h5 className="card-title">{localizations['settings.when']}</h5>
+            <p className="card-Text">{prettyLocalDateTimeString(localizations, date, time, timeZone)}</p>
+          </div>
+          {timeZone ?
+            <div className="card-footer">
+              <div className="dropdown">
+                <button className="btn btn-sm btn-link dropdown-toggle" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">{localizations['convertToDifferentTimeZone']}</button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  {timeZones}
+                </ul>
+              </div>
+            </div>
+            :
+            ""
+          }
+        </div>
+        <div className="card" >
+          <div className="card-body">
+            <h5 className="card-title">{localizations['settings.where']}</h5>
+            {geo ? <MapDisplayClass value={props.event.geo} /> : <p className="card-text">{localizations['settings.seeInvitation']}</p>}
+          </div>
+        </div>
       </div>
-        : ""}
-      <h2>{localizations['settings.where']}</h2>
-      {geo ? <MapDisplayClass value={props.event.geo} /> : localizations['settings.seeInvitation']}
+      <h2>Anmeldung / Abmeldung</h2>
+      <GuestEventRsvp event={props.event} />
     </React.Fragment>
   );
 }

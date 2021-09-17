@@ -131,7 +131,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
               <button className="btn btn-primary" onClick={saveText} disabled={name === "" || (props.event.name === name && tte(props.event.description) === description)}>{localizations['save']}</button>
             </div>
             :
-            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditText(true); }}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={e => { e.preventDefault(); setEditText(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -161,7 +161,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
               <button className="btn btn-primary" onClick={saveSchedule} disabled={tte(props.event.date) === date && tte(props.event.time) === time && tte(props.event.timeZone) === timeZone}>{localizations['save']}</button>
             </div>
             :
-            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditSchedule(true); }}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={e => { e.preventDefault(); setEditSchedule(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -185,7 +185,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
                 === geo?.longitude && props.event.geo?.latitude === geo?.latitude}>{localizations['save']}</button>
             </div>
             :
-            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditLocation(true); }}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={e => { e.preventDefault(); setEditLocation(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -212,7 +212,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
               <button className="btn btn-primary" onClick={saveEaPnP1} disabled={props.event.emailAddressRequired === emailAddressRequired && props.event.phoneNumberRequired === phoneNumberRequired && props.event.plus1Allowed === plus1Allowed}>{localizations['save']}</button>
             </div>
             :
-            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditEaPnP1(true); }}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={e => { e.preventDefault(); setEditEaPnP1(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
@@ -232,7 +232,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
               <button className="btn btn-primary" onClick={saveVisibility} disabled={props.event.visibility === visibility}>{localizations['save']}</button>
             </div>
             :
-            <button className="btn btn-light" onClick={(e) => { e.preventDefault(); setEditVisibility(true); }}><i className="bi bi-pencil-square"></i></button>
+            <button className="btn btn-light" onClick={e => { e.preventDefault(); setEditVisibility(true); }}><i className="bi bi-pencil-square"></i></button>
           }
         </div>
       </div>
