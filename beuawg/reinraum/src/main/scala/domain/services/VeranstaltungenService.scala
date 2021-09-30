@@ -26,24 +26,24 @@ package domain.services
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.entities.Veranstaltung
-import domain.event_sourcing.RsvpEvent
-import domain.event_sourcing.VeranstaltungPrivatizedEvent
-import domain.event_sourcing.VeranstaltungProtectedEvent
-import domain.event_sourcing.VeranstaltungPublishedEvent
-import domain.event_sourcing.VeranstaltungRecalibratedEvent
-import domain.event_sourcing.VeranstaltungRelocatedEvent
-import domain.event_sourcing.VeranstaltungRepublishedEvent
-import domain.event_sourcing.VeranstaltungRescheduledEvent
-import domain.event_sourcing.VeranstaltungRetextedEvent
 import domain.persistence.Repository
+import domain.persistence.RsvpEvent
+import domain.persistence.VeranstaltungPrivatizedEvent
+import domain.persistence.VeranstaltungProtectedEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.persistence.VeranstaltungRecalibratedEvent
+import domain.persistence.VeranstaltungRelocatedEvent
+import domain.persistence.VeranstaltungRepublishedEvent
+import domain.persistence.VeranstaltungRescheduledEvent
+import domain.persistence.VeranstaltungRetextedEvent
 import domain.spi.Veranstaltungen
+import domain.types.GuestVeranstaltung
+import domain.types.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error._
 import domain.value_objects.Geo
-import domain.value_objects.GuestVeranstaltung
-import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
 import domain.value_objects.Visibility._
 import thirdparty_apis.Email
@@ -96,9 +96,9 @@ class VeranstaltungenService @Inject() (implicit
     repository
       .readEvents(id)
       .map(_ match {
-        case (Some(snapshot), Nil) => Some(snapshot)
+        case (Some(snapshot), Nil) => Some(Veranstaltung(snapshot))
         case (Some(snapshot), eventsTail) => {
-          val veranstaltung = snapshot.replay(eventsTail)
+          val veranstaltung = Veranstaltung(snapshot).replay(eventsTail)
           repository.fastForwardSnapshot(veranstaltung) // fire & forget
           Some(veranstaltung)
         }
@@ -123,42 +123,26 @@ class VeranstaltungenService @Inject() (implicit
             token == veranstaltung.guestToken || token == veranstaltung.hostToken
           ) {
             if (veranstaltung.visibility != Private) {
-              val guestVeranstaltung =
-                GuestVeranstaltung(
-                  veranstaltung.id,
-                  veranstaltung.guestToken,
-                  veranstaltung.name,
-                  veranstaltung.description,
-                  veranstaltung.date,
-                  veranstaltung.time,
-                  veranstaltung.timeZone,
-                  veranstaltung.url,
-                  veranstaltung.geo,
-                  veranstaltung.emailAddressRequired,
-                  veranstaltung.phoneNumberRequired,
-                  veranstaltung.plus1Allowed,
-                  veranstaltung.visibility
-                )
               if (
-                timeZone.isDefined && guestVeranstaltung.date.isDefined && guestVeranstaltung.time.isDefined && guestVeranstaltung.timeZone.isDefined
+                timeZone.isDefined && veranstaltung.date.isDefined && veranstaltung.time.isDefined && veranstaltung.timeZone.isDefined
               ) {
                 val zonedDateTime = ZonedDateTime.of(
-                  guestVeranstaltung.date.get,
-                  guestVeranstaltung.time.get,
-                  guestVeranstaltung.timeZone.get.toZoneId
+                  veranstaltung.date.get,
+                  veranstaltung.time.get,
+                  veranstaltung.timeZone.get.toZoneId
                 )
                 val localDateTime = zonedDateTime
                   .withZoneSameInstant(timeZone.get)
                   .toLocalDateTime
                 Right(
-                  guestVeranstaltung.copy(
+                  veranstaltung.copy(
                     date = Some(localDateTime.toLocalDate),
                     time = Some(localDateTime.toLocalTime),
                     timeZone = timeZone.map(TimeZone.getTimeZone(_))
                   )
                 )
               } else {
-                Right(guestVeranstaltung)
+                Right(veranstaltung)
               }
             } else {
               Left(PrivateAccess)
@@ -178,27 +162,7 @@ class VeranstaltungenService @Inject() (implicit
         .getOrElse(Left(NotFound))
         .flatMap(veranstaltung =>
           if (token == veranstaltung.hostToken) {
-            Right(
-              HostVeranstaltung(
-                veranstaltung.id,
-                veranstaltung.created,
-                veranstaltung.guestToken,
-                veranstaltung.hostToken,
-                veranstaltung.name,
-                veranstaltung.description,
-                veranstaltung.date,
-                veranstaltung.time,
-                veranstaltung.timeZone,
-                veranstaltung.url,
-                veranstaltung.geo,
-                veranstaltung.emailAddressRequired,
-                veranstaltung.phoneNumberRequired,
-                veranstaltung.plus1Allowed,
-                veranstaltung.visibility,
-                veranstaltung.rsvps.toSeq,
-                veranstaltung.updated
-              )
-            )
+            Right(veranstaltung)
           } else {
             Left(AccessDenied)
           }

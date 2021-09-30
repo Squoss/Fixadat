@@ -1,9 +1,10 @@
 package mongodb
 
 import domain.entities.Veranstaltung
-import domain.event_sourcing.VeranstaltungEvent
-import domain.event_sourcing.VeranstaltungPublishedEvent
 import domain.persistence.Repository
+import domain.persistence.VeranstaltungEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.types.HostVeranstaltung
 import domain.value_objects.Id
 import play.api.Logging
 
@@ -19,9 +20,10 @@ class MdbRepository @Inject() (val mdb: Mdb) extends Repository with Logging {
 
   override def readEvents(
       id: Id
-  ): Future[(Option[Veranstaltung], Seq[VeranstaltungEvent])] = ???
+  ): Future[(Option[HostVeranstaltung], Seq[VeranstaltungEvent])] = ???
 
-  override def fastForwardSnapshot(snapshot: Veranstaltung): Future[Unit] = ???
+  override def fastForwardSnapshot(snapshot: HostVeranstaltung): Future[Unit] =
+    ???
 
   override def deleteEvents(id: Id): Future[Unit] = ???
 }

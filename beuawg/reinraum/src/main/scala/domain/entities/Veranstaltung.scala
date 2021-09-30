@@ -24,16 +24,17 @@
 
 package domain.entities
 
-import domain.event_sourcing.RsvpEvent
-import domain.event_sourcing.VeranstaltungEvent
-import domain.event_sourcing.VeranstaltungPrivatizedEvent
-import domain.event_sourcing.VeranstaltungProtectedEvent
-import domain.event_sourcing.VeranstaltungPublishedEvent
-import domain.event_sourcing.VeranstaltungRecalibratedEvent
-import domain.event_sourcing.VeranstaltungRelocatedEvent
-import domain.event_sourcing.VeranstaltungRepublishedEvent
-import domain.event_sourcing.VeranstaltungRescheduledEvent
-import domain.event_sourcing.VeranstaltungRetextedEvent
+import domain.persistence.RsvpEvent
+import domain.persistence.VeranstaltungEvent
+import domain.persistence.VeranstaltungPrivatizedEvent
+import domain.persistence.VeranstaltungProtectedEvent
+import domain.persistence.VeranstaltungPublishedEvent
+import domain.persistence.VeranstaltungRecalibratedEvent
+import domain.persistence.VeranstaltungRelocatedEvent
+import domain.persistence.VeranstaltungRepublishedEvent
+import domain.persistence.VeranstaltungRescheduledEvent
+import domain.persistence.VeranstaltungRetextedEvent
+import domain.types.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.Geo
@@ -64,11 +65,52 @@ final class Veranstaltung private (
     var phoneNumberRequired: Boolean,
     var plus1Allowed: Boolean,
     var visibility: Visibility,
-    val rsvps: mutable.Buffer[Rsvp],
+    private val _rsvps: mutable.Buffer[Rsvp],
     var webhook: Option[URL],
-    var updated: Instant,
-    var replayedEvents: Int
-) {
+    var updated: Instant
+) extends HostVeranstaltung {
+
+  def rsvps: Seq[Rsvp] = _rsvps.toSeq
+
+  def copy(
+      id: Id = this.id,
+      created: Instant = this.created,
+      guestToken: AccessToken = this.guestToken,
+      hostToken: AccessToken = this.hostToken,
+      name: String = this.name,
+      description: Option[String] = this.description,
+      date: Option[LocalDate] = this.date,
+      time: Option[LocalTime] = this.time,
+      timeZone: Option[TimeZone] = this.timeZone,
+      url: Option[URL] = this.url,
+      geo: Option[Geo] = this.geo,
+      emailAddressRequired: Boolean = this.emailAddressRequired,
+      phoneNumberRequired: Boolean = this.phoneNumberRequired,
+      plus1Allowed: Boolean = this.plus1Allowed,
+      visibility: Visibility = this.visibility,
+      rsvps: Seq[Rsvp] = this.rsvps,
+      webhook: Option[URL] = this.webhook,
+      updated: Instant = this.updated
+  ) = Veranstaltung(
+    id,
+    created,
+    guestToken,
+    hostToken,
+    name,
+    description,
+    date,
+    time,
+    timeZone,
+    url,
+    geo,
+    emailAddressRequired,
+    phoneNumberRequired,
+    plus1Allowed,
+    visibility,
+    rsvps,
+    webhook,
+    updated
+  )
 
   override def equals(that: Any) = that match {
     case v: Veranstaltung => this.id == v.id
@@ -115,10 +157,9 @@ final class Veranstaltung private (
               attendance,
               _
             ) =>
-          rsvps += Rsvp(name, emailAddress, phoneNumber, attendance)
+          _rsvps += Rsvp(name, emailAddress, phoneNumber, attendance)
       }
       updated = event.occurred
-      replayedEvents += 1
     })
     this
   }
@@ -143,8 +184,7 @@ object Veranstaltung {
       visibility: Visibility,
       rsvps: Seq[Rsvp],
       webhook: Option[URL],
-      updated: Instant,
-      replayedEvents: Int
+      updated: Instant
   ) =
     new Veranstaltung(
       id,
@@ -164,8 +204,29 @@ object Veranstaltung {
       visibility,
       rsvps.toBuffer,
       webhook,
-      updated,
-      replayedEvents
+      updated
+    )
+
+  def apply(snapshot: HostVeranstaltung) =
+    new Veranstaltung(
+      snapshot.id,
+      snapshot.created,
+      snapshot.guestToken,
+      snapshot.hostToken,
+      snapshot.name,
+      snapshot.description,
+      snapshot.date,
+      snapshot.time,
+      snapshot.timeZone,
+      snapshot.url,
+      snapshot.geo,
+      snapshot.emailAddressRequired,
+      snapshot.phoneNumberRequired,
+      snapshot.plus1Allowed,
+      snapshot.visibility,
+      snapshot.rsvps.toBuffer,
+      snapshot.webhook,
+      snapshot.updated
     )
 
   def replay(events: Seq[VeranstaltungEvent]): Veranstaltung =
@@ -194,8 +255,7 @@ object Veranstaltung {
           Public,
           Nil,
           None,
-          occurred,
-          1
+          occurred
         )
           .replay(eventsTail)
     }

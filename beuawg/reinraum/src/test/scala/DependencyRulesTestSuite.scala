@@ -30,10 +30,10 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
   val DEFAULT = ""
   val DOMAIN_ENTITIES = "domain.entities.."
-  val DOMAIN_EVENTSOURCING = "domain.event_sourcing.."
   val DOMAIN_PERSISTENCE = "domain.persistence.."
   val DOMAIN_SERVICES = "domain.services.."
   val DOMAIN_SPI = "domain.spi.."
+  val DOMAIN_TYPES = "domain.types.."
   val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
   val JAVA = "java.."
   val JAVAX = "javax.."
@@ -42,14 +42,14 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val THIRDPARTY_APIS = "thirdparty_apis.."
 
   val NOT_THE_APP =
-    Seq(JAVA, JAVAX, SCALA)
+    Seq(JAVA, JAVAX, SCALA, PHONENUMBERS)
   val THE_APP_INSIDE_THE_DOMAIN =
     Seq(
       DOMAIN_ENTITIES,
-      DOMAIN_EVENTSOURCING,
       DOMAIN_PERSISTENCE,
       DOMAIN_SERVICES,
       DOMAIN_SPI,
+      DOMAIN_TYPES,
       DOMAIN_VALUEOBJECTS
     )
 
@@ -79,7 +79,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_ENTITIES :+ DOMAIN_EVENTSOURCING :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
       )
       .check(classes)
   }
@@ -90,7 +90,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackages(DOMAIN_PERSISTENCE, DOMAIN_SERVICES)
+      .resideOutsideOfPackages(
+        DOMAIN_PERSISTENCE,
+        DOMAIN_SERVICES,
+        DOMAIN_ENTITIES
+      )
       .should()
       .dependOnClassesThat()
       .resideInAPackage(DOMAIN_PERSISTENCE)
@@ -104,7 +108,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .resideInAPackage(DOMAIN_SPI)
       .should()
       .dependOnClassesThat()
-      .resideOutsideOfPackages((NOT_THE_APP :+ DOMAIN_SPI): _*)
+      .resideOutsideOfPackages(
+        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_TYPES :+ DOMAIN_SPI): _*
+      )
       .check(classes)
   }
 
@@ -151,7 +157,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_EVENTSOURCING :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE :+ DOMAIN_SPI :+ THIRDPARTY_APIS :+ DOMAIN_SERVICES): _*
+        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE :+ DOMAIN_SPI :+ THIRDPARTY_APIS :+ DOMAIN_SERVICES): _*
       )
       .check(classes)
   }
@@ -175,20 +181,20 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_EVENTSOURCING :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
       )
       .check(classes)
   }
 
-  test("the events depend on themselves and the value objects only") {
+  test("the domain types depend on themselves and the value objects only") {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_EVENTSOURCING)
+      .resideInAPackage(DOMAIN_TYPES)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_EVENTSOURCING :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }

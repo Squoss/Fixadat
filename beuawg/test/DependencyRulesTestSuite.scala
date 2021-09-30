@@ -33,10 +33,13 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val DEFAULT = ""
   val DEV = "dev.."
   val DOMAIN_SPI = "domain.spi.."
+  val DOMAIN_PERSISTENCE = "domain.persistence.."
+  val DOMAIN_TYPES = "domain.types.."
   val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
   val FILTERS = "filters.."
   val JAVA = "java.."
   val JAVAX = "javax.."
+  val MAILJET = "com.mailjet.."
   val MONGODB_ADAPTER =
     "mongodb.." // the MongoDB driver starts its packages with com or org
   val MONGODB_DRIVER = Seq("org.bson..", "org.mongodb..")
@@ -46,10 +49,23 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val PHONENUMBERS = "com.google.i18n.phonenumbers.."
   val ROUTER = "router.."
   val SCALA = "scala.."
+  val THIRDPARTY_APIS = "thirdparty_apis.."
   val THIRDPARTY_SERVICES = "thirdparty_services.."
+  val VALIDATORS = "org.apache.commons.validator.."
 
   val NOT_THE_APP =
-    Seq(JAVA, JAVAX, SCALA, AKKA, PLAY_API, PLAY_CORE, PLAY_FILTERS, ROUTER)
+    Seq(
+      JAVA,
+      JAVAX,
+      SCALA,
+      AKKA,
+      PLAY_API,
+      PLAY_CORE,
+      PLAY_FILTERS,
+      ROUTER,
+      PHONENUMBERS,
+      VALIDATORS
+    )
   val THE_APP_OUTSIDE_OF_THE_DOMAIN =
     Seq(DEFAULT, API, DEV, FILTERS, MONGODB_ADAPTER, THIRDPARTY_SERVICES)
 
@@ -57,7 +73,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
     new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN: _*)
 
   test(
-    "the controllers depend on themselves, the SPI, and the value objects only"
+    "the controllers depend on themselves, the SPI, the (abstract) types, and the value objects only"
   ) {
 
     noClasses()
@@ -66,7 +82,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ API :+ DOMAIN_SPI :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ API :+ DOMAIN_SPI :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }
@@ -131,7 +147,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER): _*
+        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER :+ DOMAIN_TYPES :+ DOMAIN_PERSISTENCE): _*
       )
       .check(classes)
   }
@@ -159,7 +175,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ THIRDPARTY_SERVICES): _*
+        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS :+ MAILJET :+ THIRDPARTY_APIS :+ THIRDPARTY_SERVICES): _*
       )
       .check(classes)
   }

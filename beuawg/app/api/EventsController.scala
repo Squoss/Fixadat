@@ -26,14 +26,15 @@ package api
 
 import api.TransferObjects._
 import domain.spi.Veranstaltungen
+import domain.types.GuestVeranstaltung
+import domain.types.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
-import domain.value_objects.GuestVeranstaltung
-import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
 import domain.value_objects.Rsvp
 import domain.value_objects.Visibility._
 import play.api.Environment
+import play.api.i18n.I18nSupport
 import play.api.libs.json.JsError
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
@@ -52,7 +53,6 @@ import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-import play.api.i18n.I18nSupport
 
 class EventsController @Inject() (implicit
     ec: ExecutionContext,
@@ -96,7 +96,31 @@ class EventsController @Inject() (implicit
               .map(
                 _.fold(
                   toErrorResponse(_),
-                  hostVeranstaltung => Ok(Json.toJson(hostVeranstaltung))
+                  hostVeranstaltung =>
+                    Ok(
+                      Json.toJson(
+                        HostEvent(
+                          hostVeranstaltung.id,
+                          hostVeranstaltung.created,
+                          hostVeranstaltung.guestToken,
+                          hostVeranstaltung.hostToken,
+                          hostVeranstaltung.name,
+                          hostVeranstaltung.description,
+                          hostVeranstaltung.date,
+                          hostVeranstaltung.time,
+                          hostVeranstaltung.timeZone,
+                          hostVeranstaltung.url,
+                          hostVeranstaltung.geo,
+                          hostVeranstaltung.emailAddressRequired,
+                          hostVeranstaltung.phoneNumberRequired,
+                          hostVeranstaltung.plus1Allowed,
+                          hostVeranstaltung.visibility,
+                          hostVeranstaltung.rsvps,
+                          hostVeranstaltung.webhook,
+                          hostVeranstaltung.updated
+                        )
+                      )
+                    )
                 )
               )
           } else {
@@ -111,7 +135,26 @@ class EventsController @Inject() (implicit
                   .map(
                     _.fold(
                       toErrorResponse(_),
-                      guestVeranstaltung => Ok(Json.toJson(guestVeranstaltung))
+                      guestVeranstaltung =>
+                        Ok(
+                          Json.toJson(
+                            GuestEvent(
+                              guestVeranstaltung.id,
+                              guestVeranstaltung.guestToken,
+                              guestVeranstaltung.name,
+                              guestVeranstaltung.description,
+                              guestVeranstaltung.date,
+                              guestVeranstaltung.time,
+                              guestVeranstaltung.timeZone,
+                              guestVeranstaltung.url,
+                              guestVeranstaltung.geo,
+                              guestVeranstaltung.emailAddressRequired,
+                              guestVeranstaltung.phoneNumberRequired,
+                              guestVeranstaltung.plus1Allowed,
+                              guestVeranstaltung.visibility
+                            )
+                          )
+                        )
                     )
                   )
               case Failure(exception) =>
@@ -285,8 +328,8 @@ class EventsController @Inject() (implicit
     }
   }
 
-  def sendLinksReminder(event: Id) = Action.async(validateJson[LinksReminderRecipient]) {
-    request =>
+  def sendLinksReminder(event: Id) =
+    Action.async(validateJson[LinksReminderRecipient]) { request =>
       Try(UUID.fromString(request.headers("X-Access-Token"))) match {
         case Success(accessToken) =>
           events
@@ -305,5 +348,5 @@ class EventsController @Inject() (implicit
             )
         case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
-  }
+    }
 }

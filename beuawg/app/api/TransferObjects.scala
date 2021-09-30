@@ -27,18 +27,19 @@ package api
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import domain.types.GuestVeranstaltung
+import domain.types.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Geo
-import domain.value_objects.GuestVeranstaltung
-import domain.value_objects.HostVeranstaltung
 import domain.value_objects.Id
 import domain.value_objects.Rsvp
 import domain.value_objects.Visibility._
 import play.api.libs.json._
 
 import java.net.URL
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.TimeZone
@@ -46,6 +47,42 @@ import java.util.UUID
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+
+case class GuestEvent(
+    id: Id,
+    guestToken: AccessToken,
+    name: String,
+    description: Option[String],
+    date: Option[LocalDate],
+    time: Option[LocalTime],
+    timeZone: Option[TimeZone],
+    url: Option[URL],
+    geo: Option[Geo],
+    emailAddressRequired: Boolean,
+    phoneNumberRequired: Boolean,
+    plus1Allowed: Boolean,
+    visibility: Visibility
+) extends GuestVeranstaltung
+case class HostEvent(
+    id: Id,
+    created: Instant,
+    guestToken: AccessToken,
+    hostToken: AccessToken,
+    name: String,
+    description: Option[String],
+    date: Option[LocalDate],
+    time: Option[LocalTime],
+    timeZone: Option[TimeZone],
+    url: Option[URL],
+    geo: Option[Geo],
+    emailAddressRequired: Boolean,
+    phoneNumberRequired: Boolean,
+    plus1Allowed: Boolean,
+    visibility: Visibility,
+    rsvps: Seq[Rsvp],
+    webhook: Option[URL],
+    updated: Instant
+) extends HostVeranstaltung
 
 case class P(visibility: Visibility)
 case class Text(name: String, description: Option[String])
@@ -138,9 +175,9 @@ object TransferObjects {
   implicit val veFormat: Format[Visibility] =
     Format(veReads, veWrites)
 
-  implicit val guestVeranstaltungReads = Json.reads[GuestVeranstaltung]
-  implicit val guestVeranstaltunglWrites = Json.writes[GuestVeranstaltung]
-  implicit val guestVeranstaltungFormat = Json.format[GuestVeranstaltung]
+  implicit val guestVeranstaltungReads = Json.reads[GuestEvent]
+  implicit val guestVeranstaltunglWrites = Json.writes[GuestEvent]
+  implicit val guestVeranstaltungFormat = Json.format[GuestEvent]
 
   implicit val eaReads = new Reads[EmailAddress] {
     def reads(json: JsValue): JsResult[EmailAddress] = Try(
@@ -190,9 +227,9 @@ object TransferObjects {
   implicit val rsvpVeranstaltunglWrites = Json.writes[Rsvp]
   implicit val rsvpVeranstaltungFormat = Json.format[Rsvp]
 
-  implicit val hostVeranstaltungReads = Json.reads[HostVeranstaltung]
-  implicit val hostVeranstaltunglWrites = Json.writes[HostVeranstaltung]
-  implicit val hostVeranstaltungFormat = Json.format[HostVeranstaltung]
+  implicit val hostVeranstaltungReads = Json.reads[HostEvent]
+  implicit val hostVeranstaltunglWrites = Json.writes[HostEvent]
+  implicit val hostVeranstaltungFormat = Json.format[HostEvent]
 
   implicit val pReads = Json.reads[P]
   implicit val textReads = Json.reads[Text]

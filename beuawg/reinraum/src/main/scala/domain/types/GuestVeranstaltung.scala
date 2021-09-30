@@ -22,23 +22,30 @@
  * THE SOFTWARE.
  */
 
-package domain.persistence
+package domain.types
 
-import domain.types.HostVeranstaltung
+import domain.value_objects.AccessToken
+import domain.value_objects.Geo
 import domain.value_objects.Id
+import domain.value_objects.Visibility._
 
-import scala.concurrent.Future
+import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 
-trait Repository {
-
-  def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean]
-  def logEvent(event: VeranstaltungEvent): Future[Unit]
-
-  def readEvents(
-      id: Id
-  ): Future[(Option[HostVeranstaltung], Seq[VeranstaltungEvent])]
-
-  def fastForwardSnapshot(snapshot: HostVeranstaltung): Future[Unit]
-
-  def deleteEvents(id: Id): Future[Unit]
+trait GuestVeranstaltung {
+  def id: Id
+  def guestToken: AccessToken
+  def name: String
+  def description: Option[String]
+  def date: Option[LocalDate]
+  def time: Option[LocalTime]
+  def timeZone: Option[TimeZone]
+  def url: Option[URL]
+  def geo: Option[Geo]
+  def emailAddressRequired: Boolean
+  def phoneNumberRequired: Boolean
+  def plus1Allowed: Boolean
+  def visibility: Visibility
 }
