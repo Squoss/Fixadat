@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package domain.entities
+package domain.entity_implementations
 
+import domain.entity_interfaces.HostVeranstaltung
 import domain.persistence.RsvpEvent
 import domain.persistence.VeranstaltungEvent
 import domain.persistence.VeranstaltungPrivatizedEvent
@@ -34,7 +35,6 @@ import domain.persistence.VeranstaltungRelocatedEvent
 import domain.persistence.VeranstaltungRepublishedEvent
 import domain.persistence.VeranstaltungRescheduledEvent
 import domain.persistence.VeranstaltungRetextedEvent
-import domain.types.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.Geo

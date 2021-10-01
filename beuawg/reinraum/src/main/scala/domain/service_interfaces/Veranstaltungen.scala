@@ -22,13 +22,11 @@
  * THE SOFTWARE.
  */
 
-package domain.spi
+package domain.service_interfaces
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.entities.Veranstaltung
-import domain.services.VeranstaltungenService
-import domain.types.GuestVeranstaltung
-import domain.types.HostVeranstaltung
+import domain.entity_interfaces.GuestVeranstaltung
+import domain.entity_interfaces.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress
@@ -42,7 +40,6 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import java.util.UUID
 import scala.concurrent.Future
 
 trait Veranstaltungen {

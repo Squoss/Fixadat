@@ -24,11 +24,10 @@
 
 package dev
 
-import domain.entities.Veranstaltung
+import domain.entity_interfaces.HostVeranstaltung
 import domain.persistence.Repository
 import domain.persistence.VeranstaltungEvent
 import domain.persistence.VeranstaltungPublishedEvent
-import domain.types.HostVeranstaltung
 import domain.value_objects.Id
 import play.api.Logging
 

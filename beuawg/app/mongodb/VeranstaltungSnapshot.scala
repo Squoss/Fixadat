@@ -24,7 +24,7 @@
 
 package domain.event_sourcing
 
-import domain.types.HostVeranstaltung
+import domain.entity_interfaces.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Geo
 import domain.value_objects.Id

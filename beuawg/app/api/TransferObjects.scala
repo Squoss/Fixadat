@@ -27,8 +27,8 @@ package api
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.types.GuestVeranstaltung
-import domain.types.HostVeranstaltung
+import domain.entity_interfaces.GuestVeranstaltung
+import domain.entity_interfaces.HostVeranstaltung
 import domain.value_objects.AccessToken
 import domain.value_objects.Attendance._
 import domain.value_objects.EmailAddress

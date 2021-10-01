@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package domain.types
+package domain.entity_interfaces
 
 import domain.value_objects.AccessToken
 import domain.value_objects.Geo

@@ -25,8 +25,8 @@
 import com.google.inject.AbstractModule
 import dev.DevRepository
 import domain.persistence.Repository
-import domain.services.VeranstaltungenService
-import domain.spi.Veranstaltungen
+import domain.service_implementations.VeranstaltungenService
+import domain.service_interfaces.Veranstaltungen
 import mongodb.Mdb
 import mongodb.MdbRepository
 import play.api.Configuration

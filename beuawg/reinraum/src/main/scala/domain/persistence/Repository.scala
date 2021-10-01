@@ -24,7 +24,7 @@
 
 package domain.persistence
 
-import domain.types.HostVeranstaltung
+import domain.entity_interfaces.HostVeranstaltung
 import domain.value_objects.Id
 
 import scala.concurrent.Future

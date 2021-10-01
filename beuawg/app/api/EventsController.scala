@@ -25,9 +25,9 @@
 package api
 
 import api.TransferObjects._
-import domain.spi.Veranstaltungen
-import domain.types.GuestVeranstaltung
-import domain.types.HostVeranstaltung
+import domain.entity_interfaces.GuestVeranstaltung
+import domain.entity_interfaces.HostVeranstaltung
+import domain.service_interfaces.Veranstaltungen
 import domain.value_objects.AccessToken
 import domain.value_objects.Error._
 import domain.value_objects.Id

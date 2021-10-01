@@ -29,11 +29,11 @@ import org.scalatest.funsuite.AnyFunSuite
 class DependencyRulesTestSuite extends AnyFunSuite {
 
   val DEFAULT = ""
-  val DOMAIN_ENTITIES = "domain.entities.."
+  val DOMAIN_ENTITYIMPS = "domain.entity_implementations.."
+  val DOMAIN_ENTITYINTS = "domain.entity_interfaces.."
   val DOMAIN_PERSISTENCE = "domain.persistence.."
-  val DOMAIN_SERVICES = "domain.services.."
-  val DOMAIN_SPI = "domain.spi.."
-  val DOMAIN_TYPES = "domain.types.."
+  val DOMAIN_SERVICEIMPS = "domain.service_implementations.."
+  val DOMAIN_SERVICEINTS = "domain.service_interfaces.."
   val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
   val JAVA = "java.."
   val JAVAX = "javax.."
@@ -45,11 +45,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
     Seq(JAVA, JAVAX, SCALA, PHONENUMBERS)
   val THE_APP_INSIDE_THE_DOMAIN =
     Seq(
-      DOMAIN_ENTITIES,
+      DOMAIN_ENTITYIMPS,
+      DOMAIN_ENTITYINTS,
       DOMAIN_PERSISTENCE,
-      DOMAIN_SERVICES,
-      DOMAIN_SPI,
-      DOMAIN_TYPES,
+      DOMAIN_SERVICEIMPS,
+      DOMAIN_SERVICEINTS,
       DOMAIN_VALUEOBJECTS
     )
 
@@ -64,7 +64,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN :+ PHONENUMBERS :+ THIRDPARTY_APIS): _*
+        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
       )
       .check(classes)
   }
@@ -79,21 +79,21 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP :+ DOMAIN_PERSISTENCE :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }
 
   test(
-    "only the domain services depend on the repositories port"
+    "besides the repositories port, only the domain services and domain entities depend on the repositories port"
   ) {
 
     noClasses()
       .that()
       .resideOutsideOfPackages(
         DOMAIN_PERSISTENCE,
-        DOMAIN_SERVICES,
-        DOMAIN_ENTITIES
+        DOMAIN_SERVICEIMPS,
+        DOMAIN_ENTITYIMPS
       )
       .should()
       .dependOnClassesThat()
@@ -101,15 +101,15 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the services port depends on itself only") {
+  test("the services port depends on itself and the domain types only") {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_SPI)
+      .resideInAPackage(DOMAIN_SERVICEINTS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_TYPES :+ DOMAIN_SPI): _*
+        (NOT_THE_APP :+ DOMAIN_SERVICEINTS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }
@@ -118,10 +118,10 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackages(DOMAIN_SPI, DOMAIN_SERVICES)
+      .resideOutsideOfPackages(DOMAIN_SERVICEIMPS)
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(DOMAIN_SPI)
+      .resideInAPackage(DOMAIN_SERVICEINTS)
       .check(classes)
   }
 
@@ -140,7 +140,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackages(THIRDPARTY_APIS, DOMAIN_SERVICES)
+      .resideOutsideOfPackages(DOMAIN_SERVICEIMPS)
       .should()
       .dependOnClassesThat()
       .resideInAPackage(THIRDPARTY_APIS)
@@ -148,16 +148,16 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   }
 
   test(
-    "the domain services depend on themselves, the domain types, and the ports only"
+    "the domain services depend on themselves, the domain entities, the domain types, and the ports only"
   ) {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_SERVICES)
+      .resideInAPackage(DOMAIN_SERVICEIMPS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE :+ DOMAIN_SPI :+ THIRDPARTY_APIS :+ DOMAIN_SERVICES): _*
+        (NOT_THE_APP :+ DOMAIN_ENTITYIMPS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE :+ DOMAIN_SERVICEINTS :+ THIRDPARTY_APIS): _*
       )
       .check(classes)
   }
@@ -166,35 +166,37 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackage(DOMAIN_SERVICES)
+      .resideOutsideOfPackage(DOMAIN_SERVICEIMPS)
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(DOMAIN_SERVICES)
+      .resideInAPackage(DOMAIN_SERVICEIMPS)
       .check(classes)
   }
 
-  test("the entities depend on the domain types only") {
+  test(
+    "the entities depend on the domain types and the domain (persistence) events only"
+  ) {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_ENTITIES)
+      .resideInAPackage(DOMAIN_ENTITYIMPS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITIES :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP :+ DOMAIN_ENTITYIMPS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
       )
       .check(classes)
   }
 
-  test("the domain types depend on themselves and the value objects only") {
+  test("the domain types depend on the value objects only") {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_TYPES)
+      .resideInAPackage(DOMAIN_ENTITYINTS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_TYPES :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }
@@ -207,7 +209,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PHONENUMBERS :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS): _*
       )
       .check(classes)
   }
