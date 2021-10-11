@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Geo, HostEventType, Visibility } from "./Events";
 import { l10nContext } from "./l10nContext";
 import MapSearchClass from "./MapSearchClass";
-import UrlInput from "./UrlInput";
+import ValidatingInput from "./ValidatingInput";
 
 interface HostEventSettingsProps {
   event: HostEventType;
@@ -174,7 +174,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
           </div>
           <div>
             <label htmlFor="urlLocation" className="form-label">URL</label>
-            <UrlInput id="urlLocation" url={props.event.url} setUrl={setUrl} readOnly={!editLocation} />
+            <ValidatingInput id="urlLocation" placeholder="https://teamsorzoomorso.com/conferences/1234567890" type="url" validation="urls?url" value={props.event.url} setValue={setUrl} readOnly={!editLocation} />
           </div>
         </div>
         <div className="card-footer">
@@ -191,7 +191,7 @@ function HostEventSettings(props: HostEventSettingsProps) {
       </div>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Additional Information</h5>
+          <h5 className="card-title">{localizations['settings.who']}</h5>
           <div className="form-check form-switch">
             <input className="form-check-input" type="checkbox" id="emailAddressRequiredCheckbox" checked={emailAddressRequired} onChange={event => setEmailAddressRequired(event.target.checked)} disabled={!editEaPnP1} />
             <label className="form-check-label" htmlFor="emailAddressRequiredCheckbox">E-mail address required</label>

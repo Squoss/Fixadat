@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Clipboard from './Clipboard';
 import { l10nContext } from "./l10nContext";
+import ValidatingInput from "./ValidatingInput";
 
 
 interface HostEventLinksProps {
@@ -21,8 +22,8 @@ function HostEventLinks(props: HostEventLinksProps) {
   const guestLink = `${window.origin}/events/${id}#${guestToken}`;
   const hostLink = `${window.origin}/events/${id}?view=host#${hostToken}`
 
-  const [emailAddress, setEmailAddress] = useState("");
-  const [cellPhoneNumber, setCellPhoneNumber] = useState("");
+  const [emailAddress, setEmailAddress] = useState<string | undefined>(undefined);
+  const [cellPhoneNumber, setCellPhoneNumber] = useState<string | undefined>(undefined);
 
   const sendLinksReminderEmail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -52,20 +53,20 @@ function HostEventLinks(props: HostEventLinksProps) {
             <form className="col">
               <div className="row">
                 <div className="col-auto">
-                  <input id="emailAddress" type="email" className="form-control" placeholder="yours.truly@squawg.com" aria-label="e-mail address" value={emailAddress} onChange={event => setEmailAddress(event.target.value)} required />
+                  <ValidatingInput id="emailAddress" placeholder="yours.truly@squawg.com" type="email" validation="emailAddresses?emailAddress" value={undefined} setValue={setEmailAddress} readOnly={false} />
                 </div>
                 <div className="col-auto">
-                  <button className="btn btn-light" onClick={sendLinksReminderEmail} disabled={emailAddress === ""}>{localizations['links.byEmail']}</button>
+                  <button className="btn btn-light" onClick={sendLinksReminderEmail} disabled={emailAddress === undefined}>{localizations['links.byEmail']}</button>
                 </div>
               </div>
             </form>
             <form className="col">
               <div className="row">
                 <div className="col-auto">
-                  <input id="cellPhoneNumber" type="tel" className="form-control" placeholder="078 965 43 21" aria-label="cell-phone number" value={cellPhoneNumber} onChange={event => setCellPhoneNumber(event.target.value)} required />
+                  <ValidatingInput id="cellPhoneNumber" placeholder="078 965 43 21" type="tel" validation="cellPhoneNumbers?cellPhoneNumber" value={undefined} setValue={setCellPhoneNumber} readOnly={false} />
                 </div>
                 <div className="col-auto">
-                  <button className="btn btn-light" onClick={sendLinksReminderSms} disabled={cellPhoneNumber === ""}>{localizations['links.bySms']}</button>
+                  <button className="btn btn-light" onClick={sendLinksReminderSms} disabled={cellPhoneNumber === undefined}>{localizations['links.bySms']}</button>
                 </div>
               </div>
             </form>

@@ -37,6 +37,7 @@ settings.date = Date
 settings.time = Time
 settings.timeZone = Time zone
 settings.where = Where
+settings.who = Who
 settings.seeInvitation = see invitation
 
 reloadNotice = A new version of {0} is available.

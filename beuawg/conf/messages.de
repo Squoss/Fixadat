@@ -37,6 +37,7 @@ settings.date = Datum
 settings.time = Zeit
 settings.timeZone = Zeitzone
 settings.where = Wo
+settings.who = Wer
 settings.seeInvitation = siehe Einladung
 
 reloadNotice = Eine neue Version von Squawg ist verfügbar.

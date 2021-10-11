@@ -24,7 +24,6 @@
 
 package api
 
-import org.apache.commons.validator.routines.UrlValidator
 import play.api.Configuration
 import play.api.Environment
 import play.api.i18n.I18nSupport
@@ -88,17 +87,5 @@ class HomeController @Inject() (
   def timeZones = Action { implicit request =>
     val timeZones = TimeZone.getAvailableIDs
     Ok(Json.toJson(timeZones))
-  }
-
-  val schemes = Array("http", "https")
-  val urlValidator = new UrlValidator(schemes)
-
-  def validate(url: String) = Action { implicit request =>
-    Ok(
-      Json.obj(
-        "URL" -> url,
-        "valid" -> urlValidator.isValid(url)
-      )
-    )
   }
 }

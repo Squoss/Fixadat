@@ -6,7 +6,10 @@
 GET     /                                  api.HomeController.index
 GET     /jsonMessages                      api.HomeController.jsonMessages
 GET     /timeZones                         api.HomeController.timeZones
-GET     /validity                          api.HomeController.validate(url: String)
+
+GET     /validations/cellPhoneNumbers      api.ValidationsController.cellPhoneNumbers(cellPhoneNumber: String)
+GET     /validations/emailAddresses        api.ValidationsController.emailAddresses(emailAddress: String)
+GET     /validations/urls                  api.ValidationsController.urls(url: String)
 
 POST    /iapi/events                       api.EventsController.postEvent()
 # cf. "AnyVal wrappers for other supported types" at "https://www.playframework.com/documentation/latest/ScalaRouting#Parameter-types
