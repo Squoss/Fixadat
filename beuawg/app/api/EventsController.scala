@@ -116,7 +116,6 @@ class EventsController @Inject() (implicit
                           hostVeranstaltung.plus1Allowed,
                           hostVeranstaltung.visibility,
                           hostVeranstaltung.rsvps,
-                          hostVeranstaltung.webhook,
                           hostVeranstaltung.updated
                         )
                       )

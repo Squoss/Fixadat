@@ -1,5 +1,5 @@
 import 'bootstrap';
-import 'bootswatch/dist/minty/bootstrap.min.css';
+import 'bootswatch/dist/sketchy/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React from 'react';
 import ReactDOM from 'react-dom';

@@ -23,19 +23,15 @@
  */
 
 import com.google.inject.AbstractModule
-import dev.DevRepository
 import domain.persistence.Repository
 import domain.service_implementations.VeranstaltungenService
 import domain.service_interfaces.Veranstaltungen
 import mongodb.Mdb
-import mongodb.MdbRepository
 import play.api.Configuration
 import play.api.Environment
 import play.api.Logging
-import play.api.Mode
 import thirdparty_apis.Email
 import thirdparty_apis.Sms
-import thirdparty_apis.Webhooks
 
 class Module(
     env: Environment,
@@ -44,13 +40,16 @@ class Module(
     with Logging {
   override def configure() = {
 
-    if (env.mode == Mode.Dev && !config.get[Boolean]("di.mongodb")) {
-      bind(classOf[Repository]).to(classOf[DevRepository])
-    } else {
-      // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
-      bind(classOf[Mdb]).asEagerSingleton
-      bind(classOf[Repository]).to(classOf[MdbRepository])
-    }
+    // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
+    bind(classOf[Mdb]).asEagerSingleton
+    // we may not need it when env.mode == play.api.Mode.Dev, but it won't cause any problem as long as nobody invokes Mdb.apply()
+
+    val dbImplementationName = config.get[String]("di.db")
+    val dbImplementationClass: Class[_ <: Repository] = env.classLoader
+      .loadClass(dbImplementationName)
+      .asSubclass(classOf[Repository])
+    logger.debug(s"db implementation class is $dbImplementationClass")
+    bind(classOf[Repository]).to(dbImplementationClass)
 
     val emailImplementationName = config.get[String]("di.email")
     val emailImplementationClass: Class[_ <: Email] = env.classLoader
@@ -65,15 +64,6 @@ class Module(
       .asSubclass(classOf[Sms])
     logger.debug(s"SMS implementation class is $smsImplementationClass")
     bind(classOf[Sms]).to(smsImplementationClass)
-
-    val webhooksImplementationName = config.get[String]("di.webhooks")
-    val webhooksImplementationClass: Class[_ <: Webhooks] = env.classLoader
-      .loadClass(webhooksImplementationName)
-      .asSubclass(classOf[Webhooks])
-    logger.debug(
-      s"webhooks implementation class is $webhooksImplementationClass"
-    )
-    bind(classOf[Webhooks]).to(webhooksImplementationClass)
 
     bind(classOf[Veranstaltungen]).to(classOf[VeranstaltungenService])
   }

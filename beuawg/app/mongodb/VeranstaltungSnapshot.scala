@@ -54,7 +54,6 @@ case class VeranstaltungSnapshot(
     plus1Allowed: Boolean,
     visibility: Visibility,
     rsvps: Seq[Rsvp],
-    webhook: Option[URL],
     updated: Instant,
     replayedEvents: Int
 ) extends HostVeranstaltung

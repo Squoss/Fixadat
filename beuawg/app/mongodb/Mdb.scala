@@ -39,7 +39,7 @@ import play.api.inject.ApplicationLifecycle
 
 import javax.inject.Inject
 import javax.inject.Singleton
-import scala.concurrent._
+import scala.concurrent.Future
 
 @Singleton
 class Mdb @Inject() (
@@ -59,12 +59,11 @@ class Mdb @Inject() (
     .withCodecRegistry(codecRegistry)
   logger.info("opened connection to MongoDB")
 
-  def apply(collection: String): MongoCollection[Document] =
-    database.getCollection(collection)
-
   applicationLifecycle.addStopHook(() => {
     logger.info("closing connection to MongoDB")
     Future.successful(client.close())
   })
 
+  def apply(collection: String): MongoCollection[Document] =
+    database.getCollection(collection)
 }

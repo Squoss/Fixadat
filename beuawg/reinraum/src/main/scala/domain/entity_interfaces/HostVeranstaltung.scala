@@ -35,5 +35,4 @@ trait HostVeranstaltung extends GuestVeranstaltung {
   def hostToken: AccessToken
   def rsvps: Seq[Rsvp]
   def updated: Instant
-  def webhook: Option[URL]
 }

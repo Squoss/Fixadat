@@ -66,7 +66,6 @@ final class Veranstaltung private (
     var plus1Allowed: Boolean,
     var visibility: Visibility,
     private val _rsvps: mutable.Buffer[Rsvp],
-    var webhook: Option[URL],
     var updated: Instant
 ) extends HostVeranstaltung {
 
@@ -89,7 +88,6 @@ final class Veranstaltung private (
       plus1Allowed: Boolean = this.plus1Allowed,
       visibility: Visibility = this.visibility,
       rsvps: Seq[Rsvp] = this.rsvps,
-      webhook: Option[URL] = this.webhook,
       updated: Instant = this.updated
   ) = Veranstaltung(
     id,
@@ -108,7 +106,6 @@ final class Veranstaltung private (
     plus1Allowed,
     visibility,
     rsvps,
-    webhook,
     updated
   )
 
@@ -183,7 +180,6 @@ object Veranstaltung {
       plus1Allowed: Boolean,
       visibility: Visibility,
       rsvps: Seq[Rsvp],
-      webhook: Option[URL],
       updated: Instant
   ) =
     new Veranstaltung(
@@ -203,7 +199,6 @@ object Veranstaltung {
       plus1Allowed,
       visibility,
       rsvps.toBuffer,
-      webhook,
       updated
     )
 
@@ -225,7 +220,6 @@ object Veranstaltung {
       snapshot.plus1Allowed,
       snapshot.visibility,
       snapshot.rsvps.toBuffer,
-      snapshot.webhook,
       snapshot.updated
     )
 
@@ -254,7 +248,6 @@ object Veranstaltung {
           false,
           Public,
           Nil,
-          None,
           occurred
         )
           .replay(eventsTail)

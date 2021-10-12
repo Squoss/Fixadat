@@ -80,7 +80,6 @@ case class HostEvent(
     plus1Allowed: Boolean,
     visibility: Visibility,
     rsvps: Seq[Rsvp],
-    webhook: Option[URL],
     updated: Instant
 ) extends HostVeranstaltung
 

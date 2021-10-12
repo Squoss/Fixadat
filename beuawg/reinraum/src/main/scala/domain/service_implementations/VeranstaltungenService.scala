@@ -48,7 +48,6 @@ import domain.value_objects.Id
 import domain.value_objects.Visibility._
 import thirdparty_apis.Email
 import thirdparty_apis.Sms
-import thirdparty_apis.Webhooks
 
 import java.net.URL
 import java.time.Instant
@@ -68,8 +67,7 @@ class VeranstaltungenService @Inject() (implicit
     ec: ExecutionContext,
     repository: Repository,
     email: Email,
-    sms: Sms,
-    webhooks: Webhooks
+    sms: Sms
 ) extends Veranstaltungen {
 
   override def publishVeranstaltung(): Future[(Id, AccessToken)] = {
@@ -398,8 +396,6 @@ class VeranstaltungenService @Inject() (implicit
               Instant.now()
             )
           )
-          veranstaltung.webhook
-            .foreach(webhooks.notify(_, "TODO")) // fire & forget
           Right(())
         }
       )
