@@ -25,11 +25,10 @@
 package mongodb
 
 // Replaces the default UuidCodec with one that uses the new standard UUID representation
-// cf. https://mongodb.github.io/mongo-java-driver/4.2/driver-scala/tutorials/databases-collections/
+// cf. https://mongodb.github.io/mongo-java-driver/4.3/driver-scala/tutorials/databases-collections/#codecregistry
 import org.bson.UuidRepresentation
 import org.bson.codecs.UuidCodec
 import org.bson.codecs.configuration.CodecRegistries
-// In general, you should only need the org.mongodb.scala and org.bson namespaces in your code.
 import org.mongodb.scala.Document
 import org.mongodb.scala.MongoClient
 import org.mongodb.scala.MongoCollection
