@@ -15,14 +15,15 @@ import domain.persistence.VeranstaltungRescheduledEvent
 import domain.persistence.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Id
+import org.mongodb.scala.Document
+import org.mongodb.scala.Observer
 import org.mongodb.scala.bson.BsonArray
 import org.mongodb.scala.bson.BsonBinary
 import org.mongodb.scala.bson.BsonNull
-import org.mongodb.scala.Document
-import org.mongodb.scala.Observer
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.model.IndexOptions
 import org.mongodb.scala.model.Indexes
+import org.mongodb.scala.model.Updates.push
 import play.api.Logging
 
 import java.time.Instant
@@ -46,8 +47,14 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val VersionKey = "version"
   val GuestTokenKey = "guestToken"
   val HostTokenKey = "hostToken"
+  val NameKey = "name"
+  val DescriptionKey = "description"
   val TypeKey = "type"
+  val RetextedValue = "retexted"
   val PublishedValue = "published"
+  val ProtectedValue = "protected"
+  val PrivatizedValue = "privatized"
+  val RepublishedValue = "republished"
 
   logger.info(s"ensuring indices for ${Collection}")
   mdb(Collection)
@@ -95,13 +102,43 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       })
   }
 
+  private def logEvent(id: Id, document: Document): Future[Unit] =
+    mdb(Collection)
+      .updateOne(Filters.equal(IdKey, id.wert), push(EventsKey, document))
+      .toFuture()
+      .map(_ => ())
+
+  private def logEvent(
+      event: VeranstaltungEvent,
+      typeValue: String
+  ): Future[Unit] = {
+    require(
+      typeValue == ProtectedValue || typeValue == PrivatizedValue || typeValue == RepublishedValue
+    )
+
+    val document = Document(
+      TypeKey -> typeValue,
+      OccurredKey -> new Date(event.occurred.toEpochMilli),
+      VersionKey -> event.version
+    )
+    logEvent(event.id, document)
+  }
+
   override def logEvent(event: VeranstaltungEvent): Future[Unit] = event match {
     case VeranstaltungPublishedEvent(_, _, _, _) =>
       val msg =
         "VeranstaltungPublishedEvent case should have been handled by logEvent(VeranstaltungPublishedEvent)"
       logger.error(msg)
       Future.failed(new RuntimeException(msg))
-    case VeranstaltungRetextedEvent(id, name, description, occurred) => ???
+    case VeranstaltungRetextedEvent(_, name, description, _) =>
+      val document = org.mongodb.scala.bson.collection.mutable.Document(
+        TypeKey -> RetextedValue,
+        OccurredKey -> new Date(event.occurred.toEpochMilli),
+        VersionKey -> event.version,
+        NameKey -> name
+      )
+      description.foreach(d => document + (DescriptionKey -> d))
+      logEvent(event.id, document.toBsonDocument)
     case VeranstaltungRescheduledEvent(id, date, time, timeZone, occurred) =>
       ???
     case VeranstaltungRelocatedEvent(id, url, geo, occurred) => ???
@@ -113,9 +150,12 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           occurred
         ) =>
       ???
-    case VeranstaltungProtectedEvent(id, occurred)   => ???
-    case VeranstaltungPrivatizedEvent(id, occurred)  => ???
-    case VeranstaltungRepublishedEvent(id, occurred) => ???
+    case VeranstaltungProtectedEvent(_, _) =>
+      logEvent(event, ProtectedValue)
+    case VeranstaltungPrivatizedEvent(_, _) =>
+      logEvent(event, PrivatizedValue)
+    case VeranstaltungRepublishedEvent(_, _) =>
+      logEvent(event, RepublishedValue)
     case RsvpEvent(id, nmae, emailAddress, phoneNumber, attendance, occurred) =>
       ???
   }
@@ -131,6 +171,28 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           id,
           AccessToken(doc(GuestTokenKey).asBinary.asUuid),
           AccessToken(doc(HostTokenKey).asBinary.asUuid),
+          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+        )
+      case RetextedValue =>
+        VeranstaltungRetextedEvent(
+          id,
+          doc(NameKey).asString.getValue,
+          doc.get(DescriptionKey).map(_.asString.getValue),
+          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+        )
+      case ProtectedValue =>
+        VeranstaltungProtectedEvent(
+          id,
+          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+        )
+      case PrivatizedValue =>
+        VeranstaltungPrivatizedEvent(
+          id,
+          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+        )
+      case RepublishedValue =>
+        VeranstaltungRepublishedEvent(
+          id,
           Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
         )
       case _ => ???
@@ -170,5 +232,9 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   override def fastForwardSnapshot(snapshot: HostVeranstaltung): Future[Unit] =
     Future(())
 
-  override def deleteEvents(id: Id): Future[Unit] = ???
+  override def deleteEvents(id: Id): Future[Unit] = mdb(
+    Collection
+  ).deleteOne(Filters.equal(IdKey, id.wert))
+    .toFuture()
+    .map(_ => ())
 }
