@@ -14,20 +14,24 @@ import domain.persistence.VeranstaltungRepublishedEvent
 import domain.persistence.VeranstaltungRescheduledEvent
 import domain.persistence.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
+import domain.value_objects.Geo
 import domain.value_objects.Id
 import org.mongodb.scala.Document
 import org.mongodb.scala.Observer
 import org.mongodb.scala.bson.BsonArray
 import org.mongodb.scala.bson.BsonBinary
-import org.mongodb.scala.bson.BsonNull
+import org.mongodb.scala.bson.BsonTimestamp
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.model.IndexOptions
 import org.mongodb.scala.model.Indexes
-import org.mongodb.scala.model.Updates.push
+import org.mongodb.scala.model.Updates
 import play.api.Logging
 
+import java.net.URL
 import java.time.Instant
-import java.util.Date
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.TimeZone
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -49,9 +53,16 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val HostTokenKey = "hostToken"
   val NameKey = "name"
   val DescriptionKey = "description"
-  val TypeKey = "type"
-  val RetextedValue = "retexted"
+  val DateKey = "date"
+  val TimeKey = "time"
+  val TimeZoneKey = "timeZone"
+  val UrlKey = "url"
+  val GeoKey = "geo"
+  val TypeKey = "et"
   val PublishedValue = "published"
+  val RetextedValue = "retexted"
+  val RescheduledValue = "rescheduled"
+  val RelocatedValue = "relocated"
   val ProtectedValue = "protected"
   val PrivatizedValue = "privatized"
   val RepublishedValue = "republished"
@@ -85,7 +96,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       EventsKey -> Seq(
         Document(
           TypeKey -> PublishedValue,
-          OccurredKey -> new Date(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
           VersionKey -> event.version,
           GuestTokenKey -> new BsonBinary(event.guestToken.wert),
           HostTokenKey -> new BsonBinary(event.hostToken.wert)
@@ -104,7 +115,10 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
 
   private def logEvent(id: Id, document: Document): Future[Unit] =
     mdb(Collection)
-      .updateOne(Filters.equal(IdKey, id.wert), push(EventsKey, document))
+      .updateOne(
+        Filters.equal(IdKey, id.wert),
+        Updates.push(EventsKey, document)
+      )
       .toFuture()
       .map(_ => ())
 
@@ -118,7 +132,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
 
     val document = Document(
       TypeKey -> typeValue,
-      OccurredKey -> new Date(event.occurred.toEpochMilli),
+      OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
       VersionKey -> event.version
     )
     logEvent(event.id, document)
@@ -133,15 +147,40 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     case VeranstaltungRetextedEvent(_, name, description, _) =>
       val document = org.mongodb.scala.bson.collection.mutable.Document(
         TypeKey -> RetextedValue,
-        OccurredKey -> new Date(event.occurred.toEpochMilli),
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
         VersionKey -> event.version,
         NameKey -> name
       )
-      description.foreach(d => document + (DescriptionKey -> d))
+      description.foreach(d => document += (DescriptionKey -> d))
       logEvent(event.id, document.toBsonDocument)
-    case VeranstaltungRescheduledEvent(id, date, time, timeZone, occurred) =>
-      ???
-    case VeranstaltungRelocatedEvent(id, url, geo, occurred) => ???
+    case VeranstaltungRescheduledEvent(_, date, time, timeZone, _) =>
+      val document = org.mongodb.scala.bson.collection.mutable.Document(
+        TypeKey -> RescheduledValue,
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> event.version
+      )
+      date.foreach(d => document += (DateKey -> d.toString))
+      time.foreach(t => document += (TimeKey -> t.toString))
+      timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
+      logEvent(event.id, document.toBsonDocument)
+    case VeranstaltungRelocatedEvent(_, url, geo, _) =>
+      val document = org.mongodb.scala.bson.collection.mutable.Document(
+        TypeKey -> RelocatedValue,
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> event.version
+      )
+      url.foreach(u => document += (UrlKey -> u.toExternalForm))
+      geo.foreach(g => {
+        val geoDoc = org.mongodb.scala.bson.collection.mutable.Document(
+          "geoJson" -> Document(
+            "type" -> "Point",
+            "coordinates" -> BsonArray(g.longitude, g.latitude)
+          )
+        )
+        g.name.foreach(n => geoDoc += ("name" -> n))
+        document += (GeoKey -> geoDoc)
+      })
+      logEvent(event.id, document.toBsonDocument)
     case VeranstaltungRecalibratedEvent(
           id,
           emailAddressRequired,
@@ -160,6 +199,16 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       ???
   }
 
+  private def toGeo(doc: Document) = {
+    val coordinates =
+      doc("geoJson").asDocument.get("coordinates").asArray.getValues.asScala
+    Geo(
+      doc.get("name").map(_.asString.getValue),
+      coordinates(0).asDouble.getValue,
+      coordinates(1).asDouble.getValue
+    )
+  }
+
   private def toVeranstaltungEvent(id: Id, doc: Document) = {
     val eventType = doc(TypeKey).asString.getValue
     val version = doc(VersionKey).asInt32.getValue
@@ -171,29 +220,46 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           id,
           AccessToken(doc(GuestTokenKey).asBinary.asUuid),
           AccessToken(doc(HostTokenKey).asBinary.asUuid),
-          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case RetextedValue =>
         VeranstaltungRetextedEvent(
           id,
           doc(NameKey).asString.getValue,
           doc.get(DescriptionKey).map(_.asString.getValue),
-          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+        )
+      case RescheduledValue =>
+        VeranstaltungRescheduledEvent(
+          id,
+          doc.get(DateKey).map(d => LocalDate.parse(d.asString.getValue)),
+          doc.get(TimeKey).map(t => LocalTime.parse(t.asString.getValue)),
+          doc
+            .get(TimeZoneKey)
+            .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+        )
+      case RelocatedValue =>
+        VeranstaltungRelocatedEvent(
+          id,
+          doc.get(UrlKey).map(u => new URL(u.asString.getValue)),
+          doc.get(GeoKey).map(g => toGeo(g.asDocument)),
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case ProtectedValue =>
         VeranstaltungProtectedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case PrivatizedValue =>
         VeranstaltungPrivatizedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case RepublishedValue =>
         VeranstaltungRepublishedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asDateTime.getValue)
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case _ => ???
     }
