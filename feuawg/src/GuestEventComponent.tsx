@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { GuestEventType } from './Events';
+import { Attendance, GuestEventType } from './Events';
 import GuestEventRsvp from './GuestEventRsvp';
 import { l10nContext, Localizations } from './l10nContext';
 import MapDisplayClass from './MapDisplayClass';
@@ -8,6 +8,7 @@ import MapDisplayClass from './MapDisplayClass';
 interface GuestEventProps {
   event: GuestEventType;
   timeZones: Array<string>;
+  saveRsvp: (name: string, attendance: Attendance, emailAddress?: string, phoneNumber?: string) => void;
 }
 
 function prettyLocalDateTimeString(localizations: Localizations, date?: string, time?: string, timeZone?: string) {
@@ -66,7 +67,7 @@ function GuestEvent(props: GuestEventProps) {
         </div>
       </div>
       <h2>Anmeldung / Abmeldung</h2>
-      <GuestEventRsvp event={props.event} />
+      <GuestEventRsvp event={props.event} saveRsvp={props.saveRsvp} />
     </React.Fragment>
   );
 }

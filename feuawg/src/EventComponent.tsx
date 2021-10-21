@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
-import { EventType, Geo, GuestEventType, HostEventType, Visibility } from './Events';
+import { Attendance, EventType, Geo, GuestEventType, HostEventType, Visibility } from './Events';
 import { get, patch, post, put } from './fetchJson';
 import GuestEventComponent from './GuestEventComponent';
 import HostEventComponent, { ACTIVE_TAB } from './HostEventComponent';
@@ -105,6 +105,13 @@ function EventComponent(props: {}) {
     }
   }).catch(error => console.error(`failed to post event reminders: ${error}`));
 
+  const saveRsvp = (name: string, attendance: Attendance, emailAddress?: string, phoneNumber?: string) => post<void>(`/iapi/events/${id}/RSVPs`, token.substring(1), { name, attendance, emailAddress, phoneNumber }).then(responseJson => {
+    console.debug(responseJson.status);
+    if (responseJson.status !== 204) {
+      throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    }
+  }).catch(error => console.error(`failed to post event reminders: ${error}`));
+
   if (token === "") {
     return (<p>Dude, where's my token?!</p>);
   }
@@ -129,7 +136,7 @@ function EventComponent(props: {}) {
     return (
       <Switch>
         <Route exact path="/events/:event">
-          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} timeZones={timeZones} />}
+          {"host" === view ? (brandNew ? <Redirect to={`/events/${id}/links?brandNew=true${token}`} /> : <Redirect to={`/events/${id}/RSVPs${token}`} />) : <GuestEventComponent event={event as GuestEventType} timeZones={timeZones} saveRsvp={saveRsvp} />}
         </Route>
         <Route path="/events/:event/settings"><HostEventComponent activeTab={ACTIVE_TAB.SETTINGS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} timeZones={timeZones} /></Route>
         <Route path="/events/:event/RSVPs"><HostEventComponent activeTab={ACTIVE_TAB.RSVPS} event={event as HostEventType} saveEventText={saveEventText} saveEventSchedule={saveEventSchedule} saveEventLocation={saveEventLocation} saveEventEaPnP1={saveEventEaPnP1} saveEventVisibility={saveEventVisibility} sendLinksReminder={sendLinksReminder} timeZones={timeZones} /></Route>

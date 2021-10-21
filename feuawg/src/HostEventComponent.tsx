@@ -41,7 +41,7 @@ function HostEvent(props: HostEventProps) {
       content = <HostEventLinks id={id} hostToken={hostToken} guestToken={guestToken} sendLinksReminder={props.sendLinksReminder} />;
       break;
     case ACTIVE_TAB.RSVPS:
-      content = <HostEventRsvps />;
+      content = <HostEventRsvps event={props.event} />;
       break;
     case ACTIVE_TAB.SETTINGS:
       content = <HostEventSettings event={props.event} timeZones={props.timeZones} saveEventText={props.saveEventText} saveEventSchedule={props.saveEventSchedule} saveEventLocation={props.saveEventLocation} saveEventEaPnP1={props.saveEventEaPnP1} saveEventVisibility={props.saveEventVisibility} />;
