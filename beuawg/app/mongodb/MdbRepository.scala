@@ -1,5 +1,7 @@
 package mongodb
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.mongodb.DuplicateKeyException
 import domain.entity_interfaces.HostVeranstaltung
 import domain.persistence.Repository
@@ -14,6 +16,7 @@ import domain.persistence.VeranstaltungRepublishedEvent
 import domain.persistence.VeranstaltungRescheduledEvent
 import domain.persistence.VeranstaltungRetextedEvent
 import domain.value_objects.AccessToken
+import domain.value_objects.EmailAddress
 import domain.value_objects.Geo
 import domain.value_objects.Id
 import org.mongodb.scala.Document
@@ -58,14 +61,22 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val TimeZoneKey = "timeZone"
   val UrlKey = "url"
   val GeoKey = "geo"
+  val EmailAddressRequiredKey = "ear"
+  val PhoneNumberRequiredKey = "pnr"
+  val Plus1AllowedKey = "p1a"
+  val EmailAddressKey = "ea"
+  val PhoneNumberKey = "pn"
+  val AttendanceKey = "attendance"
   val TypeKey = "et"
   val PublishedValue = "published"
   val RetextedValue = "retexted"
   val RescheduledValue = "rescheduled"
   val RelocatedValue = "relocated"
+  val RecalibratedValue = "recalibrated"
   val ProtectedValue = "protected"
   val PrivatizedValue = "privatized"
   val RepublishedValue = "republished"
+  val RsvpValue = "rsvp"
 
   logger.info(s"ensuring indices for ${Collection}")
   mdb(Collection)
@@ -182,21 +193,42 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       })
       logEvent(event.id, document.toBsonDocument)
     case VeranstaltungRecalibratedEvent(
-          id,
+          _,
           emailAddressRequired,
           phoneNumberRequired,
           plus1Allowed,
-          occurred
+          _
         ) =>
-      ???
+      val document = Document(
+        TypeKey -> RecalibratedValue,
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> event.version,
+        EmailAddressRequiredKey -> emailAddressRequired,
+        PhoneNumberRequiredKey -> phoneNumberRequired,
+        Plus1AllowedKey -> plus1Allowed
+      )
+      logEvent(event.id, document)
     case VeranstaltungProtectedEvent(_, _) =>
       logEvent(event, ProtectedValue)
     case VeranstaltungPrivatizedEvent(_, _) =>
       logEvent(event, PrivatizedValue)
     case VeranstaltungRepublishedEvent(_, _) =>
       logEvent(event, RepublishedValue)
-    case RsvpEvent(id, nmae, emailAddress, phoneNumber, attendance, occurred) =>
-      ???
+    case RsvpEvent(_, name, emailAddress, phoneNumber, attendance, _) =>
+      val document = org.mongodb.scala.bson.collection.mutable.Document(
+        TypeKey -> RsvpValue,
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> event.version,
+        NameKey -> name,
+        AttendanceKey -> attendance.id
+      )
+      emailAddress.foreach(ea => document += (EmailAddressKey -> ea.wert))
+      phoneNumber.foreach(pn =>
+        document += (PhoneNumberKey -> PhoneNumberUtil
+          .getInstance()
+          .format(pn, PhoneNumberFormat.E164))
+      )
+      logEvent(event.id, document.toBsonDocument)
   }
 
   private def toGeo(doc: Document) = {
@@ -246,6 +278,14 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           doc.get(GeoKey).map(g => toGeo(g.asDocument)),
           Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
+      case RecalibratedValue =>
+        VeranstaltungRecalibratedEvent(
+          id,
+          doc(EmailAddressRequiredKey).asBoolean.getValue,
+          doc(PhoneNumberRequiredKey).asBoolean.getValue,
+          doc(Plus1AllowedKey).asBoolean.getValue,
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+        )
       case ProtectedValue =>
         VeranstaltungProtectedEvent(
           id,
@@ -261,7 +301,21 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           id,
           Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
-      case _ => ???
+      case RsvpValue =>
+        RsvpEvent(
+          id,
+          doc(NameKey).asString.getValue,
+          doc
+            .get(EmailAddressKey)
+            .map(ea => EmailAddress(ea.asString.getValue)),
+          doc
+            .get(PhoneNumberKey)
+            .map(pn =>
+              PhoneNumberUtil.getInstance().parse(pn.asString.getValue, "CH")
+            ),
+          domain.value_objects.Attendance(doc(AttendanceKey).asInt32.getValue),
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+        )
     }
   }
 
