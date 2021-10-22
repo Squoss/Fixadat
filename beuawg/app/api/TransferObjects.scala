@@ -80,7 +80,8 @@ case class HostEvent(
     plus1Allowed: Boolean,
     visibility: Visibility,
     rsvps: Seq[Rsvp],
-    updated: Instant
+    updated: Instant,
+    replayedEvents: Int
 ) extends HostVeranstaltung
 
 case class P(visibility: Visibility)

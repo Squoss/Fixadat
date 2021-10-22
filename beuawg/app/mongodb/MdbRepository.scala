@@ -19,14 +19,17 @@ import domain.value_objects.AccessToken
 import domain.value_objects.EmailAddress
 import domain.value_objects.Geo
 import domain.value_objects.Id
+import domain.value_objects.Rsvp
 import org.mongodb.scala.Document
 import org.mongodb.scala.Observer
 import org.mongodb.scala.bson.BsonArray
 import org.mongodb.scala.bson.BsonBinary
+import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.bson.BsonTimestamp
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.model.IndexOptions
 import org.mongodb.scala.model.Indexes
+import org.mongodb.scala.model.Projections
 import org.mongodb.scala.model.Updates
 import play.api.Logging
 
@@ -49,6 +52,11 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val Collection = "veranstaltungen"
   val IdKey = "id"
   val SnapshotKey = "snapshot"
+  val CreatedKey = "created"
+  val VisibilityKey = "visibility"
+  val RsvpsKey = "rsvps"
+  val UpdatedKey = "updated"
+  val ReplayedEventsKey = "replayedEvents"
   val EventsKey = "events"
   val OccurredKey = "occurred"
   val VersionKey = "version"
@@ -104,6 +112,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   override def logEvent(event: VeranstaltungPublishedEvent): Future[Boolean] = {
     val document = Document(
       IdKey -> event.id.wert,
+      ReplayedEventsKey -> 0,
       EventsKey -> Seq(
         Document(
           TypeKey -> PublishedValue,
@@ -319,12 +328,101 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     }
   }
 
+  private def toRsvp(document: Document) = Rsvp(
+    document(NameKey).asString.getValue,
+    document
+      .get(EmailAddressKey)
+      .map(ea => EmailAddress(ea.asString.getValue)),
+    document
+      .get(PhoneNumberKey)
+      .map(pn =>
+        PhoneNumberUtil.getInstance().parse(pn.asString.getValue, "CH")
+      ),
+    domain.value_objects.Attendance(document(AttendanceKey).asInt32.getValue)
+  )
+
+  private def toSnapshot(id: Id, document: Document, replayedEvents: Int) =
+    VeranstaltungSnapshot(
+      id,
+      Instant
+        .ofEpochMilli(document(CreatedKey).asTimestamp.getValue),
+      AccessToken(document(GuestTokenKey).asBinary.asUuid),
+      AccessToken(document(HostTokenKey).asBinary.asUuid),
+      document(NameKey).asString.getValue,
+      document.get(DescriptionKey).map(_.asString.getValue),
+      document
+        .get(DateKey)
+        .map(d => LocalDate.parse(d.asString.getValue)),
+      document
+        .get(TimeKey)
+        .map(t => LocalTime.parse(t.asString.getValue)),
+      document
+        .get(TimeZoneKey)
+        .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
+      document.get(UrlKey).map(u => new URL(u.asString.getValue)),
+      document.get(GeoKey).map(g => toGeo(g.asDocument)),
+      document(EmailAddressRequiredKey).asBoolean.getValue,
+      document(PhoneNumberRequiredKey).asBoolean.getValue,
+      document(Plus1AllowedKey).asBoolean.getValue,
+      domain.value_objects
+        .Visibility(document(VisibilityKey).asInt32.getValue),
+      document(RsvpsKey).asArray.getValues.asScala.toSeq.map(bv =>
+        toRsvp(bv.asDocument)
+      ),
+      Instant
+        .ofEpochMilli(document(UpdatedKey).asTimestamp.getValue),
+      replayedEvents
+    )
+
   override def readEvents(
       id: Id
   ): Future[(Option[HostVeranstaltung], Seq[VeranstaltungEvent])] = mdb(
     Collection
   ).find(Filters.equal(IdKey, id.wert))
+    .projection(Projections.exclude(EventsKey))
     .toFuture()
+    .flatMap(_ match {
+      case Nil => Future((None, Seq()))
+      case Seq(document) =>
+        val replayedEvents = document(ReplayedEventsKey).asInt32.getValue
+        mdb(Collection)
+          .find(Filters.equal(IdKey, id.wert))
+          .projection(
+            Projections.slice(EventsKey, replayedEvents, Int.MaxValue)
+          )
+          .toFuture()
+          .map(docs =>
+            (
+              if (replayedEvents > 0) {
+                Some(
+                  toSnapshot(
+                    id,
+                    document(SnapshotKey).asDocument,
+                    replayedEvents
+                  )
+                )
+              } else { None },
+              docs
+                .head(EventsKey)
+                .asArray
+                .getValues
+                .asScala
+                .map(eventDoc =>
+                  toVeranstaltungEvent(
+                    Id(document(IdKey).asInt32.getValue),
+                    eventDoc.asDocument
+                  )
+                )
+                .toSeq
+            )
+          )
+      case documents =>
+        val msg =
+          s"DB corrupt! found ${documents.size} documents with supposedly unique id ${id}"
+        logger.error(msg)
+        Future.failed(new RuntimeException(msg))
+    })
+  /*
     .transform(_ match {
       case Success(Nil) => Success((None, Seq()))
       case Success(Seq(document)) =>
@@ -348,9 +446,67 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
         Failure(new RuntimeException(msg))
       case Failure(exception) => Failure(exception)
     })
+   */
 
-  override def fastForwardSnapshot(snapshot: HostVeranstaltung): Future[Unit] =
-    Future(())
+  private def fromRsvps(rsvps: Seq[Rsvp]): BsonArray = {
+    val bsonArray = new BsonArray()
+    rsvps.foreach(rsvp => {
+      val document = org.mongodb.scala.bson.collection.mutable
+        .Document(NameKey -> rsvp.name, AttendanceKey -> rsvp.attendance.id)
+      rsvp.emailAddress.foreach(ea => document += (EmailAddressKey -> ea.wert))
+      rsvp.phoneNumber.foreach(pn =>
+        document += (PhoneNumberKey -> PhoneNumberUtil
+          .getInstance()
+          .format(pn, PhoneNumberFormat.E164))
+      )
+      bsonArray.add(document.toBsonDocument)
+    })
+    bsonArray
+  }
+  override def fastForwardSnapshot(
+      snapshot: HostVeranstaltung
+  ): Future[Unit] = {
+    val document = org.mongodb.scala.bson.collection.mutable.Document(
+      CreatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
+      GuestTokenKey -> new BsonBinary(snapshot.guestToken.wert),
+      HostTokenKey -> new BsonBinary(snapshot.hostToken.wert),
+      NameKey -> snapshot.name,
+      EmailAddressRequiredKey -> snapshot.emailAddressRequired,
+      PhoneNumberRequiredKey -> snapshot.phoneNumberRequired,
+      Plus1AllowedKey -> snapshot.plus1Allowed,
+      VisibilityKey -> snapshot.visibility.id,
+      RsvpsKey -> fromRsvps(snapshot.rsvps),
+      UpdatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli)
+    )
+    snapshot.description.foreach(d => document += (DescriptionKey -> d))
+    snapshot.date.foreach(d => document += (DateKey -> d.toString))
+    snapshot.time.foreach(t => document += (TimeKey -> t.toString))
+    snapshot.timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
+    snapshot.url.foreach(u => document += (UrlKey -> u.toExternalForm))
+    snapshot.geo.foreach(g => {
+      val geoDoc = org.mongodb.scala.bson.collection.mutable.Document(
+        "geoJson" -> Document(
+          "type" -> "Point",
+          "coordinates" -> BsonArray(g.longitude, g.latitude)
+        )
+      )
+      g.name.foreach(n => geoDoc += ("name" -> n))
+      document += (GeoKey -> geoDoc)
+    })
+    mdb(Collection)
+      .updateOne(
+        Filters.and(
+          Filters.equal(IdKey, snapshot.id.wert),
+          Filters.lt(ReplayedEventsKey, snapshot.replayedEvents)
+        ),
+        Updates.combine(
+          Updates.set(ReplayedEventsKey, snapshot.replayedEvents),
+          Updates.set(SnapshotKey, document)
+        )
+      )
+      .toFuture()
+      .map(_ => ())
+  }
 
   override def deleteEvents(id: Id): Future[Unit] = mdb(
     Collection

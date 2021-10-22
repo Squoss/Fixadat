@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package domain.event_sourcing
+package mongodb
 
 import domain.entity_interfaces.HostVeranstaltung
 import domain.value_objects.AccessToken

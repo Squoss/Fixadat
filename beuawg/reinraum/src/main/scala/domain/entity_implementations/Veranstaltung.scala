@@ -66,7 +66,8 @@ final class Veranstaltung private (
     var plus1Allowed: Boolean,
     var visibility: Visibility,
     private val _rsvps: mutable.Buffer[Rsvp],
-    var updated: Instant
+    var updated: Instant,
+    var replayedEvents: Int
 ) extends HostVeranstaltung {
 
   def rsvps: Seq[Rsvp] = _rsvps.toSeq
@@ -88,7 +89,8 @@ final class Veranstaltung private (
       plus1Allowed: Boolean = this.plus1Allowed,
       visibility: Visibility = this.visibility,
       rsvps: Seq[Rsvp] = this.rsvps,
-      updated: Instant = this.updated
+      updated: Instant = this.updated,
+      replayedEvents: Int = this.replayedEvents
   ) = Veranstaltung(
     id,
     created,
@@ -106,7 +108,8 @@ final class Veranstaltung private (
     plus1Allowed,
     visibility,
     rsvps,
-    updated
+    updated,
+    replayedEvents
   )
 
   override def equals(that: Any) = that match {
@@ -157,6 +160,7 @@ final class Veranstaltung private (
           _rsvps += Rsvp(name, emailAddress, phoneNumber, attendance)
       }
       updated = event.occurred
+      replayedEvents += 1
     })
     this
   }
@@ -180,7 +184,8 @@ object Veranstaltung {
       plus1Allowed: Boolean,
       visibility: Visibility,
       rsvps: Seq[Rsvp],
-      updated: Instant
+      updated: Instant,
+      replayedEvents: Int
   ) =
     new Veranstaltung(
       id,
@@ -199,7 +204,8 @@ object Veranstaltung {
       plus1Allowed,
       visibility,
       rsvps.toBuffer,
-      updated
+      updated,
+      replayedEvents
     )
 
   def apply(snapshot: HostVeranstaltung) =
@@ -220,7 +226,8 @@ object Veranstaltung {
       snapshot.plus1Allowed,
       snapshot.visibility,
       snapshot.rsvps.toBuffer,
-      snapshot.updated
+      snapshot.updated,
+      snapshot.replayedEvents
     )
 
   def replay(events: Seq[VeranstaltungEvent]): Veranstaltung =
@@ -248,7 +255,8 @@ object Veranstaltung {
           false,
           Public,
           Nil,
-          occurred
+          occurred,
+          1
         )
           .replay(eventsTail)
     }
