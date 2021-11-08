@@ -42,7 +42,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val MAILJET = "com.mailjet.."
   val MONGODB_ADAPTER =
     "mongodb.." // the MongoDB driver starts its packages with com or org
-  val MONGODB_DRIVER = Seq("org.bson..", "org.mongodb..")
+  val MONGODB_DRIVER = Seq("com.mongodb..", "org.bson..", "org.mongodb..", "org.reactivestreams..")
   val PLAY_API = "play.api.." // "play.." would also include Play's Java API
   val PLAY_CORE = "play.core.."
   val PLAY_FILTERS = "play.filters.."
@@ -147,7 +147,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER :+ DOMAIN_ENTITYINTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
       )
       .check(classes)
   }

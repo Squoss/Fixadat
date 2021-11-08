@@ -18,14 +18,14 @@ lazy val root = (project in file("."))
     .dependsOn(reinraum)
 lazy val reinraum = project
 
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.7"
 
 libraryDependencies += guice
 libraryDependencies += ws
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.3.3"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.21.0" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.22.0" % Test
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
