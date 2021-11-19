@@ -9,6 +9,10 @@ legalese.cya = Ich habe die Datenschutzrichtlinie sowie die Allgemeinen Geschäf
 acknowledgements = Danksagung
 prices = Preise
 
+readMe = Lies mich
+HTML.teachingObject = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a>. Sie ist nicht für den Produktiveinsatz gedacht.
+gotIt = Verstanden!
+
 yes = Ja
 no = Nein
 save = Speichern

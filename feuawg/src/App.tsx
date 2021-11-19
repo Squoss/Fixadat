@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import { Modal } from "bootstrap";
+import React, { useContext, useEffect } from 'react';
 import { Link, NavLink, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Abode from './Abode';
 import EventComponent from './EventComponent';
@@ -19,9 +20,14 @@ function App(props: {}) {
   locationString += "locale=NEWLOCALE";
   locationString += location.hash;
 
+  useEffect(() => {
+    const modal = new Modal(document.getElementById('teachingObjectModal')!);
+    modal.show();
+  }, []);
+
   return (
     <React.Fragment>
-      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-info">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">Squawg</Link> <a className="navbar-brand" href="https://io.squeng.com/abode/" target="Squeng"><small>Squeng<sup>&reg;</sup>&nbsp;made</small></a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +42,7 @@ function App(props: {}) {
                 <NavLink className="nav-link" activeClassName="active" to="/acknowledgements">{localizations['acknowledgements']}</NavLink>
               </li>
               <li className="nav-item dropdown">
-                <button className="nav-link btn btn-link dropdown-toggle" id="legalese" type="button" data-bs-toggle="dropdown" aria-expanded="false">{localizations['legalese']}</button>
+                <a className="nav-link dropdown-toggle" href="#" id="legalese" role="button" data-bs-toggle="dropdown" aria-expanded="false">{localizations['legalese']}</a>
                 <ul className="dropdown-menu" aria-labelledby="legalese">
                   <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/im">{localizations['legalese.masthead']}</NavLink></li>
                   <li><NavLink className="dropdown-item" activeClassName="disabled" to="/legalese/pp">{localizations['legalese.pp']}</NavLink></li>
@@ -48,14 +54,14 @@ function App(props: {}) {
               </li>
             </ul>
             <div className="dropdown">
-              <button className="btn btn-primary dropdown-toggle" type="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-globe"></i></button>
+              <button className="btn btn-outline-primary dropdown-toggle" type="button" id="language" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-globe"></i></button>
               <ul className="dropdown-menu" aria-labelledby="language">
                 <li><a className={localizations['locale'] === "de" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "de")}>Deutsch</a></li>
                 <li><a className={localizations['locale'] === "en" ? "dropdown-item disabled" : "dropdown-item"} href={locationString.replace("NEWLOCALE", "en")}>English</a></li>
               </ul>
             </div>
             &nbsp;
-            <a className="btn btn-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi bi-github"></i></a>
+            <a className="btn btn-outline-secondary" href="https://github.com/Squoss/Squawg" target="GitHub"><i className="bi bi-github"></i></a>
           </div>
         </div>
       </nav>
@@ -96,6 +102,30 @@ function App(props: {}) {
           </div>
         </div>
       </footer>
+
+      <div className="modal fade" id="teachingObjectModal" tabIndex={-1} aria-labelledby="teachingObjectModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-fullscreen">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="teachingObjectModalLabel"><i className="bi bi-book-half"></i> {localizations['readMe']}</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              <div className="row align-items-center">
+                <div className="col">
+                  <p className="fs-1" dangerouslySetInnerHTML={{ __html: localizations['HTML.teachingObject'] }}></p>
+                </div>
+                <div className="col">
+                  <iframe width='200' height='400' src='https://leanpub.com/DevWebApps/embed' frameBorder='0' allowTransparency={true}></iframe>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal">{localizations['gotIt']}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </React.Fragment>
   );
 }

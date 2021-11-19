@@ -14,7 +14,7 @@ function Abode(props: {}) {
 
   const localizations = useContext(l10nContext);
 
-  const [redirect, setRedirect] = useState<undefined | string>(undefined);
+  const [redirect, setRedirect] = useState<string>("");
 
   const postEvent = () => post<PostEventResponse>("/iapi/events").then(responseJson => {
     console.debug(responseJson.status);
@@ -29,10 +29,12 @@ function Abode(props: {}) {
     postEvent();
   };
 
-  if (redirect !== undefined) { return (<Redirect to={redirect} />) } else {
+  if (redirect !== "") {
+    return (<Redirect to={redirect} />)
+  } else {
     return (
       <React.Fragment>
-        <div className="bg-light p-5 rounded">
+        <div className="bg-info p-5 rounded">
           <h1>répondez s'il vous plaît</h1>
           <p className="lead">{localizations['executiveSummary']}</p>
           <button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
