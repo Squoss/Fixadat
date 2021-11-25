@@ -1,5 +1,12 @@
 locale = de
 
+readMe = Lies mich
+HTML.teachingObject = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a>. Sie ist nicht für den Produktiveinsatz gedacht.
+gotIt = Verstanden!
+
+notFound.title = Nicht Gefunden
+notFound.page = Die Seite, welche Sie angefordert haben, wurde nicht gefunden.
+
 legalese = Juristenjargon
 legalese.masthead = Impressum
 legalese.pp = Datenschutzrichtlinie
@@ -8,10 +15,6 @@ legalese.cya = Ich habe die Datenschutzrichtlinie sowie die Allgemeinen Geschäf
 
 acknowledgements = Danksagung
 prices = Preise
-
-readMe = Lies mich
-HTML.teachingObject = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a>. Sie ist nicht für den Produktiveinsatz gedacht.
-gotIt = Verstanden!
 
 yes = Ja
 no = Nein
@@ -46,5 +49,3 @@ settings.seeInvitation = siehe Einladung
 
 reloadNotice = Eine neue Version von Squawg ist verfügbar.
 reloadLink = Squawg neu laden!
-
-HTML.cookiesWarning = Als Web-App verwendet {0} <u><a href="https://developer.mozilla.org/de/docs/Web" target="MDN">Web-Technologien</a></u> (einschliesslich, aber nicht beschränkt auf <u><a href="https://developer.mozilla.org/de/docs/Web/HTTP/Cookies" target="MDN">Cookies</a></u>, <u><a href="https://developer.mozilla.org/de/docs/Web/JavaScript" target="MDN">JavaScript</a></u> etc.).

@@ -21,8 +21,12 @@ function App(props: {}) {
   locationString += location.hash;
 
   useEffect(() => {
-    const modal = new Modal(document.getElementById('teachingObjectModal')!);
-    modal.show();
+    const teachingObjectFlag = window.sessionStorage.getItem("teachingObject");
+    if ( teachingObjectFlag === null ) {
+      const modal = new Modal(document.getElementById('teachingObjectModal')!);
+      modal.show();
+      window.sessionStorage.setItem("teachingObject", "shown");
+    }
   }, []);
 
   return (

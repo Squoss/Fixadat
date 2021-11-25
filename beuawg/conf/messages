@@ -1,5 +1,12 @@
 locale = en
 
+readMe = Read me
+HTML.teachingObject = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>. It is not meant for production use.
+gotIt = Got it!
+
+notFound.title = Not Found
+notFound.page = The page that you have requested has not been found.
+
 legalese = Legalese
 legalese.masthead = Imprint
 legalese.pp = Privacy Policy
@@ -8,10 +15,6 @@ legalese.cya = I have read the Privacy Policy as well as the Terms of Service an
 
 acknowledgements = Acknowledgements
 prices = Prices
-
-readMe = Read me
-HTML.teachingObject = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>. It is not meant for production use.
-gotIt = Got it!
 
 yes = Yes
 no = No
@@ -46,5 +49,3 @@ settings.seeInvitation = see invitation
 
 reloadNotice = A new version of {0} is available.
 reloadLink = Reload {0}!
-
-HTML.cookiesWarning = {0} being a Web app, it uses <u><a href="https://developer.mozilla.org/en-US/docs/Web" target="MDN">Web technologies</a></u> (including but not limited to <u><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="MDN">cookies</a></u>, <u><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="MDN">JavaScript</a></u>, etc.).
