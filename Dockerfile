@@ -3,7 +3,7 @@
 # https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
 
 
-FROM node:14 as react
+FROM node:16 as react
 
 WORKDIR /squeng/squawg
 
