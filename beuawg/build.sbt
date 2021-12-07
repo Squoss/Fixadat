@@ -22,7 +22,7 @@ scalaVersion := "2.13.7"
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.3.3"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.4.0"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.22.0" % Test
