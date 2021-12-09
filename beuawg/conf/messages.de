@@ -1,7 +1,7 @@
 locale = de
 
 readMe = Lies mich
-HTML.teachingObject = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a>. Sie ist nicht für den Produktiveinsatz gedacht.
+HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a>. Sie ist nicht für den Produktiveinsatz gedacht.
 gotIt = Verstanden!
 
 notFound.title = Nicht Gefunden

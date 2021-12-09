@@ -1,7 +1,7 @@
 locale = en
 
 readMe = Read me
-HTML.teachingObject = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>. It is not meant for production use.
+HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>. It is not meant for production use.
 gotIt = Got it!
 
 notFound.title = Not Found

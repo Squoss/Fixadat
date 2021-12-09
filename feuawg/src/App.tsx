@@ -42,11 +42,11 @@ function App(props: {}) {
   locationString += location.hash;
 
   useEffect(() => {
-    const teachingObjectFlag = window.sessionStorage.getItem("teachingObject");
-    if (teachingObjectFlag === null) {
-      const modal = new Modal(document.getElementById("teachingObjectModal")!);
+    const teachingAidFlag = window.sessionStorage.getItem("teachingAid");
+    if (teachingAidFlag === null) {
+      const modal = new Modal(document.getElementById("teachingAidModal")!);
       modal.show();
-      window.sessionStorage.setItem("teachingObject", "shown");
+      window.sessionStorage.setItem("teachingAid", "shown");
     }
   }, []);
 
@@ -248,15 +248,15 @@ function App(props: {}) {
 
       <div
         className="modal fade"
-        id="teachingObjectModal"
+        id="teachingAidModal"
         tabIndex={-1}
-        aria-labelledby="teachingObjectModalLabel"
+        aria-labelledby="teachingAidModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-fullscreen">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="teachingObjectModalLabel">
+              <h5 className="modal-title" id="teachingAidModalLabel">
                 <i className="bi bi-book-half"></i> {localizations["readMe"]}
               </h5>
               <button
@@ -272,7 +272,7 @@ function App(props: {}) {
                   <p
                     className="fs-1"
                     dangerouslySetInnerHTML={{
-                      __html: localizations["HTML.teachingObject"],
+                      __html: localizations["HTML.teachingAid"],
                     }}
                   ></p>
                 </div>
