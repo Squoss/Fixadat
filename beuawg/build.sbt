@@ -21,6 +21,7 @@ lazy val reinraum = project
 scalaVersion := "2.13.7"
 
 libraryDependencies += guice
+libraryDependencies += "com.google.inject" % "guice" % "5.0.1"
 libraryDependencies += ws
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.4.0"
 
