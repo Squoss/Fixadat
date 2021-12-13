@@ -18,7 +18,7 @@ COPY feuawg/src ./src
 RUN INLINE_RUNTIME_CHUNK=false npm run build
 
 
-FROM hseeberger/scala-sbt:17.0.1_1.5.5_2.13.7 as play
+FROM hseeberger/scala-sbt:17.0.1_1.5.6_2.13.7 as play
 
 WORKDIR /squeng/squawg
 
