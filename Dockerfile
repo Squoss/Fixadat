@@ -39,6 +39,7 @@ WORKDIR /squeng/squawg
 COPY --from=play /squeng/squawg/target/universal/stage ./target/universal/stage
 
 RUN groupadd -r gruppe && useradd --no-log-init -r -g gruppe benutzer
+RUN chown -R benutzer:gruppe /squeng
 USER benutzer
 
 EXPOSE 8080
