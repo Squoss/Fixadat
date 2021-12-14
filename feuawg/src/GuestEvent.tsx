@@ -26,7 +26,6 @@ import React, { useContext } from "react";
 import { Attendance, GuestEventType } from "./Events";
 import GuestEventRsvp from "./GuestEventRsvp";
 import { l10nContext, Localizations } from "./l10nContext";
-import MapDisplayClass from "./MapDisplayClass";
 
 interface GuestEventProps {
   event: GuestEventType;
@@ -127,13 +126,9 @@ function GuestEvent(props: GuestEventProps) {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">{localizations["settings.where"]}</h5>
-            {geo ? (
-              <MapDisplayClass value={props.event.geo} />
-            ) : (
               <p className="card-text">
                 {localizations["settings.seeInvitation"]}
               </p>
-            )}
           </div>
         </div>
       </div>
