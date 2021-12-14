@@ -49,7 +49,7 @@ class HomeController @Inject() (
 ) extends BaseController
     with I18nSupport {
 
-  val is = env.classLoader.getResourceAsStream("public/index.html")
+  val is = env.classLoader.getResourceAsStream("public/build/index.html")
   val bufferedSource = Source.createBufferedSource(
     inputStream = is,
     close = () => is.close()
@@ -65,6 +65,12 @@ class HomeController @Inject() (
       CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
     Ok(string.replace("REPLACE_CSRF_TOKEN", token.get.value))
       .as("text/html")
+  }
+
+  def gui(reactFile: String) = Action { implicit request: Request[AnyContent] =>
+    implicit val ec: scala.concurrent.ExecutionContext =
+      scala.concurrent.ExecutionContext.global
+    Ok.sendResource(s"public/build/$reactFile", env.classLoader)
   }
 
   def jsonMessages = Action { implicit request =>

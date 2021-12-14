@@ -7,8 +7,10 @@ FROM node:16 as react
 
 WORKDIR /squeng/squawg
 
+COPY feuawg/.env ./
 COPY feuawg/.npmrc ./
 COPY feuawg/package*.json ./
+COPY feuawg/tsconfig.json ./
 # https://docs.npmjs.com/cli/v7/commands/npm-ci
 RUN npm ci
 
@@ -18,7 +20,7 @@ COPY feuawg/src ./src
 RUN INLINE_RUNTIME_CHUNK=false npm run build
 
 
-FROM hseeberger/scala-sbt:17.0.1_1.5.6_2.13.7 as play
+FROM hseeberger/scala-sbt:11.0.13_1.5.6_2.13.7 as play
 
 WORKDIR /squeng/squawg
 
@@ -32,7 +34,7 @@ COPY --from=react /squeng/squawg/build ./public/build
 RUN sbt stage
 
 
-FROM openjdk:17-slim
+FROM openjdk:11-jre
 
 WORKDIR /squeng/squawg
 
