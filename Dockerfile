@@ -8,7 +8,7 @@ FROM node:16 as react
 WORKDIR /squeng/squawg
 
 COPY feuawg/.env ./
-COPY feuawg/.npmrc ./
+# COPY feuawg/.npmrc ./
 COPY feuawg/package*.json ./
 COPY feuawg/tsconfig.json ./
 # https://docs.npmjs.com/cli/v7/commands/npm-ci

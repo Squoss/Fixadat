@@ -56,8 +56,8 @@ class HomeController @Inject() (
   )(Codec.UTF8)
   val stringBuilder = bufferedSource.addString(new StringBuilder())
   val string = stringBuilder.mkString.replace(
-    "REPLACE_HERE_API_KEY",
-    config.get[String]("here.api.key")
+    "REPLACE_BING_MAPS_API_KEY",
+    config.get[String]("bing.maps.api.key")
   )
 
   def index() = Action { implicit request: Request[AnyContent] =>
