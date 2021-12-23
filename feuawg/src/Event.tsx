@@ -58,8 +58,8 @@ function Event(props: {}) {
   const brandNew = searchParams.has("brandNew");
   console.debug(`event is brand new ${brandNew}`);
   const timeZone = searchParams.get("timeZone");
-  const view = useMatch<string>({ path: "/events/:id/:hostish" })?.params
-    .hostish
+  const view = useMatch<string, string>({ path: "/events/:id/:hostish" })
+    ?.params.hostish
     ? "host"
     : searchParams.get("view");
   console.debug(view);

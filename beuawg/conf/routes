@@ -6,6 +6,7 @@
 GET     /                                  api.HomeController.index
 GET     /jsonMessages                      api.HomeController.jsonMessages
 GET     /timeZones                         api.HomeController.timeZones
+GET     /maps                              api.HereForwardThere.getItems(query: String)
 
 GET     /validations/cellPhoneNumbers      api.ValidationsController.cellPhoneNumbers(cellPhoneNumber: String)
 GET     /validations/emailAddresses        api.ValidationsController.emailAddresses(emailAddress: String)

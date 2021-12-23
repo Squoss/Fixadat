@@ -22,7 +22,42 @@
  * THE SOFTWARE.
  */
 
-body {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+package api
+
+import play.api.Configuration
+import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
+import play.api.libs.ws.WSRequest
+import play.api.libs.ws.WSResponse
+import play.api.mvc.BaseController
+import play.api.mvc.ControllerComponents
+
+import javax.inject.Inject
+import javax.inject.Singleton
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+@Singleton
+class HereForwardThere @Inject() (implicit
+    ec: ExecutionContext,
+    ws: WSClient,
+    val config: Configuration,
+    val controllerComponents: ControllerComponents
+) extends BaseController {
+
+  val apiKey = config.get[String]("here.maps.api.key")
+
+  def getItems(query: String) =
+    Action.async { request =>
+      {
+        val req: WSRequest = ws
+          .url("https://geocode.search.hereapi.com/v1/geocode")
+          .addQueryStringParameters(
+            "q" -> query,
+            "apiKey" -> apiKey
+          )
+        val res: Future[WSResponse] = req.get()
+        res.map(body => Ok(body.json))
+      }
+    }
 }

@@ -22,7 +22,36 @@
  * THE SOFTWARE.
  */
 
-body {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+import React from "react";
+import { Geo } from "./Events";
+
+interface MapDisplayProps {
+  value?: Geo;
 }
+
+function MapDisplay(props: MapDisplayProps) {
+  console.log("MapDisplay props: " + JSON.stringify(props));
+
+  const apiKey = document
+    .querySelector("meta[name='here-maps-api-key']")!
+    .getAttribute("content")!;
+  const zoomLevel = 16;
+
+  return props.value === undefined ? (
+    <div />
+  ) : (
+    <React.Fragment>
+      <a
+        href={`https://wego.here.com/?map=${props.value.latitude},${props.value.longitude},${zoomLevel}`}
+        target="HEREWeGo"
+      >
+        <img
+          alt={`a map${props.value.name ? ` of ${props.value.name}` : ""}`}
+          src={`https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=${apiKey}&c=${props.value.latitude},${props.value.longitude}&h=540&w=960&z=${zoomLevel}`}
+        />
+      </a>
+    </React.Fragment>
+  );
+}
+
+export default MapDisplay;
