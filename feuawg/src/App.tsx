@@ -159,7 +159,7 @@ function App(props: {}) {
             </ul>
             <div className="dropdown">
               <button
-                className="btn btn-outline-primary dropdown-toggle"
+                className="btn btn-dark dropdown-toggle"
                 type="button"
                 id="language"
                 data-bs-toggle="dropdown"
@@ -196,7 +196,7 @@ function App(props: {}) {
             </div>
             &nbsp;
             <a
-              className="btn btn-outline-secondary"
+              className="btn btn-light"
               href="https://github.com/Squoss/Squawg"
               target="GitHub"
             >

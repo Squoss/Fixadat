@@ -64,7 +64,7 @@ function Abode(props: {}) {
         <p className="lead">{localizations["executiveSummary"]}</p>
         <button
           type="button"
-          className="btn btn-lg btn-primary"
+          className="btn btn-lg btn-dark"
           data-bs-toggle="modal"
           data-bs-target="#postEventModal"
         >
