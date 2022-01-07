@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import I18nApp from "./I18nApp";
 import NotFound from "./NotFound";
 import ToDo from "./ToDo";
 
-import "bootswatch/dist/sketchy/bootstrap.min.css";
+import "bootswatch/dist/minty/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 

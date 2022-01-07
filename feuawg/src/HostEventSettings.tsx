@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -170,13 +170,13 @@ function HostEventSettings(props: HostEventSettingsProps) {
             <label htmlFor="timeSchedule" className="form-label">{localizations['settings.time']}</label>
             <input type="time" className="form-control" id="timeSchedule" value={time} onChange={event => setTime(event.target.value)} readOnly={!editSchedule} />
           </div>
-        </div>
-        <div className="input-group">
-          <span className="input-group-text">{localizations['settings.timeZone']}</span>
-          <select className="form-select" id="timeZoneSelect" required={false} value={timeZone} onChange={event => setTimeZone(event.target.value)} disabled={!editSchedule}>
-            <option key="noTimeZone" value={undefined}></option>
-            {timeZones}
-          </select>
+          <div>
+            <label htmlFor="timeZoneSelect" className="form-label">{localizations['settings.timeZone']}</label>
+            <select className="form-select" id="timeZoneSelect" required={false} value={timeZone} onChange={event => setTimeZone(event.target.value)} disabled={!editSchedule}>
+              <option key="noTimeZone" value={undefined}></option>
+              {timeZones}
+            </select>
+          </div>
         </div>
         <div className="card-footer">
           {editSchedule ?
