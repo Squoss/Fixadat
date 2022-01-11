@@ -2,6 +2,8 @@
 
 # the following lists need not be exhaustive but should at least include the worst offenders (i.e., largest directories)
 
+.github
+
 feuwag/build
 feuwag/node_modules
 
