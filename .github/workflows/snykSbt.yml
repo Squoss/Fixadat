@@ -1,0 +1,31 @@
+name: Snyk with sbt
+
+on:
+  workflow_run:
+    workflows: ["Test with sbt"]
+    types: [completed]
+  schedule:
+    - cron: '0 12 * * *'
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Snyk to check for vulnerabilities
+        # Snyk can be used to break the build when it detects security issues
+        # in this case we want to upload the issues to GitHub Code Scanning
+        continue-on-error: true
+        uses: snyk/actions/scala@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
+        with:
+          args: |
+            --sarif-file-output=snyk.sarif
+            --all-projects
+            --exclude=feuawg
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
