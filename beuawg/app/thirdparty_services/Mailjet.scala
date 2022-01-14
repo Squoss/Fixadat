@@ -29,7 +29,7 @@ class Mailjet @Inject() (implicit
 
   // https://dev.mailjet.com/email/guides/#authentication
   val username = config.get[String]("mailjet.apiKey")
-  val password = config.get[String]("mailjet.apiSecretKey")
+  val password = config.get[String]("mailjet.secretKey")
   // https://dev.mailjet.com/sms/guides/send-sms-api/#authentication
   val smsToken = config.get[String]("mailjet.smsToken")
 
