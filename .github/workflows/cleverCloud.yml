@@ -1,0 +1,21 @@
+name: Deploy to Clever Cloud
+
+on:
+  workflow_run:
+    workflows: ["Snyk"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Set up Docker Buildx
+        uses: 47ng/actions-clever-cloud@v1
+        with:
+          appID: ${{ secrets.CLEVER_APP_ID }}
+          timeout: 600 # wait at maximum 10 minutes before moving on
+        env:
+          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
