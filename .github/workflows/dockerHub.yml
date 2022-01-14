@@ -2,8 +2,7 @@ name: Publish to Docker Hub
 
 on:
   workflow_run:
-    # FIXME/TODO: If you specify multiple workflows for the workflow_run event, only one of the workflows needs to run.
-    workflows: ["Snyk with NPM", "Snyk with sbt"]
+    workflows: ["Snyk"]
     types: [completed]
   workflow_dispatch:
 
