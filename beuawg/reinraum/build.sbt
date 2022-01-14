@@ -1,6 +1,6 @@
 scalaVersion := "2.13.8"
 
-libraryDependencies += guice
+libraryDependencies += "com.google.inject" % "guice" % "5.0.1"
 libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.12.40"
 libraryDependencies += "commons-validator" % "commons-validator" % "1.7"
 
