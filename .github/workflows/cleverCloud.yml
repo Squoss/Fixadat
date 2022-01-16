@@ -15,7 +15,6 @@ jobs:
         uses: 47ng/actions-clever-cloud@v1
         with:
           appID: ${{ secrets.CLEVER_APP_ID }}
-          timeout: 600 # wait at maximum 10 minutes before moving on
         env:
           CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
           CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
