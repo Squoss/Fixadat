@@ -1,0 +1,44 @@
+name: SonarCloud
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+  schedule:
+    - cron: '0 12 * * *'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: GUI
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: feuawg
+          # https://docs.sonarcloud.io/advanced-setup/analysis-scope/#restrict-the-scope-of-analysis-in-general
+          args: >
+            -Dsonar.sources=src/
+            -Dsonar.tests=src/
+            -Dsonar.test.inclusions=src/**/__tests__/**/*
+            -Dsonar.exclusions=src/**/test/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
+      - name: API
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: beuawg
+          # https://docs.sonarcloud.io/advanced-setup/analysis-scope/#restrict-the-scope-of-analysis-in-general
+          args: >
+            -Dsonar.sources="app/,reinraum/src"
+            -Dsonar.tests="test/,reinraum/src"
+            -Dsonar.test.inclusions=reinraum/src/test/**/*
+            -Dsonar.exclusions=reinraum/src/test/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
