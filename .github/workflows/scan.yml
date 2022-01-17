@@ -49,7 +49,7 @@ jobs:
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: npm.sarif
+          sarif_file: snyk.sarif
       - name: Check for failures # https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context
         if: ${{ steps.coe.outcome != 'success' }}
         run: exit 1
