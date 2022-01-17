@@ -22,6 +22,8 @@ jobs:
           projectBaseDir: feuawg
           # https://docs.sonarcloud.io/advanced-setup/analysis-scope/#restrict-the-scope-of-analysis-in-general
           args: >
+            -Dsonar.organization=squoss
+            -Dsonar.projectKey=Squoss_Squawg
             -Dsonar.sources=src/
             -Dsonar.tests=src/
             -Dsonar.test.inclusions=src/**/__tests__/**/*
@@ -35,6 +37,8 @@ jobs:
           projectBaseDir: beuawg
           # https://docs.sonarcloud.io/advanced-setup/analysis-scope/#restrict-the-scope-of-analysis-in-general
           args: >
+            -Dsonar.organization=squoss
+            -Dsonar.projectKey=Squoss_Squawg
             -Dsonar.sources="app/,reinraum/src"
             -Dsonar.tests="test/,reinraum/src"
             -Dsonar.test.inclusions=reinraum/src/test/**/*
