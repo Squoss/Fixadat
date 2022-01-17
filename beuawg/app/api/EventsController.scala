@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,6 +61,8 @@ class EventsController @Inject() (implicit
 ) extends BaseController
     with I18nSupport {
 
+  val xAccessToken = "X-Access-Token"
+
   def postEvent() = Action.async {
 
     events
@@ -85,7 +87,7 @@ class EventsController @Inject() (implicit
 
   def getEvent(event: Id, view: String, timeZone: Option[String]) =
     Action.async { request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           if ("host".equalsIgnoreCase(view)) {
             events
@@ -170,7 +172,7 @@ class EventsController @Inject() (implicit
   )
 
   def putEventVisibility(event: Id) = Action.async(validateJson[P]) { request =>
-    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+    Try(UUID.fromString(request.headers(xAccessToken))) match {
       case Success(accessToken) =>
         (request.body.visibility match {
           case Public =>
@@ -203,7 +205,7 @@ class EventsController @Inject() (implicit
   }
 
   def putEventText(event: Id) = Action.async(validateJson[Text]) { request =>
-    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+    Try(UUID.fromString(request.headers(xAccessToken))) match {
       case Success(accessToken) =>
         events
           .retextVeranstaltung(
@@ -224,7 +226,7 @@ class EventsController @Inject() (implicit
 
   def putEventSchedule(event: Id) = Action.async(validateJson[Schedule]) {
     request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           events
             .rescheduleVeranstaltung(
@@ -246,7 +248,7 @@ class EventsController @Inject() (implicit
 
   def putEventLocation(event: Id) = Action.async(validateJson[Location]) {
     request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           events
             .relocateVeranstaltung(
@@ -267,7 +269,7 @@ class EventsController @Inject() (implicit
 
   def patchEvent(event: Id) = Action.async(validateJson[Calibration]) {
     request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           events
             .recalibrateVeranstaltung(
@@ -288,7 +290,7 @@ class EventsController @Inject() (implicit
   }
 
   def deleteEvent(event: Id) = Action.async { request =>
-    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+    Try(UUID.fromString(request.headers(xAccessToken))) match {
       case Success(accessToken) =>
         events
           .deleteVeranstaltung(
@@ -306,7 +308,7 @@ class EventsController @Inject() (implicit
   }
 
   def postRsvp(event: Id) = Action.async(validateJson[Rsvp]) { request =>
-    Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+    Try(UUID.fromString(request.headers(xAccessToken))) match {
       case Success(accessToken) =>
         events
           .rsvp(
@@ -330,7 +332,7 @@ class EventsController @Inject() (implicit
 
   def sendLinksReminder(event: Id) =
     Action.async(validateJson[LinksReminderRecipient]) { request =>
-      Try(UUID.fromString(request.headers("X-Access-Token"))) match {
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           events
             .sendLinksReminder(

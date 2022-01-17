@@ -22,7 +22,7 @@ async function fetchJson<T>(request: Request): Promise<HttpResponse<T>> {
 }
 
 export async function get<T>(path: string, accessToken: string, args: RequestInit = { method: "get", mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "X-Access-Token": accessToken } }): Promise<HttpResponse<T>> {
-  return await fetchJson<T>(new Request(path, args));
+  return fetchJson<T>(new Request(path, args));
 }
 
 export async function patch<T>(
@@ -31,7 +31,7 @@ export async function patch<T>(
   body: any,
   args: RequestInit = { method: "PATCH", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
-  return await fetchJson<T>(new Request(path, args));
+  return fetchJson<T>(new Request(path, args));
 }
 
 export async function post<T>(
@@ -40,7 +40,7 @@ export async function post<T>(
   body = {},
   args: RequestInit = { method: "POST", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
-  return await fetchJson<T>(new Request(path, args));
+  return fetchJson<T>(new Request(path, args));
 }
 
 export async function put<T>(
@@ -49,5 +49,5 @@ export async function put<T>(
   body: any,
   args: RequestInit = { method: "PUT", body: JSON.stringify(body), mode: "same-origin", credentials: "same-origin", cache: "no-store", redirect: "error", headers: { "Content-Type": "application/json", "X-Access-Token": accessToken } },
 ): Promise<HttpResponse<T>> {
-  return await fetchJson<T>(new Request(path, args));
+  return fetchJson<T>(new Request(path, args));
 }

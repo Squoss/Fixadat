@@ -1,4 +1,4 @@
-name: SonarCloud
+name: Scan
 
 on:
   workflow_run:
@@ -8,7 +8,7 @@ on:
     - cron: '0 12 * * *'
 
 jobs:
-  scan:
+  Sonar:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -29,3 +29,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
+  Snyk:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Snyk to check for vulnerabilities
+        # Snyk can be used to break the build when it detects security issues
+        # in this case we want to upload the issues to GitHub Code Scanning
+        continue-on-error: true
+        id: coe
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
+        with:
+          args: |
+            --sarif-file-output=snyk.sarif
+            --all-projects
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: npm.sarif
+      - name: Check for failures # https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context
+        if: ${{ steps.coe.outcome != 'success' }}
+        run: exit 1

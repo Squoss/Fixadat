@@ -2,12 +2,12 @@ name: Deploy to Clever Cloud
 
 on:
   workflow_run:
-    workflows: ["Snyk"]
+    workflows: ["Scan"]
     types: [completed]
   workflow_dispatch:
 
 jobs:
-  deliver:
+  deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
