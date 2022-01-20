@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -121,11 +121,11 @@ function Event(props: {}) {
       })
       .catch((error) => console.error(`failed to put event text: ${error}`));
 
-  const saveEventSchedule = (date?: string, time?: string, timeZone?: string) =>
+  const saveEventSchedule = (date?: string, time?: string, tz?: string) =>
     put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1), {
       date,
       time,
-      timeZone,
+      tz,
     })
       .then((responseJson) => {
         console.debug(responseJson.status);

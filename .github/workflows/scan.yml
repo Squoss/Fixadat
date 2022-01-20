@@ -23,8 +23,8 @@ jobs:
           args: >
             -Dsonar.organization=squoss
             -Dsonar.projectKey=Squoss_Squawg
-            -Dsonar.sources=beuawg/app/,beuawg/reinraum/src/main/,feuawg/src/
-            -Dsonar.tests=beuawg/test/,beuawg/reinraum/src/test/,feuawg/src/__tests__/
+            -Dsonar.sources=beuawg/app/,beuawg/reinraum/src/main/scala/,feuawg/src/
+            -Dsonar.tests=beuawg/test/,beuawg/reinraum/src/test/scala/,feuawg/src/__tests__/
             -Dsonar.exclusions=feuawg/src/__tests__/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

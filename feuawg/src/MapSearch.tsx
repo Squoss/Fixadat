@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,9 +75,9 @@ function MapSearch(props: MapSearchProps) {
 
   const [inputValue, setInputValue] = useState("");
 
-  const getItems = (inputValue: string) =>
+  const getItems = (iv: string) =>
     get<{items: Array<Item>}>(
-      `/maps?query=${inputValue}`, ""
+      `/maps?query=${iv}`, ""
     )
       .then((responseJson) => {
         console.debug(responseJson.status);
@@ -98,8 +98,8 @@ function MapSearch(props: MapSearchProps) {
       )
       .catch((error) => console.error(`failed to get items: ${error}`));
 
-  const handleOnInputChange = (newInputValue: string) => {
-    setInputValue(newInputValue);
+  const handleOnInputChange = (iv: string) => {
+    setInputValue(iv);
   };
 
   const handleOnSelectChange = (
