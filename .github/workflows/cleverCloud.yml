@@ -16,7 +16,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16'
-        cache: 'npm'
     - name: Install the Clever Tools # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#via-npm
       run: npm install -g clever-tools
     - name: Link to the Clever Cloud account # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#linking-your-account
