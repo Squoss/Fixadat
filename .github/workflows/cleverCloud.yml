@@ -11,10 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Set up Docker Buildx
-        uses: 47ng/actions-clever-cloud@v1
-        with:
-          appID: ${{ secrets.CLEVER_APP_ID }}
-        env:
-          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
-          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+    - uses: actions/checkout@v2
+    - name: Set up Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        cache: 'npm'
+    - name: Install the Clever Tools # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#via-npm
+      run: npm install -g clever-tools
+    - name: Link to the Clever Cloud account # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#linking-your-account
+      run: clever login --token ${{ secrets.CLEVER_TOKEN }} --secret ${{ secrets.CLEVER_SECRET }}
+    - name: Link to the app # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#linking-an-existing-application
+      run: clever link ${{ secrets.CLEVER_APP_ID }}
+    - name: Deploy # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#deploying-new-code
+      run: clever deploy
