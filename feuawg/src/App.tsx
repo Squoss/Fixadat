@@ -93,8 +93,10 @@ function App(props: {}) {
               <li className="nav-item">
                 <NavLink
                   className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
+                    isActive ? "disabled nav-link active" : "disabled nav-link"
                   }
+                  tabIndex={-1}
+                  aria-disabled="true"
                   to="/acknowledgements"
                 >
                   {localizations["acknowledgements"]}
@@ -103,7 +105,7 @@ function App(props: {}) {
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
-                  href="#"
+                  href="/legalese"
                   id="legalese"
                   role="button"
                   data-bs-toggle="dropdown"
@@ -147,10 +149,8 @@ function App(props: {}) {
               <li className="nav-item">
                 <NavLink
                   className={({ isActive }) =>
-                    isActive ? "disabled nav-link active" : "disabled nav-link"
+                    isActive ? "nav-link active" : "nav-link"
                   }
-                  tabIndex={-1}
-                  aria-disabled="true"
                   to="/prices"
                 >
                   {localizations["prices"]}
@@ -239,7 +239,8 @@ function App(props: {}) {
                 </Link>
               </div>
               <div className="col">
-                Copyright &copy; <time dateTime="2021">2021</time>-<time dateTime="2022">2022</time> Squeng AG
+                Copyright &copy; <time dateTime="2021">2021</time>-
+                <time dateTime="2022">2022</time> Squeng AG
               </div>
             </div>
           </div>
@@ -278,6 +279,7 @@ function App(props: {}) {
                 </div>
                 <div className="col">
                   <iframe
+                    title="Leanpub"
                     width="200"
                     height="400"
                     src="https://leanpub.com/DevWebApps/embed"

@@ -44,11 +44,11 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<Abode />} />
             <Route path="events/:event/*" element={<Event />} />
-            <Route path="acknowledgements" element={<ToDo />} />
             <Route path="legalese" element={<Navigate to="/legalese/im" />} />
             <Route path="legalese/im" element={<ToDo />} />
             <Route path="legalese/pp" element={<ToDo />} />
             <Route path="legalese/tos" element={<ToDo />} />
+            <Route path="prices" element={<ToDo />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

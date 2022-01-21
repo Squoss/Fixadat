@@ -47,5 +47,13 @@ settings.where = Wo
 settings.who = Wer
 settings.seeInvitation = siehe Einladung
 
+rsvp.accept = Einladung ablehnen
+rsvp.decline = Einladung annehmen
+rsvp.attendNot = Ich werde dem Anlass NICHT beiwohnen.
+rsvp.attendAlone = Ich werde dem dem Anlass alleine beiwohnen.
+rsvp.attendWithPlus1 = Ich werde dem dem Anlass mit Begleitung beiwohnen.
+rsvp.name = Name
+rsvp.yourName = Ihr Name
+
 reloadNotice = Eine neue Version von Squawg ist verfügbar.
 reloadLink = Squawg neu laden!

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -139,9 +139,8 @@ function GuestEvent(props: GuestEventProps) {
             )}
           </div>
         </div>
+        <GuestEventRsvp event={props.event} saveRsvp={props.saveRsvp} />
       </div>
-      <h2>Anmeldung / Abmeldung</h2>
-      <GuestEventRsvp event={props.event} saveRsvp={props.saveRsvp} />
     </React.Fragment>
   );
 }

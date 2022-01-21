@@ -47,5 +47,13 @@ settings.where = Where
 settings.who = Who
 settings.seeInvitation = see invitation
 
+rsvp.accept = Accept invitation
+rsvp.decline = Decline invitation
+rsvp.attendNot = I will NOT attend the event.
+rsvp.attendAlone = I will attend the event alone.
+rsvp.attendWithPlus1 = I will attend the event with a plus-one.
+rsvp.name = Name
+rsvp.yourName = Your name
+
 reloadNotice = A new version of {0} is available.
 reloadLink = Reload {0}!
