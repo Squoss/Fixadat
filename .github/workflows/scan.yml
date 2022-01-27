@@ -51,6 +51,8 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: feuawg.sarif
+          # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github#example-workflow-for-sarif-files-generated-outside-of-a-repository
+          category: feuawg
       - name: Run Snyk to check for Scala vulnerabilities
         # Snyk can be used to break the build when it detects security issues
         # in this case we want to upload the issues to GitHub Code Scanning but fail in the end
@@ -68,6 +70,8 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: beuawg.sarif
+          # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github#example-workflow-for-sarif-files-generated-outside-of-a-repository
+          category: beuawg
       - name: Check for failures # https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context
         if: ${{ steps.coeTypeScript.outcome != 'success' || steps.coeScala.outcome != 'success' }}
         run: exit 1
