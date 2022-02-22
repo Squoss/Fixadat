@@ -55,7 +55,7 @@ class HomeController @Inject() (
     close = () => is.close()
   )(Codec.UTF8)
   val stringBuilder = bufferedSource.addString(new StringBuilder())
-  val string = stringBuilder.mkString.replace(
+  val indexHtml = stringBuilder.mkString.replace(
     "REPLACE_HERE_MAPS_API_KEY",
     config.get[String]("here.maps.api.key")
   )
@@ -63,14 +63,22 @@ class HomeController @Inject() (
   def index() = Action { implicit request: Request[AnyContent] =>
     val token =
       CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
-    Ok(string.replace("REPLACE_CSRF_TOKEN", token.get.value))
+    Ok(indexHtml.replace("REPLACE_CSRF_TOKEN", token.get.value))
       .as("text/html")
   }
 
   def gui(reactFile: String) = Action { implicit request: Request[AnyContent] =>
     implicit val ec: scala.concurrent.ExecutionContext =
       scala.concurrent.ExecutionContext.global
-    Ok.sendResource(s"public/build/$reactFile", env.classLoader)
+
+    if (reactFile.startsWith("feuawg/")) {
+      Ok.sendResource(s"public/build/$reactFile", env.classLoader)
+    } else {
+      val token =
+        CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
+      Ok(indexHtml.replace("REPLACE_CSRF_TOKEN", token.get.value))
+        .as("text/html")
+    }
   }
 
   def jsonMessages = Action { implicit request =>

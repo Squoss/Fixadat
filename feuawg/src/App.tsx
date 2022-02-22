@@ -59,7 +59,7 @@ function App(props: {}) {
           </Link>{" "}
           <a
             className="navbar-brand"
-            href="https://io.squeng.com/abode/"
+            href="https://www.squeng.com/"
             target="Squeng"
           >
             <small>
