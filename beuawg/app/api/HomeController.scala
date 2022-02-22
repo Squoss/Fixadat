@@ -67,18 +67,19 @@ class HomeController @Inject() (
       .as("text/html")
   }
 
-  def gui(reactFile: String) = Action { implicit request: Request[AnyContent] =>
-    implicit val ec: scala.concurrent.ExecutionContext =
-      scala.concurrent.ExecutionContext.global
-
-    if (reactFile.startsWith("feuawg/")) {
+  def guiFile(reactFile: String) = Action {
+    implicit request: Request[AnyContent] =>
+      implicit val ec: scala.concurrent.ExecutionContext =
+        scala.concurrent.ExecutionContext.global
       Ok.sendResource(s"public/build/$reactFile", env.classLoader)
-    } else {
+  }
+
+  def guiRoute(reactRoute: String) = Action {
+    implicit request: Request[AnyContent] =>
       val token =
         CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
       Ok(indexHtml.replace("REPLACE_CSRF_TOKEN", token.get.value))
         .as("text/html")
-    }
   }
 
   def jsonMessages = Action { implicit request =>
