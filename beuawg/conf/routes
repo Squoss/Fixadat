@@ -3,9 +3,10 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-GET     /                                  api.HomeController.index
+GET     /                                  api.HomeController.guiRoute(reactRoute = "")
 GET     /jsonMessages                      api.HomeController.jsonMessages
 GET     /timeZones                         api.HomeController.timeZones
+
 GET     /maps                              api.HereForwardThere.getItems(query: String)
 
 GET     /validations/cellPhoneNumbers      api.ValidationsController.cellPhoneNumbers(cellPhoneNumber: String)

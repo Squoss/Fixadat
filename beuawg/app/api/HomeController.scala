@@ -60,13 +60,6 @@ class HomeController @Inject() (
     config.get[String]("here.maps.api.key")
   )
 
-  def index() = Action { implicit request: Request[AnyContent] =>
-    val token =
-      CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
-    Ok(indexHtml.replace("REPLACE_CSRF_TOKEN", token.get.value))
-      .as("text/html")
-  }
-
   def guiFile(reactFile: String) = Action {
     implicit request: Request[AnyContent] =>
       implicit val ec: scala.concurrent.ExecutionContext =
