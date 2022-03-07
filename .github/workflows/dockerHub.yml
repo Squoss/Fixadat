@@ -2,6 +2,7 @@ name: Deliver to Docker Hub
 
 on:
   workflow_run:
+    branches: [ main ]
     workflows: ["Scan"]
     types: [completed]
   workflow_dispatch:

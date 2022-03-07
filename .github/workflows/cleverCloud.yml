@@ -2,6 +2,7 @@ name: Deploy to Clever Cloud
 
 on:
   workflow_run:
+    branches: [ main ]
     workflows: ["Scan"]
     types: [completed]
   workflow_dispatch:
