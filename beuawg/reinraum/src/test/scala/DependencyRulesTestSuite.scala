@@ -54,7 +54,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
     )
 
   val classes =
-    new ClassFileImporter().importPackages(THE_APP_INSIDE_THE_DOMAIN: _*)
+    new ClassFileImporter().importPackages(
+      (THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
+    )
 
   test("the domain depends on itself and third-party APIs only") {
 
