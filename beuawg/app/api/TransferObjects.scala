@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,7 @@ import play.api.libs.json._
 
 import java.net.URL
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 import java.util.UUID
 import scala.util.Failure
@@ -53,8 +52,7 @@ case class GuestEvent(
     guestToken: AccessToken,
     name: String,
     description: Option[String],
-    date: Option[LocalDate],
-    time: Option[LocalTime],
+    dateTime: Option[LocalDateTime],
     timeZone: Option[TimeZone],
     url: Option[URL],
     geo: Option[Geo],
@@ -70,8 +68,7 @@ case class HostEvent(
     hostToken: AccessToken,
     name: String,
     description: Option[String],
-    date: Option[LocalDate],
-    time: Option[LocalTime],
+    dateTime: Option[LocalDateTime],
     timeZone: Option[TimeZone],
     url: Option[URL],
     geo: Option[Geo],
@@ -87,8 +84,7 @@ case class HostEvent(
 case class P(visibility: Visibility)
 case class Text(name: String, description: Option[String])
 case class Schedule(
-    date: Option[LocalDate],
-    time: Option[LocalTime],
+    dateTime: Option[LocalDateTime],
     timeZone: Option[TimeZone]
 )
 case class Location(url: Option[URL], geo: Option[Geo])

@@ -41,21 +41,16 @@ interface GuestEventProps {
 
 function prettyLocalDateTimeString(
   localizations: Localizations,
-  date?: string,
-  time?: string,
+  dateTime?: string,
   timeZone?: string
 ) {
-  if (date && time) {
+  if (dateTime) {
     return (
-      new Date(`${date}T${time}`).toLocaleString(localizations["locale"]) +
-      (timeZone ? ` (${timeZone})` : "")
+      new Date(dateTime).toLocaleString(localizations["locale"], {
+        dateStyle: "full",
+        timeStyle: "short",
+      }) + (timeZone ? ` (${timeZone})` : "")
     );
-  } else if (date) {
-    return new Date(date).toLocaleDateString(localizations["locale"]);
-  } else if (time) {
-    return new Date(
-      `${new Date().toISOString().substring(0, 10)}T${time}`
-    ).toLocaleTimeString(localizations["locale"]);
   } else {
     return localizations["settings.seeInvitation"];
   }
@@ -66,7 +61,7 @@ function GuestEvent(props: GuestEventProps) {
 
   const localizations = useContext(l10nContext);
 
-  const { id, guestToken, name, description, date, time, timeZone, geo } =
+  const { id, guestToken, name, description, dateTime, timeZone, geo } =
     props.event;
   const timeZones = props.timeZones.map((tz) => (
     <li key={tz}>
@@ -97,7 +92,7 @@ function GuestEvent(props: GuestEventProps) {
           <div className="card-body">
             <h5 className="card-title">{localizations["settings.when"]}</h5>
             <p className="card-Text">
-              {prettyLocalDateTimeString(localizations, date, time, timeZone)}
+              {prettyLocalDateTimeString(localizations, dateTime, timeZone)}
             </p>
           </div>
           {timeZone ? (

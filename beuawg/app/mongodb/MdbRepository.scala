@@ -1,3 +1,27 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2021-2022 Squeng AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package mongodb
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
@@ -35,8 +59,7 @@ import play.api.Logging
 
 import java.net.URL
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -64,8 +87,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val HostTokenKey = "hostToken"
   val NameKey = "name"
   val DescriptionKey = "description"
-  val DateKey = "date"
-  val TimeKey = "time"
+  val DateTimeKey = "dateTime"
   val TimeZoneKey = "timeZone"
   val UrlKey = "url"
   val GeoKey = "geo"
@@ -173,14 +195,13 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       )
       description.foreach(d => document += (DescriptionKey -> d))
       logEvent(event.id, document.toBsonDocument)
-    case VeranstaltungRescheduledEvent(_, date, time, timeZone, _) =>
+    case VeranstaltungRescheduledEvent(_, dateTime, timeZone, _) =>
       val document = org.mongodb.scala.bson.collection.mutable.Document(
         TypeKey -> RescheduledValue,
         OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
         VersionKey -> event.version
       )
-      date.foreach(d => document += (DateKey -> d.toString))
-      time.foreach(t => document += (TimeKey -> t.toString))
+      dateTime.foreach(dt => document += (DateTimeKey -> dt.toString))
       timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
       logEvent(event.id, document.toBsonDocument)
     case VeranstaltungRelocatedEvent(_, url, geo, _) =>
@@ -273,8 +294,9 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       case RescheduledValue =>
         VeranstaltungRescheduledEvent(
           id,
-          doc.get(DateKey).map(d => LocalDate.parse(d.asString.getValue)),
-          doc.get(TimeKey).map(t => LocalTime.parse(t.asString.getValue)),
+          doc
+            .get(DateTimeKey)
+            .map(dt => LocalDateTime.parse(dt.asString.getValue)),
           doc
             .get(TimeZoneKey)
             .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
@@ -351,11 +373,8 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       document(NameKey).asString.getValue,
       document.get(DescriptionKey).map(_.asString.getValue),
       document
-        .get(DateKey)
-        .map(d => LocalDate.parse(d.asString.getValue)),
-      document
-        .get(TimeKey)
-        .map(t => LocalTime.parse(t.asString.getValue)),
+        .get(DateTimeKey)
+        .map(dt => LocalDateTime.parse(dt.asString.getValue)),
       document
         .get(TimeZoneKey)
         .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
@@ -479,8 +498,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       UpdatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli)
     )
     snapshot.description.foreach(d => document += (DescriptionKey -> d))
-    snapshot.date.foreach(d => document += (DateKey -> d.toString))
-    snapshot.time.foreach(t => document += (TimeKey -> t.toString))
+    snapshot.dateTime.foreach(dt => document += (DateTimeKey -> dt.toString))
     snapshot.timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
     snapshot.url.foreach(u => document += (UrlKey -> u.toExternalForm))
     snapshot.geo.foreach(g => {

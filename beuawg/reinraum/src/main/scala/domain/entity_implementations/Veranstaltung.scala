@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,7 @@ import domain.value_objects.Visibility._
 
 import java.net.URL
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 import scala.collection.mutable
 
@@ -56,8 +55,7 @@ final class Veranstaltung private (
     val hostToken: AccessToken,
     var name: String,
     var description: Option[String],
-    var date: Option[LocalDate],
-    var time: Option[LocalTime],
+    var dateTime: Option[LocalDateTime],
     var timeZone: Option[TimeZone],
     var url: Option[URL],
     var geo: Option[Geo],
@@ -79,8 +77,7 @@ final class Veranstaltung private (
       hostToken: AccessToken = this.hostToken,
       name: String = this.name,
       description: Option[String] = this.description,
-      date: Option[LocalDate] = this.date,
-      time: Option[LocalTime] = this.time,
+      dateTime: Option[LocalDateTime] = this.dateTime,
       timeZone: Option[TimeZone] = this.timeZone,
       url: Option[URL] = this.url,
       geo: Option[Geo] = this.geo,
@@ -98,8 +95,7 @@ final class Veranstaltung private (
     hostToken,
     name,
     description,
-    date,
-    time,
+    dateTime,
     timeZone,
     url,
     geo,
@@ -128,12 +124,11 @@ final class Veranstaltung private (
           this.name = name; this.description = description
         case VeranstaltungRescheduledEvent(
               _,
-              date,
-              time,
+              dateTime,
               timeZone,
               _
             ) =>
-          this.date = date; this.time = time; this.timeZone = timeZone
+          this.dateTime = dateTime; this.timeZone = timeZone
         case VeranstaltungRelocatedEvent(_, url, geo, _) =>
           this.url = url; this.geo = geo
         case VeranstaltungRecalibratedEvent(
@@ -174,8 +169,7 @@ object Veranstaltung {
       hostToken: AccessToken,
       name: String,
       description: Option[String],
-      date: Option[LocalDate],
-      time: Option[LocalTime],
+      dateTime: Option[LocalDateTime],
       timeZone: Option[TimeZone],
       url: Option[URL],
       geo: Option[Geo],
@@ -194,8 +188,7 @@ object Veranstaltung {
       hostToken,
       name,
       description,
-      date,
-      time,
+      dateTime,
       timeZone,
       url,
       geo,
@@ -216,8 +209,7 @@ object Veranstaltung {
       snapshot.hostToken,
       snapshot.name,
       snapshot.description,
-      snapshot.date,
-      snapshot.time,
+      snapshot.dateTime,
       snapshot.timeZone,
       snapshot.url,
       snapshot.geo,
@@ -244,7 +236,6 @@ object Veranstaltung {
           guestToken,
           hostToken,
           id.toString,
-          None,
           None,
           None,
           None,

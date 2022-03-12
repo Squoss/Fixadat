@@ -121,10 +121,9 @@ function Event(props: {}) {
       })
       .catch((error) => console.error(`failed to put event text: ${error}`));
 
-  const saveEventSchedule = (date?: string, time?: string, tz?: string) =>
+  const saveEventSchedule = (dateTime?: string, tz?: string) =>
     put<EventType>(`/iapi/events/${id}/schedule`, token.substring(1), {
-      date,
-      time,
+      dateTime,
       tz,
     })
       .then((responseJson) => {
@@ -132,7 +131,7 @@ function Event(props: {}) {
         if (responseJson.status !== 204) {
           throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
         } else {
-          setEvent({ ...event, date, time, timeZone } as EventType);
+          setEvent({ ...event, dateTime, timeZone } as EventType);
         }
       })
       .catch((error) =>

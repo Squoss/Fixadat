@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,9 +51,7 @@ import thirdparty_apis.Sms
 
 import java.net.URL
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Locale
@@ -122,11 +120,10 @@ class VeranstaltungenService @Inject() (implicit
           ) {
             if (veranstaltung.visibility != Private) {
               if (
-                timeZone.isDefined && veranstaltung.date.isDefined && veranstaltung.time.isDefined && veranstaltung.timeZone.isDefined
+                timeZone.isDefined && veranstaltung.dateTime.isDefined && veranstaltung.timeZone.isDefined
               ) {
                 val zonedDateTime = ZonedDateTime.of(
-                  veranstaltung.date.get,
-                  veranstaltung.time.get,
+                  veranstaltung.dateTime.get,
                   veranstaltung.timeZone.get.toZoneId
                 )
                 val localDateTime = zonedDateTime
@@ -134,8 +131,7 @@ class VeranstaltungenService @Inject() (implicit
                   .toLocalDateTime
                 Right(
                   veranstaltung.copy(
-                    date = Some(localDateTime.toLocalDate),
-                    time = Some(localDateTime.toLocalTime),
+                    dateTime = Some(localDateTime),
                     timeZone = timeZone.map(TimeZone.getTimeZone(_))
                   )
                 )
@@ -198,8 +194,7 @@ class VeranstaltungenService @Inject() (implicit
   override def rescheduleVeranstaltung(
       id: Id,
       token: AccessToken,
-      date: Option[LocalDate],
-      time: Option[LocalTime],
+      dateTime: Option[LocalDateTime],
       timeZone: Option[TimeZone]
   ): Future[Either[Error, Boolean]] = readVeranstaltung(id).map(
     _.map(Right(_))
@@ -207,15 +202,14 @@ class VeranstaltungenService @Inject() (implicit
       .flatMap(veranstaltung =>
         if (veranstaltung.hostToken != token) { Left(AccessDenied) }
         else if (
-          veranstaltung.date == date && veranstaltung.time == time && veranstaltung.timeZone == timeZone
+          veranstaltung.dateTime == dateTime && veranstaltung.timeZone == timeZone
         ) {
           Right(false)
         } else {
           repository.logEvent(
             VeranstaltungRescheduledEvent(
               id,
-              date,
-              time,
+              dateTime,
               timeZone,
               Instant.now()
             )

@@ -40,7 +40,7 @@ interface HostEventProps {
   event: HostEventType;
   activeTab: ACTIVE_TAB;
   saveEventText: (name: string, description?: string) => void;
-  saveEventSchedule: (date?: string, time?: string, timeZone?: string) => void;
+  saveEventSchedule: (dateTime?: string, timeZone?: string) => void;
   saveEventEaPnP1: (
     emailAddressRequired: boolean,
     phoneNumberRequired: boolean,

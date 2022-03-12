@@ -108,8 +108,7 @@ class EventsController @Inject() (implicit
                           hostVeranstaltung.hostToken,
                           hostVeranstaltung.name,
                           hostVeranstaltung.description,
-                          hostVeranstaltung.date,
-                          hostVeranstaltung.time,
+                          hostVeranstaltung.dateTime,
                           hostVeranstaltung.timeZone,
                           hostVeranstaltung.url,
                           hostVeranstaltung.geo,
@@ -145,8 +144,7 @@ class EventsController @Inject() (implicit
                               guestVeranstaltung.guestToken,
                               guestVeranstaltung.name,
                               guestVeranstaltung.description,
-                              guestVeranstaltung.date,
-                              guestVeranstaltung.time,
+                              guestVeranstaltung.dateTime,
                               guestVeranstaltung.timeZone,
                               guestVeranstaltung.url,
                               guestVeranstaltung.geo,
@@ -232,8 +230,7 @@ class EventsController @Inject() (implicit
             .rescheduleVeranstaltung(
               event,
               AccessToken(accessToken),
-              request.body.date,
-              request.body.time,
+              request.body.dateTime,
               request.body.timeZone
             )
             .map(

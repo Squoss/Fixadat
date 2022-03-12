@@ -41,6 +41,7 @@ settings.name = Name
 settings.description = Beschreibung
 settings.when = Wann
 settings.date = Datum
+settings.dateTime = Datum & Zeit
 settings.time = Zeit
 settings.timeZone = Zeitzone
 settings.where = Wo

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,7 @@ import domain.value_objects.Visibility._
 
 import java.net.URL
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 
 case class VeranstaltungSnapshot(
@@ -44,8 +43,7 @@ case class VeranstaltungSnapshot(
     hostToken: AccessToken,
     name: String,
     description: Option[String],
-    date: Option[LocalDate],
-    time: Option[LocalTime],
+    dateTime: Option[LocalDateTime],
     timeZone: Option[TimeZone],
     url: Option[URL],
     geo: Option[Geo],

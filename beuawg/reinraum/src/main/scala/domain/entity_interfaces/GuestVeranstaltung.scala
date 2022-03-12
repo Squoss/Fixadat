@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,7 @@ import domain.value_objects.Id
 import domain.value_objects.Visibility._
 
 import java.net.URL
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 
 trait GuestVeranstaltung {
@@ -39,8 +38,7 @@ trait GuestVeranstaltung {
   def guestToken: AccessToken
   def name: String
   def description: Option[String]
-  def date: Option[LocalDate]
-  def time: Option[LocalTime]
+  def dateTime: Option[LocalDateTime]
   def timeZone: Option[TimeZone]
   def url: Option[URL]
   def geo: Option[Geo]
