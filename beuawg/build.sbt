@@ -26,7 +26,7 @@ libraryDependencies += ws
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.5.1"
 // bumping the Jackson versions manually avoids CVE-400 and evicts older versions consistently
 libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.13.2"
-libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2.2"
 libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % "2.13.2"
 libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.13.2"
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2"
