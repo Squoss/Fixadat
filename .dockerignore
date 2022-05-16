@@ -4,8 +4,8 @@
 
 .github
 
-feuwag/build
-feuwag/node_modules
+fegui/build
+fegui/node_modules
 
 **/.bloop
 **/.metals

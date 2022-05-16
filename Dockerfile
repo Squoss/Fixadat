@@ -7,15 +7,15 @@ FROM node:16 as react
 
 WORKDIR /squeng/squawg
 
-COPY feuawg/.env ./
-# COPY feuawg/.npmrc ./
-COPY feuawg/package*.json ./
-COPY feuawg/tsconfig.json ./
+COPY fegui/.env ./
+# COPY fegui/.npmrc ./
+COPY fegui/package*.json ./
+COPY fegui/tsconfig.json ./
 # https://docs.npmjs.com/cli/v7/commands/npm-ci
 RUN npm ci
 
-COPY feuawg/public ./public
-COPY feuawg/src ./src
+COPY fegui/public ./public
+COPY fegui/src ./src
 # https://create-react-app.dev/docs/adding-custom-environment-variables#linux-macos-bash
 RUN INLINE_RUNTIME_CHUNK=false npm run build
 
@@ -24,12 +24,12 @@ FROM hseeberger/scala-sbt:17.0.2_1.6.2_2.13.8 as play
 
 WORKDIR /squeng/squawg
 
-COPY beuawg/app ./app
-COPY beuawg/conf ./conf
-COPY beuawg/project ./project
-COPY beuawg/public ./public
-COPY beuawg/reinraum ./reinraum
-COPY beuawg/build.sbt ./
+COPY beapi/app ./app
+COPY beapi/conf ./conf
+COPY beapi/project ./project
+COPY beapi/public ./public
+COPY beapi/reinraum ./reinraum
+COPY beapi/build.sbt ./
 COPY --from=react /squeng/squawg/build ./public/build
 RUN sbt stage
 

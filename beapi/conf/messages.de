@@ -1,0 +1,61 @@
+locale = de
+
+HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a> und kann kostenlos verwendet werden. Wenn Sie sie unterstützen möchten, ziehen Sie den Kauf des <a href="https://leanpub.com/DevWebApps" target="Leanpub">Lehrbuchs</a> in Betracht.
+readMe = Sie müssen es nicht lesen. 😉
+
+notFound.title = Nicht Gefunden
+notFound.page = Die Seite, welche Sie angefordert haben, wurde nicht gefunden.
+
+legalese = Juristenjargon
+legalese.masthead = Impressum
+legalese.pp = Datenschutzrichtlinie
+legalese.tos = Allgemeine Geschäftsbedingungen
+legalese.cya = Ich habe die Datenschutzrichtlinie sowie die Allgemeinen Geschäftsbedingungen gelesen und verstehe und akzeptiere sie.
+
+acknowledgements = Danksagung
+prices = Preise
+
+gotIt = Verstanden!
+yes = Ja
+no = Nein
+ifNeedBe = Wenns sein muss
+save = Speichern
+cancel = Abbrechen
+revert = Zurücksetzen
+
+executiveSummary = Bestimmen Sie ein Datum & eine Zeit für eine Telefonkonferenz, eine Familliengrillparty oder sonst einen Gruppenanlass, indem Sie eine Wahl duchrführen.
+createRepliesPage = Eine Wahl durchführen
+HTML.backToTheRoodle = Oder <a href="https://doodle.com/de/product/polls/" target="Doodle">machen Sie eine Gruppenumfrage mit Doodle</a>.
+electionPageCreated = Wahl-Seite erstellt!
+firstThingsFirst = Sie sollten einen Namen angeben und wenigstens ein Datum & eine Zeit vorschlagen, bevor Sie ihren Link versenden.
+rememberTheMilk = Denken Sie daran, auch abzustimmen, falls sie vorhaben, dem Gruppenanlass beizuwohnen.
+
+texts = Name & Beschreibung
+
+links = Links
+links.voters = Kopieren Sie den folgenden Link und senden Sie ihn den Wählern:
+links.organizers = Teilen Sie den folgenden Link nur mit weiteren Organisatoren:
+links.reminderTo = Schicken Sie ihn sich selbst per …
+links.byEmail = … E-Mail
+links.bySms = … SMS
+
+settings = Einstellungen
+settings.what = Was
+settings.name = Name
+settings.description = Beschreibung
+settings.when = Wann
+settings.date = Datum
+settings.dateTime = Datum & Zeit
+settings.time = Zeit
+settings.timeZone = Zeitzone
+settings.where = Wo
+settings.who = Wer
+settings.seeInvitation = siehe Einladung
+
+votes = Stimmen
+votes.convertToDifferentTimeZone = In andere Zeitzone umwandeln
+votes.name = Name
+votes.yourName = Ihr Name
+
+reloadNotice = Eine neue Version von Fixadat ist verfügbar.
+reloadLink = Fixadat neu laden!

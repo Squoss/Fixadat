@@ -16,13 +16,13 @@ jobs:
       with:
         node-version: '16'
         cache: 'npm'
-        cache-dependency-path: feuawg/package-lock.json
+        cache-dependency-path: fegui/package-lock.json
     - name: Clean install with npm
       run: npm ci
-      working-directory: feuawg
+      working-directory: fegui
     - name: Test with npm
       run: npm test
-      working-directory: feuawg
+      working-directory: fegui
   sbt:
     runs-on: ubuntu-latest
     steps:
@@ -34,4 +34,4 @@ jobs:
         java-version: '17'
     - name: Test with sbt
       run: sbt test
-      working-directory: beuawg
+      working-directory: beapi

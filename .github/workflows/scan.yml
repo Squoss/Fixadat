@@ -23,55 +23,9 @@ jobs:
           args: >
             -Dsonar.organization=squoss
             -Dsonar.projectKey=Squoss_Squawg
-            -Dsonar.sources=beuawg/app/,beuawg/reinraum/src/main/scala/,feuawg/src/
-            -Dsonar.tests=beuawg/test/,beuawg/reinraum/src/test/scala/,feuawg/src/__tests__/
-            -Dsonar.exclusions=feuawg/src/__tests__/**/*
+            -Dsonar.sources=beapi/app/,beapi/reinraum/src/main/scala/,fegui/src/
+            -Dsonar.tests=beapi/test/,beapi/reinraum/src/test/scala/,fegui/src/__tests__/
+            -Dsonar.exclusions=fegui/src/__tests__/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
-  Snyk:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Snyk to check for TypeScript vulnerabilities
-        # Snyk can be used to break the build when it detects security issues
-        # in this case we want to upload the issues to GitHub Code Scanning
-        continue-on-error: true
-        id: coeTypeScript
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
-        with:
-          args: |
-            --sarif-file-output=feuawg.sarif
-            --all-projects
-            --exclude=beuawg
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: feuawg.sarif
-          # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github#example-workflow-for-sarif-files-generated-outside-of-a-repository
-          category: feuawg
-      - name: Run Snyk to check for Scala vulnerabilities
-        # Snyk can be used to break the build when it detects security issues
-        # in this case we want to upload the issues to GitHub Code Scanning but fail in the end
-        continue-on-error: true
-        id: coeScala
-        uses: snyk/actions/scala@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
-        with:
-          args: |
-            --sarif-file-output=beuawg.sarif
-            --all-projects
-            --exclude=feuawg
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: beuawg.sarif
-          # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github#example-workflow-for-sarif-files-generated-outside-of-a-repository
-          category: beuawg
-      - name: Check for failures # https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context
-        if: ${{ steps.coeTypeScript.outcome != 'success' || steps.coeScala.outcome != 'success' }}
-        run: exit 1

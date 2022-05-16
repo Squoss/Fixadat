@@ -1,0 +1,61 @@
+locale = en
+
+HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a> and can be used free of charge. If you would like to support it, consider buying a copy of the <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>.
+readMe = You will not have to read it. 😉
+
+notFound.title = Not Found
+notFound.page = The page that you have requested has not been found.
+
+legalese = Legalese
+legalese.masthead = Imprint
+legalese.pp = Privacy Policy
+legalese.tos = Terms of Service
+legalese.cya = I have read the Privacy Policy as well as the Terms of Service and understand and accept them.
+
+acknowledgements = Acknowledgements
+prices = Prices
+
+gotIt = Got it!
+yes = Yes
+no = No
+ifNeedBe = If need be
+save = Save
+cancel = Cancel
+revert = Revert
+
+executiveSummary = Fix a date & time for a conference call, a family BBQ, or any other group event by holding an election.
+createRepliesPage = Hold an election
+HTML.backToTheRoodle = Or <a href="https://doodle.com/en/product/polls/" target="Doodle">poll a group with Doodle</a>.
+electionPageCreated = Election page created!
+firstThingsFirst = Before you send out its link, you should provide a name and suggest at least one date & time.
+rememberTheMilk = Remember to vote, too, if you plan to attend the group event.
+
+texts = Name & Descriptions
+
+links = Links
+links.voters = Copy the following link and send it to the voters:
+links.organizers = Only share the following link with other organizers:
+links.reminderTo = Send it to yourself by …
+links.byEmail = … e-mail
+links.bySms = … SMS
+
+settings = Settings
+settings.what = What
+settings.name = Name
+settings.description = Description
+settings.when = When
+settings.date = Date
+settings.dateTime = Date & Time
+settings.time = Time
+settings.timeZone = Time zone
+settings.where = Where
+settings.who = Who
+settings.seeInvitation = see invitation
+
+votes = Votes
+votes.convertToDifferentTimeZone = Convert to different time zone
+votes.name = Name
+votes.yourName = Your name
+
+reloadNotice = A new version of {0} is available.
+reloadLink = Reload {0}!
