@@ -5,7 +5,7 @@
 
 FROM node:16 as react
 
-WORKDIR /squeng/squawg
+WORKDIR /squeng/fixadat
 
 COPY fegui/.env ./
 # COPY fegui/.npmrc ./
@@ -22,7 +22,7 @@ RUN INLINE_RUNTIME_CHUNK=false npm run build
 
 FROM hseeberger/scala-sbt:17.0.2_1.6.2_2.13.8 as play
 
-WORKDIR /squeng/squawg
+WORKDIR /squeng/fixadat
 
 COPY beapi/app ./app
 COPY beapi/conf ./conf
@@ -30,19 +30,19 @@ COPY beapi/project ./project
 COPY beapi/public ./public
 COPY beapi/reinraum ./reinraum
 COPY beapi/build.sbt ./
-COPY --from=react /squeng/squawg/build ./public/build
+COPY --from=react /squeng/fixadat/build ./public/build
 RUN sbt stage
 
 
 FROM openjdk:17-slim
 
-WORKDIR /squeng/squawg
+WORKDIR /squeng/fixadat
 
-COPY --from=play /squeng/squawg/target/universal/stage ./target/universal/stage
+COPY --from=play /squeng/fixadat/target/universal/stage ./target/universal/stage
 
 RUN groupadd -r gruppe && useradd --no-log-init -r -g gruppe benutzer
 RUN chown -R benutzer:gruppe /squeng
 USER benutzer
 
 EXPOSE 8080
-CMD ["target/universal/stage/bin/squawg", "-Dpidfile.path=play.pid", "-Dhttp.port=8080"]
+CMD ["target/universal/stage/bin/fixadat", "-Dpidfile.path=play.pid", "-Dhttp.port=8080"]
