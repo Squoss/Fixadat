@@ -92,7 +92,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
 
   const sameElements = (arr1: Array<string>, arr2: Array<string>) => {
     const set = new Set([...arr1, ...arr2]);
-    return set.size == new Set(arr1).size && set.size == new Set(arr2).size;
+    return set.size === new Set(arr1).size && set.size === new Set(arr2).size;
   };
 
   return (

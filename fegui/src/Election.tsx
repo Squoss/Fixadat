@@ -45,7 +45,7 @@ function Election(props: {}) {
   const location = useLocation();
   const token = location.hash;
   console.debug(`election token is ${token}`);
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const brandNew = searchParams.has("brandNew");
   console.debug(`election is brand new ${brandNew}`);
   const tz = searchParams.get("timeZone");

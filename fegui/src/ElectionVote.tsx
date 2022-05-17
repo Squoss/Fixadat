@@ -40,8 +40,7 @@ function ElectionVote(props: ElectionVoteProps) {
 
   const localizations = useContext(l10nContext);
 
-  const { id, voterToken, description, timeZone, candidates, votes } =
-    props.election;
+  const { candidates } = props.election;
 
   const defaultAvailabiity = new Map<string, Availability>();
   candidates.forEach((candidate) =>
