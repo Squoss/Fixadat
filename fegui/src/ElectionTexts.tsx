@@ -66,14 +66,10 @@ function ElectionTexts(props: ElectionTextsProps) {
     <form className="d-grid gap-4">
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">
-            Provide a title for and optionally a description of the group event
-            (e.g., whether it takes place online or offline, how long it takes,
-            etc.).
-          </h5>
+          <h5 className="card-title">{localizations["texts.instruction"]}</h5>
           <div>
             <label htmlFor="nameText" className="form-label">
-              {localizations["settings.name"]}
+              {localizations["texts.name"]}
             </label>
             <input
               type="text"
@@ -86,7 +82,7 @@ function ElectionTexts(props: ElectionTextsProps) {
           </div>
           <div>
             <label htmlFor="descriptionText" className="form-label">
-              {localizations["settings.description"]}
+              {localizations["texts.description"]}
             </label>
             <textarea
               className="form-control"

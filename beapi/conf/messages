@@ -31,6 +31,13 @@ firstThingsFirst = Before you send out its link, you should provide a name and s
 rememberTheMilk = Remember to vote, too, if you plan to attend the group event.
 
 texts = Name & Descriptions
+texts.description = Description
+texts.instruction = Give the group event a name and optionally a description (e.g., whether it takes place online or offline, how long it takes, etc.).
+texts.name = Name
+
+datesAndTimes = Dates & Times
+datesAndTimes.instruction = Suggest dates & times for the group event.
+datesAndTimes.timeZone = Time zone
 
 links = Links
 links.voters = Copy the following link and send it to the voters:
@@ -40,17 +47,6 @@ links.byEmail = … e-mail
 links.bySms = … SMS
 
 settings = Settings
-settings.what = What
-settings.name = Name
-settings.description = Description
-settings.when = When
-settings.date = Date
-settings.dateTime = Date & Time
-settings.time = Time
-settings.timeZone = Time zone
-settings.where = Where
-settings.who = Who
-settings.seeInvitation = see invitation
 
 votes = Votes
 votes.convertToDifferentTimeZone = Convert to different time zone

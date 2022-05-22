@@ -31,6 +31,13 @@ firstThingsFirst = Sie sollten einen Namen angeben und wenigstens ein Datum & ei
 rememberTheMilk = Denken Sie daran, auch abzustimmen, falls sie vorhaben, dem Gruppenanlass beizuwohnen.
 
 texts = Name & Beschreibung
+texts.description = Beschreibung
+texts.instruction = Geben Sie dem Gruppenanlass einen Namen und optional eine Beschreibung (z.B. ob er online oder offline stattfindet, wie lange er dauert etc.).
+texts.name = Name
+
+datesAndTimes = Daten & Zeiten
+datesAndTimes.instruction = Schlagen Sie Daten & Zeiten für den Gruppenanlass vor.
+datesAndTimes.timeZone = Zeitzone
 
 links = Links
 links.voters = Kopieren Sie den folgenden Link und senden Sie ihn den Wählern:
@@ -40,17 +47,6 @@ links.byEmail = … E-Mail
 links.bySms = … SMS
 
 settings = Einstellungen
-settings.what = Was
-settings.name = Name
-settings.description = Beschreibung
-settings.when = Wann
-settings.date = Datum
-settings.dateTime = Datum & Zeit
-settings.time = Zeit
-settings.timeZone = Zeitzone
-settings.where = Wo
-settings.who = Wer
-settings.seeInvitation = siehe Einladung
 
 votes = Stimmen
 votes.convertToDifferentTimeZone = In andere Zeitzone umwandeln

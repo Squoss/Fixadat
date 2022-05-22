@@ -80,11 +80,11 @@ function ElectionTally(props: ElectionTallyProps) {
 
   return (
     <React.Fragment>
-      {description
-        ? description
-            .split("\n")
-            .map((line) => <p className="card-text">{line}</p>)
-        : ""}
+      <blockquote className="blockquote">
+        {description
+          ? description.split("\n").map((line) => <p>{line}</p>)
+          : ""}
+      </blockquote>
       <form>
         <table className="table table-bordered">
           <thead>

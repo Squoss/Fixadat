@@ -155,7 +155,8 @@ function ElectionTabs(props: ElectionTabsProps) {
               }
               to={`/elections/${id}/dats#${organizerToken}`}
             >
-              <i className="bi bi-calendar2-range"></i> Dates &amp; Times
+              <i className="bi bi-calendar2-range"></i>{" "}
+              {localizations["datesAndTimes"]}
             </NavLink>
           </li>
           <li className="nav-item">

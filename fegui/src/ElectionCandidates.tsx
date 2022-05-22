@@ -80,10 +80,6 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
 
   const saveSchedule = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    console.log(props.election.timeZone);
-    console.log(props.election.candidates);
-    console.log(timeZone);
-    console.log(dateTimes);
     props.saveElectionSchedule(
       dateTimes.map((dt) => tte(dt)),
       ttu(timeZone)
@@ -100,17 +96,13 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">
-            Suggest dates &amp; times for the group event.
+            {localizations["datesAndTimes.instruction"]}
           </h5>
-          <h6 className="card-subtitle mb-2 text-muted">
-            Don't worry about their order; Fixadat will sort them
-            chronologically.
-          </h6>
           <div className="row align-items-start">
             <div className="col">
               <div>
                 <label htmlFor="timeZoneSelect" className="form-label">
-                  {localizations["settings.timeZone"]}
+                  {localizations["datesAndTimes.timeZone"]}
                 </label>
                 <select
                   className="form-select"
@@ -131,7 +123,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
             <div className="col">
               <div>
                 <label htmlFor="dateTimeSchedule" className="form-label">
-                  {localizations["settings.dateTime"]}
+                  {localizations["datesAndTimes"]}
                 </label>
                 {dateTimes.map((dt) => (
                   <React.Fragment>
@@ -171,6 +163,10 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                     <i className="bi bi-plus-lg"></i>
                   </button>
                 </div>
+                <p className="card-text">
+                  Don't worry about their order; Fixadat will sort them
+                  chronologically.
+                </p>
               </div>
             </div>
             <div className="card-footer">

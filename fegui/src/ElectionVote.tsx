@@ -55,9 +55,6 @@ function ElectionVote(props: ElectionVoteProps) {
     Object.entries(Availability).forEach((a) => {
       if (a[1] === event.target.value) {
         newAvailability.set(event.target.name, a[1]);
-        console.log("AVA " + candidates.join("ava"));
-        console.log("ava " + event.target.name);
-        console.log("ava " + event.target.value);
       }
     });
     setAvailability(newAvailability);
