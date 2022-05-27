@@ -28,7 +28,7 @@ createRepliesPage = Eine Wahl durchführen
 HTML.backToTheRoodle = Oder <a href="https://doodle.com/de/product/polls/" target="Doodle">machen Sie eine Gruppenumfrage mit Doodle</a>.
 electionPageCreated = Wahl-Seite erstellt!
 firstThingsFirst = Sie sollten einen Namen angeben und wenigstens ein Datum & eine Zeit vorschlagen, bevor Sie ihren Link versenden.
-rememberTheMilk = Denken Sie daran, auch abzustimmen, falls sie vorhaben, dem Gruppenanlass beizuwohnen.
+rememberTheMilk = Denken Sie daran, Ihre Stimme auch abzugeben, falls sie vorhaben, dem Gruppenanlass beizuwohnen.
 
 texts = Name & Beschreibung
 texts.description = Beschreibung

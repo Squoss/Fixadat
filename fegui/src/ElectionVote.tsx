@@ -23,7 +23,7 @@
  */
 
 import React, { useContext, useState } from "react";
-import { Availability, ElectionT } from "./Electioins";
+import { Availability, ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
 
 interface ElectionVoteProps {

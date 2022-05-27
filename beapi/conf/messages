@@ -28,7 +28,7 @@ createRepliesPage = Hold an election
 HTML.backToTheRoodle = Or <a href="https://doodle.com/en/product/polls/" target="Doodle">poll a group with Doodle</a>.
 electionPageCreated = Election page created!
 firstThingsFirst = Before you send out its link, you should provide a name and suggest at least one date & time.
-rememberTheMilk = Remember to vote, too, if you plan to attend the group event.
+rememberTheMilk = Remember to cast your vote, too, if you plan to attend the group event.
 
 texts = Name & Descriptions
 texts.description = Description

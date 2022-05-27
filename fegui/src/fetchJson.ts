@@ -51,3 +51,18 @@ export async function put<T>(
 ): Promise<HttpResponse<T>> {
   return fetchJson<T>(new Request(path, args));
 }
+
+export async function deleteReq<T>(
+  path: string,
+  accessToken: string,
+  args: RequestInit = {
+    method: "DELETE",
+    mode: "same-origin",
+    credentials: "same-origin",
+    cache: "no-store",
+    redirect: "error",
+    headers: { "X-Access-Token": accessToken },
+  }
+): Promise<HttpResponse<T>> {
+  return fetchJson<T>(new Request(path, args));
+}

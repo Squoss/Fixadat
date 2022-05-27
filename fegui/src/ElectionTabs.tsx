@@ -24,9 +24,9 @@
 
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Availability, ElectionT, Visibility } from "./Electioins";
 import ElectionCandidates from "./ElectionCandidates";
 import ElectionLinks from "./ElectionLinks";
+import { Availability, ElectionT, Visibility } from "./Elections";
 import ElectionSettings from "./ElectionSettings";
 import ElectionTally from "./ElectionTally";
 import ElectionTexts from "./ElectionTexts";
@@ -59,6 +59,7 @@ interface ElectionTabsProps {
     availability: Map<string, Availability>,
     timeZone?: string
   ) => void;
+  deleteElection: () => void;
   isOrganizer: boolean;
   isBrandNew: boolean;
 }
@@ -114,6 +115,7 @@ function ElectionTabs(props: ElectionTabsProps) {
         <ElectionSettings
           election={props.election}
           saveElectionVisibility={props.saveElectionVisibility}
+          deleteElection={props.deleteElection}
         />
       );
       break;

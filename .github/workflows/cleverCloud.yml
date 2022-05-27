@@ -26,4 +26,4 @@ jobs:
     - name: Link to the app # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#linking-an-existing-application
       run: clever link ${{ secrets.CLEVER_APP_ID }}
     - name: Deploy # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#deploying-new-code
-      run: clever deploy
+      run: clever deploy --force

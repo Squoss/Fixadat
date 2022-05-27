@@ -23,7 +23,7 @@
  */
 
 import React, { useContext } from "react";
-import { Availability, ElectionT } from "./Electioins";
+import { Availability, ElectionT } from "./Elections";
 import ElectionVote from "./ElectionVote";
 import { l10nContext } from "./l10nContext";
 

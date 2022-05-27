@@ -22,13 +22,15 @@
  * THE SOFTWARE.
  */
 
+import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
-import { ElectionT, Visibility } from "./Electioins";
+import { ElectionT, Visibility } from "./Elections";
 import { l10nContext } from "./l10nContext";
 
 interface ElectionSettingsProps {
   election: ElectionT;
   saveElectionVisibility: (visibility: Visibility) => void;
+  deleteElection: () => void;
 }
 
 function ElectionSettings(props: ElectionSettingsProps) {
@@ -52,6 +54,12 @@ function ElectionSettings(props: ElectionSettingsProps) {
   ) => {
     e.preventDefault();
     props.saveElectionVisibility(visibility);
+  };
+
+  const handleDeleteElection = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    Modal.getInstance(document.getElementById("deleteElectionModal")!)!.hide();
+    props.deleteElection();
   };
 
   return (
@@ -93,9 +101,53 @@ function ElectionSettings(props: ElectionSettingsProps) {
           </div>
         </div>
       </form>
-      <button className="btn btn-danger" onClick={() => alert("Hello, world!")}>
+      <button
+        type="button"
+        className="btn btn-danger"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteElectionModal"
+      >
         DELETE
       </button>
+
+      <div
+        className="modal fade"
+        id="deleteElectionModal"
+        tabIndex={-1}
+        aria-labelledby="deleteElectionModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="deleteElectionModalLabel">
+                <i className="bi bi-shield-exclamation"></i>
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">REALLY?!</div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                {localizations["no"]}
+              </button>
+              <form onSubmit={handleDeleteElection}>
+                <button type="submit" className="btn btn-primary">
+                  {localizations["yes"]}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </React.Fragment>
   );
 }

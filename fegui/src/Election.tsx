@@ -30,11 +30,11 @@ import {
   Routes,
   useLocation,
   useParams,
-  useSearchParams,
+  useSearchParams
 } from "react-router-dom";
-import { Availability, ElectionT, Visibility } from "./Electioins";
+import { Availability, ElectionT, Visibility } from "./Elections";
 import ElectionTabs, { ACTIVE_TAB } from "./ElectionTabs";
-import { get, patch, post, put } from "./fetchJson";
+import { deleteReq, get, patch, post, put } from "./fetchJson";
 import NotFound from "./NotFound";
 
 function Election(props: {}) {
@@ -201,6 +201,19 @@ function Election(props: {}) {
       );
   };
 
+  const deleteElection = () => {
+    deleteReq<void>(`/iapi/elections/${id}`, token.substring(1))
+      .then((responseJson) => {
+        console.debug(responseJson.status);
+        if (responseJson.status !== 204) {
+          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+        } else {
+          getElection();
+        }
+      })
+      .catch((error) => console.error(`failed to delete election: ${error}`));
+  };
+
   if (token === "") {
     return <p>Dude, where's my token?!</p>;
   }
@@ -250,6 +263,7 @@ function Election(props: {}) {
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
                 saveVote={saveVote}
+                deleteElection={deleteElection}
                 isOrganizer={token.substring(1) === election!.organizerToken}
                 isBrandNew={brandNew}
               />
@@ -269,6 +283,7 @@ function Election(props: {}) {
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
                 saveVote={saveVote}
+                deleteElection={deleteElection}
                 isOrganizer={token.substring(1) === election!.organizerToken}
                 isBrandNew={brandNew}
               />
@@ -288,6 +303,7 @@ function Election(props: {}) {
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
                 saveVote={saveVote}
+                deleteElection={deleteElection}
                 isOrganizer={token.substring(1) === election!.organizerToken}
                 isBrandNew={brandNew}
               />
@@ -307,6 +323,7 @@ function Election(props: {}) {
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
                 saveVote={saveVote}
+                deleteElection={deleteElection}
                 isOrganizer={token.substring(1) === election!.organizerToken}
                 isBrandNew={brandNew}
               />
@@ -326,6 +343,7 @@ function Election(props: {}) {
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
                 saveVote={saveVote}
+                deleteElection={deleteElection}
                 isOrganizer={token.substring(1) === election!.organizerToken}
                 isBrandNew={brandNew}
               />
