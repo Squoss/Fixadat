@@ -34,20 +34,17 @@ import {
 } from "react-router-dom";
 import { Availability, ElectionT, Visibility } from "./Elections";
 import ElectionTabs, { ACTIVE_TAB } from "./ElectionTabs";
-import { deleteReq, get, patch, post, put } from "./fetchJson";
+import { fetchResource, Method } from "./fetchJson";
 import NotFound from "./NotFound";
 
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));
 
   const id = useParams().election;
-  console.debug(`election ID is ${id}`);
   const location = useLocation();
   const token = location.hash;
-  console.debug(`election token is ${token}`);
   const [searchParams] = useSearchParams();
   const brandNew = searchParams.has("brandNew");
-  console.debug(`election is brand new ${brandNew}`);
   const tz = searchParams.get("timeZone");
 
   const [election, setElection] = useState<ElectionT | undefined>(undefined);
@@ -55,16 +52,15 @@ function Election(props: {}) {
   const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
   const getElection = () =>
-    get<ElectionT>(
+    fetchResource<ElectionT>(
+      Method.Get,
       `/iapi/elections/${id}?${tz != null ? "timeZone=" + tz : ""}`,
       token.substring(1)
     )
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        console.debug(responseJson.parsedBody);
-        setResponseStatusCode(responseJson.status);
-        if (responseJson.status === 200) {
-          setElection(responseJson.parsedBody);
+      .then((response) => {
+        setResponseStatusCode(response.status);
+        if (response.ok) {
+          setElection(response.parsedBody);
         }
       })
       .catch((error) => console.error(`failed to get election: ${error}`));
@@ -77,12 +73,12 @@ function Election(props: {}) {
 
   useEffect(() => {
     const getTimeZones = () =>
-      get<Array<string>>("/iapi/timeZones", "")
-        .then((responseJson) => {
-          console.debug(responseJson.status);
-          console.debug(responseJson.parsedBody);
-          if (responseJson.status === 200) {
-            setTimeZones(responseJson.parsedBody!);
+      fetchResource<Array<string>>(Method.Get, "/iapi/timeZones")
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error(`HTTP status ${response.status} instead of 200`);
+          } else {
+            setTimeZones(response.parsedBody!);
           }
         })
         .catch((error) => console.error(`failed to get time zones: ${error}`));
@@ -91,14 +87,18 @@ function Election(props: {}) {
   }, []);
 
   const saveElectionText = (name: string, description?: string) =>
-    put<ElectionT>(`/iapi/elections/${id}/text`, token.substring(1), {
-      name,
-      description,
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource(
+      Method.Put,
+      `/iapi/elections/${id}/text`,
+      token.substring(1),
+      {
+        name,
+        description,
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
           setElection({ ...election, name, description } as ElectionT);
         }
@@ -106,14 +106,18 @@ function Election(props: {}) {
       .catch((error) => console.error(`failed to put election text: ${error}`));
 
   const saveElectionSchedule = (candidates: Array<string>, timeZone?: string) =>
-    put<ElectionT>(`/iapi/elections/${id}/nominees`, token.substring(1), {
-      candidates,
-      timeZone,
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource(
+      Method.Put,
+      `/iapi/elections/${id}/nominees`,
+      token.substring(1),
+      {
+        candidates,
+        timeZone,
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
           setElection({ ...election, candidates, timeZone } as ElectionT);
         }
@@ -122,39 +126,18 @@ function Election(props: {}) {
         console.error(`failed to put election schedule: ${error}`)
       );
 
-  const saveElectionEaPnP1 = (
-    emailAddressRequired: boolean,
-    phoneNumberRequired: boolean,
-    plus1Allowed: boolean
-  ) =>
-    patch<ElectionT>(`/iapi/elections/${id}`, token.substring(1), {
-      emailAddressRequired,
-      phoneNumberRequired,
-      plus1Allowed,
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
-        } else {
-          setElection({
-            ...election,
-            emailAddressRequired,
-            phoneNumberRequired,
-            plus1Allowed,
-          } as ElectionT);
-        }
-      })
-      .catch((error) => console.error(`failed to patch election: ${error}`));
-
   const saveElectionVisibility = (visibility: Visibility) =>
-    put<ElectionT>(`/iapi/elections/${id}/visibility`, token.substring(1), {
-      visibility,
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource(
+      Method.Put,
+      `/iapi/elections/${id}/visibility`,
+      token.substring(1),
+      {
+        visibility,
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
           setElection({ ...election, visibility } as ElectionT);
         }
@@ -164,14 +147,18 @@ function Election(props: {}) {
       );
 
   const sendLinksReminder = (emailAddress?: string, phoneNumber?: string) =>
-    post<void>(`/iapi/elections/${id}/reminders`, token.substring(1), {
-      emailAddress,
-      phoneNumber,
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource(
+      Method.Post,
+      `/iapi/elections/${id}/reminders`,
+      token.substring(1),
+      {
+        emailAddress,
+        phoneNumber,
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         }
       })
       .catch((error) =>
@@ -183,15 +170,19 @@ function Election(props: {}) {
     availability: Map<string, Availability>,
     timeZone?: string
   ) => {
-    post<void>(`/iapi/elections/${id}/votes`, token.substring(1), {
-      name,
-      timeZone,
-      availability: Object.fromEntries(availability),
-    })
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource(
+      Method.Post,
+      `/iapi/elections/${id}/votes`,
+      token.substring(1),
+      {
+        name,
+        timeZone,
+        availability: Object.fromEntries(availability),
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
           getElection();
         }
@@ -202,13 +193,17 @@ function Election(props: {}) {
   };
 
   const deleteElection = () => {
-    deleteReq<void>(`/iapi/elections/${id}`, token.substring(1))
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        if (responseJson.status !== 204) {
-          throw new Error(`HTTP status: ${responseJson.status} instead of 204`);
+    fetchResource<void>(
+      Method.Delete,
+      `/iapi/elections/${id}`,
+      token.substring(1)
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
-          getElection();
+          setElection(undefined);
+          setResponseStatusCode(404);
         }
       })
       .catch((error) => console.error(`failed to delete election: ${error}`));
@@ -258,7 +253,6 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
-                saveElectionEaPnP1={saveElectionEaPnP1}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -278,7 +272,6 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
-                saveElectionEaPnP1={saveElectionEaPnP1}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -298,7 +291,6 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
-                saveElectionEaPnP1={saveElectionEaPnP1}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -318,7 +310,6 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
-                saveElectionEaPnP1={saveElectionEaPnP1}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -338,7 +329,6 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
-                saveElectionEaPnP1={saveElectionEaPnP1}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}

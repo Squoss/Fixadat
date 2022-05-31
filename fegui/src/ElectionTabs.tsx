@@ -46,11 +46,6 @@ interface ElectionTabsProps {
   activeTab: ACTIVE_TAB;
   saveElectionText: (name: string, description?: string) => void;
   saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
-  saveElectionEaPnP1: (
-    emailAddressRequired: boolean,
-    phoneNumberRequired: boolean,
-    plus1Allowed: boolean
-  ) => void;
   saveElectionVisibility: (visibility: Visibility) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
   timeZones: Array<string>;

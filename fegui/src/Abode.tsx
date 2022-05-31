@@ -25,7 +25,7 @@
 import { Modal } from "bootstrap";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { post } from "./fetchJson";
+import { fetchResource, Method } from "./fetchJson";
 import { l10nContext } from "./l10nContext";
 
 interface PostElectionResponse {
@@ -41,13 +41,15 @@ function Abode(props: {}) {
   const navigate = useNavigate();
 
   const postElection = () =>
-    post<PostElectionResponse>("/iapi/elections")
-      .then((responseJson) => {
-        console.debug(responseJson.status);
-        console.debug(responseJson.parsedBody);
-        navigate(
-          `/elections/${responseJson.parsedBody?.id}?brandNew=true#${responseJson.parsedBody?.organizerToken}`
-        );
+    fetchResource<PostElectionResponse>(Method.Post, "/iapi/elections")
+      .then((response) => {
+        if (response.status !== 201) {
+          throw new Error(`HTTP status ${response.status} instead of 201`);
+        } else {
+          navigate(
+            `/elections/${response.parsedBody?.id}?brandNew=true#${response.parsedBody?.organizerToken}`
+          );
+        }
       })
       .catch((error) => console.error(`failed to post election: ${error}`));
 

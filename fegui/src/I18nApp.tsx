@@ -23,7 +23,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { get } from "./fetchJson";
+import { fetchResource, Method } from "./fetchJson";
 import { l10nContext, Localizations } from "./l10nContext";
 
 interface I18nAppProperties {
@@ -37,11 +37,13 @@ function I18nApp(props: I18nAppProperties) {
 
   useEffect(() => {
     const fetchLocalizations = () =>
-      get<Localizations>("/iapi/l10nMessages", "")
-        .then((responseJson) => {
-          console.debug(responseJson.status);
-          console.debug(responseJson.parsedBody);
-          setLocalizations(responseJson.parsedBody!);
+      fetchResource<Localizations>(Method.Get, "/iapi/l10nMessages")
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error(`HTTP status ${response.status} instead of 200`);
+          } else {
+            setLocalizations(response.parsedBody!);
+          }
         })
         .catch((error) => console.error(`failed to get time zones: ${error}`));
 
