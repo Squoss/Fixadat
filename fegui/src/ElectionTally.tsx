@@ -91,23 +91,26 @@ function ElectionTally(props: ElectionTallyProps) {
             <tr className="table-info">
               <th>
                 {timeZone ? (
-                  <div className="dropdown">
-                    <button
-                      className="btn btn-sm btn-link dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuLink"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      {localizations["votes.convertToDifferentTimeZone"]}
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuLink"
-                    >
-                      {timeZones}
-                    </ul>
-                  </div>
+                  <React.Fragment>
+                    {localizations["datesAndTimes.timeZone"]}: {timeZone}
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-sm btn-link dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuLink"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {localizations["votes.convertToDifferentTimeZone"]}
+                      </button>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuLink"
+                      >
+                        {timeZones}
+                      </ul>
+                    </div>
+                  </React.Fragment>
                 ) : (
                   ""
                 )}
