@@ -51,7 +51,11 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     props.election.candidates
   );
   const [dateTime, setDateTime] = useState("");
-  const [timeZone, setTimeZone] = useState(tte(props.election.timeZone));
+  const [timeZone, setTimeZone] = useState(
+    props.election.timeZone === undefined
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      : props.election.timeZone
+  );
   const timeZones = props.timeZones.map((tz) => (
     <option key={tz} value={tz}>
       {tz}
@@ -75,7 +79,11 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
   ) => {
     e.preventDefault();
     setDateTimes(props.election.candidates.map((dt) => tte(dt)));
-    setTimeZone(tte(props.election.timeZone));
+    setTimeZone(
+      props.election.timeZone === undefined
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : props.election.timeZone
+    );
   };
 
   const saveSchedule = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -111,7 +119,6 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                   value={timeZone}
                   onChange={(event) => setTimeZone(event.target.value)}
                 >
-                  <option key="noTimeZone" value={undefined}></option>
                   {timeZones}
                 </select>
                 <p className="card-text">
