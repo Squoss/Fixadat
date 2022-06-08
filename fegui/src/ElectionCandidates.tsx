@@ -22,7 +22,8 @@
  * THE SOFTWARE.
  */
 
-import React, { useContext, useState } from "react";
+import { Popover } from "bootstrap";
+import React, { useContext, useEffect, useState } from "react";
 import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
 
@@ -99,6 +100,10 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     return set.size === new Set(arr1).size && set.size === new Set(arr2).size;
   };
 
+  useEffect(() => {
+    const popover = new Popover(document.getElementById("popoverButton")!);
+  }, []);
+
   return (
     <form className="d-grid gap-4">
       <div className="card">
@@ -107,10 +112,23 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
             {localizations["datesAndTimes.instruction"]}
           </h5>
           <div className="row align-items-start">
-            <div className="col">
+            <div className="col-sm">
               <div>
                 <label htmlFor="timeZoneSelect" className="form-label">
-                  {localizations["datesAndTimes.timeZone"]}
+                  {localizations["datesAndTimes.timeZone"]}{" "}
+                  <button
+                    type="button"
+                    id="popoverButton"
+                    className="btn btn-sm btn-outline-info"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="focus"
+                    data-bs-placement="bottom"
+                    data-bs-content={
+                      localizations["datesAndTimes.timeZoneMotivation"]
+                    }
+                  >
+                    <i className="bi bi-info-circle-fill"></i>
+                  </button>
                 </label>
                 <select
                   className="form-select"
@@ -121,13 +139,9 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                 >
                   {timeZones}
                 </select>
-                <p className="card-text">
-                  By providing your time zone, you can let Fixadat worry about
-                  conversions if it is not the same for every group member.
-                </p>
               </div>
             </div>
-            <div className="col">
+            <div className="col-sm">
               <div>
                 <label htmlFor="dateTimeSchedule" className="form-label">
                   {localizations["datesAndTimes"]}
@@ -171,8 +185,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                   </button>
                 </div>
                 <p className="card-text">
-                  Don't worry about their order; Fixadat will sort them
-                  chronologically.
+                  {localizations["datesAndTimes.order"]}
                 </p>
               </div>
             </div>

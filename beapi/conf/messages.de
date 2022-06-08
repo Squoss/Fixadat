@@ -37,7 +37,9 @@ texts.name = Name
 
 datesAndTimes = Daten & Zeiten
 datesAndTimes.instruction = Schlagen Sie Daten & Zeiten für den Gruppenanlass vor.
+datesAndTimes.order = Machen Sie sich keine Gedanken über ihre Reihenfolge; Fixadat wird sie chronologisch sortieren.
 datesAndTimes.timeZone = Zeitzone
+datesAndTimes.timeZoneMotivation = Durch Angabe Ihrer Zeitzone können Sie Umrechnungen Fixadat überlassen, falls sie nicht dieselbe für jedes Gruppenmitglied ist.
 
 links = Links
 links.voters = Kopieren Sie den folgenden Link und senden Sie ihn den Wählern:

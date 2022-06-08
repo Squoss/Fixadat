@@ -37,7 +37,9 @@ texts.name = Name
 
 datesAndTimes = Dates & Times
 datesAndTimes.instruction = Suggest dates & times for the group event.
+datesAndTimes.order = Don't worry about their order; Fixadat will sort them chronologically.
 datesAndTimes.timeZone = Time zone
+datesAndTimes.timeZoneMotivation = By providing your time zone, you can let Fixadat worry about conversions if it is not the same for every group member.
 
 links = Links
 links.voters = Copy the following link and send it to the voters:
