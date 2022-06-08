@@ -210,7 +210,7 @@ function App(props: {}) {
         <Outlet />
       </main>
 
-      <footer className="fixed-bottom">
+      <footer className="d-none d-sm-block fixed-bottom">
         <div className="card text-center">
           <div className="card-body">
             <div className="row">

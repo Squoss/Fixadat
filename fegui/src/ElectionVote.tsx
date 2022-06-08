@@ -97,8 +97,6 @@ function ElectionVote(props: ElectionVoteProps) {
             >
               <span title={localizations["no"]}>🙁</span>
             </label>
-          </div>
-          <div className="form-check form-check-inline">
             <input
               className="btn-check"
               type="radio"
@@ -114,8 +112,6 @@ function ElectionVote(props: ElectionVoteProps) {
             >
               <span title={localizations["ifNeedBe"]}>😐</span>
             </label>
-          </div>
-          <div className="form-check form-check-inline">
             <input
               className="btn-check"
               type="radio"
