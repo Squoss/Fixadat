@@ -26,4 +26,14 @@ jobs:
     - name: Link to the app # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#linking-an-existing-application
       run: clever link ${{ secrets.CLEVER_APP_ID }}
     - name: Deploy # https://www.clever-cloud.com/doc/reference/clever-tools/getting_started/#deploying-new-code
-      run: clever deploy --force
+      continue-on-error: true
+      id: deployNewCode
+      run: clever deploy
+    - name: Restart # if there was no new code
+      continue-on-error: true
+      if: ${{ steps.deployNewCode.outcome != 'success'}}
+      id: restartOldCode
+      run: clever restart --without-cache
+    - name: Fail # if both Deploy and Restart failed
+      if: ${{ steps.deployNewCode.outcome != 'success' && steps.restartOldCode.outcome != 'success' }}
+      run: exit 1
