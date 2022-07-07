@@ -1,3 +1,27 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2021-2022 Squeng AG
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Clipboard from "./Clipboard";
@@ -6,6 +30,7 @@ import ValidatingInput from "./ValidatingInput";
 
 interface ElectionLinksProps {
   id: number;
+  nrOfCandidates: number;
   organizerToken: string;
   voterToken: string;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
@@ -16,7 +41,7 @@ function ElectionLinks(props: ElectionLinksProps) {
 
   const localizations = useContext(l10nContext);
 
-  const { id, voterToken, organizerToken } = props;
+  const { id, nrOfCandidates, voterToken, organizerToken } = props;
 
   const guestLink = `${window.origin}/elections/${id}#${voterToken}`;
   const hostLink = `${window.origin}/elections/${id}#${organizerToken}`;
@@ -47,17 +72,26 @@ function ElectionLinks(props: ElectionLinksProps) {
       <div className="card text-dark bg-warning mb-3">
         <div className="card-header">{localizations["links.voters"]}</div>
         <div className="card-body">
-          <h5 className="card-title">
-            <mark>{guestLink}</mark> <Clipboard text={guestLink} />
-          </h5>
-          <p className="card-text">
-            <NavLink
-              className="link-dark"
-              to={`/elections/${id}/dats#${organizerToken}`}
-            >
-              {localizations["firstThingsFirst"]}
-            </NavLink>
-          </p>
+          <div className="row align-items-center">
+            <div className="col-auto text-truncate">
+              <mark>{guestLink}</mark>
+            </div>
+            <div className="col-auto">
+              <Clipboard text={guestLink} />
+            </div>
+          </div>
+          {nrOfCandidates < 1 ? (
+            <p className="card-text">
+              <NavLink
+                className="link-dark"
+                to={`/elections/${id}/dats#${organizerToken}`}
+              >
+                {localizations["firstThingsFirst"]}
+              </NavLink>
+            </p>
+          ) : (
+            <React.Fragment />
+          )}
         </div>
       </div>
       <div className="card text-white bg-danger mb-3">
@@ -66,9 +100,14 @@ function ElectionLinks(props: ElectionLinksProps) {
           {localizations["links.organizers"]}
         </div>
         <div className="card-body">
-          <h5 className="card-title">
-            <mark>{hostLink}</mark> <Clipboard text={hostLink} />
-          </h5>
+          <div className="row align-items-center">
+            <div className="col-auto text-truncate">
+              <mark>{hostLink}</mark>
+            </div>
+            <div className="col-auto">
+              <Clipboard text={hostLink} />
+            </div>
+          </div>
           <div className="row">
             <p className="card-text col">
               <i className="bi bi-life-preserver"></i>{" "}

@@ -89,6 +89,7 @@ function ElectionTabs(props: ElectionTabsProps) {
       content = (
         <ElectionLinks
           id={id}
+          nrOfCandidates={props.election.candidates.length}
           organizerToken={organizerToken}
           voterToken={voterToken}
           sendLinksReminder={props.sendLinksReminder}
