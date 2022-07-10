@@ -23,7 +23,7 @@
  */
 
 import React, { useContext } from "react";
-import { Availability, ElectionT } from "./Elections";
+import { Availability, ElectionT, Vote } from "./Elections";
 import ElectionVote from "./ElectionVote";
 import { l10nContext } from "./l10nContext";
 
@@ -45,6 +45,37 @@ function prettyLocalDateTimeString(locale: string, dateTime: string) {
       timeStyle: "short",
     });
   }
+}
+
+function ji(candidates: Array<string>, votes: Array<Vote>) {
+  const columnCounts = new Array<[number, number, number]>(0);
+  let best = [0, 0, 0];
+  candidates.forEach(() => {
+    columnCounts.push([0, 0, 0]);
+  });
+  votes.forEach((vote) => {
+    candidates.forEach((candidate, ccIndex) => {
+      const [y, inb, n] = columnCounts[ccIndex];
+      const bla = new Map(Object.entries(vote.availability)).get(
+        candidate.substring(0, candidate.indexOf("T") + 6)
+      );
+      if (bla === "No") {
+        columnCounts[ccIndex] = [y, inb, n + 1];
+      } else if (bla === "IfNeedBe") {
+        columnCounts[ccIndex] = [y, inb + 1, n];
+      } else if (bla === "Yes") {
+        columnCounts[ccIndex] = [y + 1, inb, n];
+      }
+      const [y2, inb2, n2] = columnCounts[ccIndex];
+      if (
+        y2 + inb2 > best[0] + best[1] ||
+        (y2 + inb2 === best[0] + best[1] && y2 > best[0])
+      ) {
+        best = [y2, inb2, n2];
+      }
+    });
+  });
+  return { columnCounts, best };
 }
 
 function ElectionTally(props: ElectionTallyProps) {
@@ -77,6 +108,8 @@ function ElectionTally(props: ElectionTallyProps) {
       return "tja";
     }
   };
+
+  const { columnCounts, best } = ji(candidates, votes);
 
   return (
     <React.Fragment>
@@ -121,6 +154,23 @@ function ElectionTally(props: ElectionTallyProps) {
                     localizations["locale"],
                     candidate
                   )}
+                </th>
+              ))}
+              <th></th>
+            </tr>
+            <tr>
+              <th></th>
+              {columnCounts.map((yinbn) => (
+                <th
+                  className={
+                    best[0] === yinbn[0] &&
+                    best[1] === yinbn[1] &&
+                    best[2] === yinbn[2]
+                      ? "table-primary"
+                      : "table-secondary"
+                  }
+                >
+                  {yinbn[0]} / {yinbn[1]} / {yinbn[2]}
                 </th>
               ))}
               <th></th>
