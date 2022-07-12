@@ -47,9 +47,8 @@ function prettyLocalDateTimeString(locale: string, dateTime: string) {
   }
 }
 
-function ji(candidates: Array<string>, votes: Array<Vote>) {
+function columnsAll(candidates: Array<string>, votes: Array<Vote>) {
   const columnCounts = new Array<[number, number, number]>(0);
-  let best = [0, 0, 0];
   candidates.forEach(() => {
     columnCounts.push([0, 0, 0]);
   });
@@ -65,17 +64,26 @@ function ji(candidates: Array<string>, votes: Array<Vote>) {
         columnCounts[ccIndex] = [y, inb + 1, n];
       } else if (bla === "Yes") {
         columnCounts[ccIndex] = [y + 1, inb, n];
-      }
-      const [y2, inb2, n2] = columnCounts[ccIndex];
-      if (
-        y2 + inb2 > best[0] + best[1] ||
-        (y2 + inb2 === best[0] + best[1] && y2 > best[0])
-      ) {
-        best = [y2, inb2, n2];
+      } else {
+        throw new Error("unmapped enum value");
       }
     });
   });
-  return { columnCounts, best };
+  return columnCounts;
+}
+
+function columnBest(columnCounts: Array<[number, number, number]>) {
+  let best = [0, 0, 0];
+  columnCounts.forEach((columnCount) => {
+    const [y, inb] = columnCount;
+    if (
+      y + inb > best[0] + best[1] ||
+      (y + inb === best[0] + best[1] && y > best[0])
+    ) {
+      best = columnCount;
+    }
+  });
+  return best;
 }
 
 function ElectionTally(props: ElectionTallyProps) {
@@ -105,11 +113,12 @@ function ElectionTally(props: ElectionTallyProps) {
     } else if (bla === "Yes") {
       return "table-success";
     } else {
-      return "tja";
+      throw new Error("unmapped enum value");
     }
   };
 
-  const { columnCounts, best } = ji(candidates, votes);
+  const columnCounts = columnsAll(candidates, votes);
+  const best = columnBest(columnCounts);
 
   return (
     <React.Fragment>
@@ -170,7 +179,7 @@ function ElectionTally(props: ElectionTallyProps) {
                       : "table-secondary"
                   }
                 >
-                  {yinbn[0]} / {yinbn[1]} / {yinbn[2]}
+                  {yinbn[0] + yinbn[1]} ({yinbn[0]}:{yinbn[1]})
                 </th>
               ))}
               <th></th>
