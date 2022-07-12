@@ -227,7 +227,7 @@ class ElectionsController @Inject() (implicit
   }
 
   def postVote(election: Id) =
-    Action.async{validateJson[VoteTransferObject]} { request =>
+    Action.async { validateJson[VoteTransferObject] } { request =>
       Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           elections
@@ -257,9 +257,12 @@ class ElectionsController @Inject() (implicit
             .sendLinksReminder(
               election,
               AccessToken(accessToken),
-              request.lang.locale,
+              request.host,
               request.body.emailAddress,
-              request.body.phoneNumber
+              messagesApi("links.byEmail.subject")(request.lang),
+              messagesApi("links.byEmail.plainText")(request.lang),
+              request.body.phoneNumber,
+              messagesApi("links.bySms.text")(request.lang)
             )
             .map(
               _.fold(
@@ -276,12 +279,13 @@ class ElectionsController @Inject() (implicit
       Try(UUID.fromString(request.headers(xAccessToken))) match {
         case Success(accessToken) =>
           elections
-            .sendLinksReminder(
+            .subscribe(
               election,
               AccessToken(accessToken),
               request.lang.locale,
               request.body.emailAddress,
-              request.body.phoneNumber
+              request.body.phoneNumber,
+              request.body.url
             )
             .map(
               _.fold(

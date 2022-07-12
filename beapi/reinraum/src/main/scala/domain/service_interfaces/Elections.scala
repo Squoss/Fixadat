@@ -97,9 +97,12 @@ trait Elections {
   def sendLinksReminder(
       id: Id,
       token: AccessToken,
-      locale: Locale,
+      host: String,
       emailAddress: Option[EmailAddress],
-      phoneNumber: Option[PhoneNumber]
+      subject: String,
+      plainText: String,
+      phoneNumber: Option[PhoneNumber],
+      text: String
   ): Future[Either[Error, Unit]]
 
   def subscribe(

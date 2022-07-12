@@ -46,7 +46,10 @@ links.voters = Kopieren Sie den folgenden Link und senden Sie ihn den Wählern:
 links.organizers = Teilen Sie den folgenden Link nur mit weiteren Organisatoren:
 links.reminderTo = Schicken Sie ihn sich selbst per …
 links.byEmail = … E-Mail
+links.byEmail.subject = Fixadat-Organisator-Link für {0}
+links.byEmail.plainText = {1}\nist der Fixadat-Organisator-Link für die Wahl {0}.
 links.bySms = … SMS
+links.bySms.text = {1} ist der Fixadat-Organisator-Link für die Wahl {0}.
 
 settings = Einstellungen
 

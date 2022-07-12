@@ -48,6 +48,7 @@ import thirdparty_apis.Email
 import thirdparty_apis.Sms
 
 import java.net.URL
+import java.text.MessageFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -349,9 +350,12 @@ class ElectionsService @Inject() (implicit
   override def sendLinksReminder(
       id: Id,
       token: AccessToken,
-      locale: Locale,
+      host: String,
       emailAddress: Option[EmailAddress],
-      phoneNumber: Option[PhoneNumber]
+      subject: String,
+      plainText: String,
+      phoneNumber: Option[PhoneNumber],
+      text: String
   ): Future[Either[Error, Unit]] = readElection(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
@@ -359,8 +363,27 @@ class ElectionsService @Inject() (implicit
         if (token != election.organizerToken) {
           Left(AccessDenied)
         } else {
-          emailAddress.foreach(ea => email.send(ea, "TODO", "TODO"))
-          phoneNumber.foreach(pn => sms.send(pn, "TODO"))
+          emailAddress.foreach(ea =>
+            email.send(
+              ea,
+              MessageFormat.format(subject, election.name),
+              MessageFormat.format(
+                plainText,
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.organizerToken.wert}"
+              )
+            )
+          )
+          phoneNumber.foreach(pn =>
+            sms.send(
+              pn,
+              MessageFormat.format(
+                text,
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.organizerToken.wert}"
+              )
+            )
+          )
           Right(())
         }
       )
