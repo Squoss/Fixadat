@@ -54,6 +54,9 @@ class Mailjet @Inject() (implicit
   // https://dev.mailjet.com/email/guides/#authentication
   val username = config.get[String]("mailjet.apiKey")
   val password = config.get[String]("mailjet.secretKey")
+  val sender = config.get[String](
+    "mailjet.sender"
+  ) // needs to be on the allowlist at https://app.mailjet.com/account/sender
   // https://dev.mailjet.com/sms/guides/send-sms-api/#authentication
   val smsToken = config.get[String]("mailjet.smsToken")
 
@@ -74,7 +77,7 @@ class Mailjet @Inject() (implicit
       "Messages" -> Json.arr(
         Json.obj(
           "From" -> Json.obj(
-            "Email" -> "squeng@outlook.com", // needs to be on the allowlist at https://app.mailjet.com/account/sender
+            "Email" -> sender,
             "Name" -> "Fixadat"
           ),
           "To" -> Json.arr(
