@@ -32,6 +32,7 @@ import I18nApp from "./I18nApp";
 import Masthead from "./Masthead";
 import NotFound from "./NotFound";
 import Prices from "./Prices";
+import PrivacyPolicy from "./PrivacyPolicy";
 import ToDo from "./ToDo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -49,7 +50,7 @@ root.render(
             <Route path="elections/:election/*" element={<Election />} />
             <Route path="legalese" element={<Navigate to="/legalese/im" />} />
             <Route path="legalese/im" element={<Masthead />} />
-            <Route path="legalese/pp" element={<ToDo />} />
+            <Route path="legalese/pp" element={<PrivacyPolicy />} />
             <Route path="legalese/tos" element={<ToDo />} />
             <Route path="prices" element={<Prices />} />
             <Route path="*" element={<NotFound />} />
