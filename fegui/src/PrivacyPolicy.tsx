@@ -378,7 +378,6 @@ function PrivacyPolicy(props: {}) {
       </p>
       <h2>4. Datenerfassung auf dieser Website</h2>
       <h3>Cookies</h3>
-      <script id="CookieDeclaration" src="https://consent.cookiebot.com/a0e73978-7512-4d6e-ad06-95413ac48535/cd.js" type="text/javascript" async></script>
       <p>
         Unsere Internetseiten verwenden so genannte &bdquo;Cookies&ldquo;.
         Cookies sind kleine Textdateien und richten auf Ihrem Endger&auml;t
