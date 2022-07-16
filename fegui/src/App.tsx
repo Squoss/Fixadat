@@ -22,7 +22,8 @@
  * THE SOFTWARE.
  */
 
-import React, { useContext } from "react";
+import { Modal } from "bootstrap";
+import React, { useContext, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { l10nContext } from "./l10nContext";
 
@@ -39,6 +40,15 @@ function App(props: {}) {
   );
   locationString += "locale=NEWLOCALE";
   locationString += location.hash;
+
+  useEffect(() => {
+    const cookieConsentFlag = window.sessionStorage.getItem("cookieConsent");
+    if (cookieConsentFlag === null) {
+      const modal = new Modal(document.getElementById("cookieConsentModal")!);
+      modal.show();
+      window.sessionStorage.setItem("cookieConsent", "shown");
+    }
+  }, []);
 
   return (
     <React.Fragment>
@@ -236,6 +246,52 @@ function App(props: {}) {
           </div>
         </div>
       </footer>
+
+      <div
+        className="modal fade"
+        id="cookieConsentModal"
+        tabIndex={-1}
+        aria-labelledby="cookieConsentModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-fullscreen">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="cookieConsentModalLabel">
+                🥠
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p>🍪</p>
+              <p>
+                reminder to myself:{" "}
+                <a
+                  href="https://usercentrics.com/press/usercentrics-and-cookiebot-unite/"
+                  target="Cavalry"
+                >
+                  Cookiebot o.ä.
+                </a>{" "}
+                verwenden
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                {localizations["gotIt"]}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </React.Fragment>
   );
 }
