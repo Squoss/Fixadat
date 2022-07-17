@@ -258,27 +258,61 @@ function App(props: {}) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="cookieConsentModalLabel">
-                🥠
+                <span className="text-center">Cookie Monster</span>
               </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
             </div>
             <div className="modal-body">
-              <p>🍪</p>
               <p>
-                reminder to myself:{" "}
+                Being a Web app, Fixadat uses various{" "}
+                <a href="https://developer.mozilla.org/" target="MDN">
+                  Web technologies
+                </a>
+                , including but not limited to{" "}
                 <a
-                  href="https://usercentrics.com/press/usercentrics-and-cookiebot-unite/"
-                  target="Cavalry"
+                  href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies"
+                  target="MDN"
                 >
-                  Cookiebot o.ä.
+                  cookies
+                </a>
+                . For the time being, it uses two{" "}
+                <a
+                  href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_the_lifetime_of_a_cookie"
+                  target="MDN"
+                >
+                  session cookies
                 </a>{" "}
-                verwenden
+                of its own (but neither permanent nor third-party cookies):
               </p>
+              <ol>
+                <li>
+                  The{" "}
+                  <a
+                    href="https://www.playframework.com/documentation/latest/SettingsSession"
+                    target="Play"
+                  >
+                    Play session cookie
+                  </a>
+                  , typically called <code>PLAY_SESSION</code>, to{" "}
+                  <a
+                    href="https://www.playframework.com/documentation/latest/ScalaCsrf#Adding-a-CSRF-token-to-the-session"
+                    target="Play"
+                  >
+                    add an anti-CSRF token
+                  </a>
+                  .
+                </li>
+                <li>
+                  The{" "}
+                  <a
+                    href="https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support"
+                    target="Play"
+                  >
+                    Play language cookie
+                  </a>
+                  , typically called <code>PLAY_LANG</code>, to remember your
+                  preferred language.
+                </li>
+              </ol>
             </div>
             <div className="modal-footer">
               <button
@@ -286,8 +320,9 @@ function App(props: {}) {
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
               >
-                {localizations["gotIt"]}
-              </button>
+                Take it
+              </button>{" "}
+              or <a href="https://noyb.eu/">leave it</a>
             </div>
           </div>
         </div>

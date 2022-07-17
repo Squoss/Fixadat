@@ -541,6 +541,7 @@ function PrivacyPolicy(props: {}) {
                     <img
                       src="https://media.springernature.com/full/springer-static/cover-hires/book/978-3-662-63087-7"
                       className="img-fluid"
+                      alt="Datenschutz für Softwareentwicklung und IT"
                     />
                   </a>
                 </div>
@@ -552,6 +553,7 @@ function PrivacyPolicy(props: {}) {
                     <img
                       src="https://dpunkt.de/wp-content/uploads/2021/07/13319.jpg"
                       className="img-fluid"
+                      alt="Cloud Computing nach der Datenschutz-Grundverordnung"
                     />
                   </a>
                 </div>
