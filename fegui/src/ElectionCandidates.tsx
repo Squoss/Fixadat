@@ -104,9 +104,13 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     const popover = new Popover(document.getElementById("popoverButton")!);
   }, []);
 
+  const changesSaved = () =>
+    sameElements(props.election.candidates, dateTimes) &&
+    tte(props.election.timeZone) === timeZone;
+
   return (
     <form className="d-grid gap-4">
-      <div className="card">
+      <div className={changesSaved() ? "card" : "card border-warning"}>
         <div className="card-body">
           <h5 className="card-title">
             {localizations["datesAndTimes.instruction"]}
@@ -189,28 +193,23 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                 </p>
               </div>
             </div>
-            <div className="card-footer">
-              {
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={cancelSchedule}
-                  >
-                    {localizations["revert"]}
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={saveSchedule}
-                    disabled={
-                      (sameElements(props.election.candidates, dateTimes) &&
-                        tte(props.election.timeZone) === timeZone) ||
-                      dateTimes.length === 0
-                    }
-                  >
-                    {localizations["save"]}
-                  </button>
-                </div>
+            <div
+              className={
+                changesSaved() ? "card-footer" : "card-footer bg-warning"
               }
+            >
+              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button className="btn btn-secondary" onClick={cancelSchedule}>
+                  {localizations["revert"]}
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={saveSchedule}
+                  disabled={dateTimes.length === 0 || changesSaved()}
+                >
+                  {localizations["save"]}
+                </button>
+              </div>
             </div>
           </div>
         </div>

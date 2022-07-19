@@ -62,9 +62,13 @@ function ElectionTexts(props: ElectionTextsProps) {
     props.saveElectionText(name.trim(), ttu(description));
   };
 
+  const changesSaved = () =>
+    props.election.name === name &&
+    tte(props.election.description) === description;
+
   return (
     <form className="d-grid gap-4">
-      <div className="card">
+      <div className={changesSaved() ? "card" : "card border-warning"}>
         <div className="card-body">
           <h5 className="card-title">{localizations["texts.instruction"]}</h5>
           <div>
@@ -93,25 +97,21 @@ function ElectionTexts(props: ElectionTextsProps) {
             />
           </div>
         </div>
-        <div className="card-footer">
-          {
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button className="btn btn-secondary" onClick={cancelText}>
-                {localizations["revert"]}
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={saveText}
-                disabled={
-                  name === "" ||
-                  (props.election.name === name &&
-                    tte(props.election.description) === description)
-                }
-              >
-                {localizations["save"]}
-              </button>
-            </div>
-          }
+        <div
+          className={changesSaved() ? "card-footer" : "card-footer bg-warning"}
+        >
+          <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button className="btn btn-secondary" onClick={cancelText}>
+              {localizations["revert"]}
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={saveText}
+              disabled={name === "" || changesSaved()}
+            >
+              {localizations["save"]}
+            </button>
+          </div>
         </div>
       </div>
     </form>
