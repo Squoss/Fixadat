@@ -29,3 +29,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
+  update-graph:
+    # https://www.scala-lang.org/blog/2022/07/18/secure-your-dependencies-on-github.html
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: scalacenter/sbt-dependency-submission@v2
+        with:
+          ## Optional: Define the working directory of your build.
+          ## It should contain the build.sbt file.
+          working-directory: './beapi/'
