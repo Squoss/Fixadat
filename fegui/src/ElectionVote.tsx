@@ -23,7 +23,7 @@
  */
 
 import React, { useContext, useState } from "react";
-import { Availability, ElectionT } from "./Elections";
+import { Availability, ElectionT, Visibility } from "./Elections";
 import { l10nContext } from "./l10nContext";
 
 interface ElectionVoteProps {
@@ -67,7 +67,7 @@ function ElectionVote(props: ElectionVoteProps) {
     setAvailability(defaultAvailabiity);
   };
 
-  return (
+  return props.election.visibility === Visibility.PUBLIC ? (
     <tr>
       <td>
         <input
@@ -139,6 +139,10 @@ function ElectionVote(props: ElectionVoteProps) {
           {localizations["votes.castVote"]} 🗳️
         </button>
       </td>
+    </tr>
+  ) : (
+    <tr>
+      <td colSpan={3}>{localizations["votes.gameOver"]}</td>
     </tr>
   );
 }
