@@ -67,7 +67,7 @@ function ElectionSettings(props: ElectionSettingsProps) {
       <form className="d-grid gap-4">
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">Visibility</h5>
+            <h5 className="card-title">{localizations["votes.visibility"]}</h5>
             <select
               className="form-select"
               id="visibilitySelect"
@@ -80,9 +80,15 @@ function ElectionSettings(props: ElectionSettingsProps) {
                 })
               }
             >
-              <option value={Visibility.PUBLIC}>Read/Write</option>
-              <option value={Visibility.PROTECTED}>Read-only</option>
-              <option value={Visibility.PRIVATE}>???</option>
+              <option value={Visibility.PUBLIC}>
+                {localizations["votes.visibilityPublic"]}
+              </option>
+              <option value={Visibility.PROTECTED}>
+                {localizations["votes.visibilityProtected"]}
+              </option>
+              <option value={Visibility.PRIVATE}>
+                {localizations["votes.visibilityPrivate"]}
+              </option>
             </select>
           </div>
           <div className="card-footer">

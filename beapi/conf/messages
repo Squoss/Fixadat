@@ -53,8 +53,13 @@ links.bySms.text = {1} is the Fixadat organizer link for the election {0}.
 settings = Settings
 
 votes = Votes
+votes.castVote = Cast your vote
 votes.convertToDifferentTimeZone = Convert to different time zone
 votes.name = Name
+votes.visibility = Visibility
+votes.visibilityPrivate = Hide election
+votes.visibilityProtected = Show election, but votes can no longer be cast
+votes.visibilityPublic = Votes can still be cast
 votes.yourName = Your name
 
 reloadNotice = A new version of {0} is available.

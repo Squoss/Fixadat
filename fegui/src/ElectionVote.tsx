@@ -136,7 +136,7 @@ function ElectionVote(props: ElectionVoteProps) {
           onClick={saveVote}
           disabled={name === ""}
         >
-          🗳️
+          {localizations["votes.castVote"]} 🗳️
         </button>
       </td>
     </tr>

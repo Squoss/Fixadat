@@ -53,8 +53,13 @@ links.bySms.text = {1} ist der Fixadat-Organisator-Link für die Wahl {0}.
 settings = Einstellungen
 
 votes = Stimmen
+votes.castVote = Geben Sie Ihre Stimme ab
 votes.convertToDifferentTimeZone = In andere Zeitzone umwandeln
 votes.name = Name
+votes.visibility = Sichtbarkeit
+votes.visibilityPrivate = Wahl verstecken
+votes.visibilityProtected = Wahl zeigen, aber Stimmen können nicht mehr abgegeben werden
+votes.visibilityPublic = Stimmen können noch immer abgegeben werden
 votes.yourName = Ihr Name
 
 reloadNotice = Eine neue Version von Fixadat ist verfügbar.
