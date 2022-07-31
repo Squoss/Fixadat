@@ -62,10 +62,12 @@ function ElectionSettings(props: ElectionSettingsProps) {
     props.deleteElection();
   };
 
+  const changesSaved = () => props.election.visibility === visibility;
+
   return (
     <React.Fragment>
       <form className="d-grid gap-4">
-        <div className="card">
+        <div className={changesSaved() ? "card" : "card border-warning"}>
           <div className="card-body">
             <h5 className="card-title">{localizations["votes.visibility"]}</h5>
             <select
@@ -91,7 +93,11 @@ function ElectionSettings(props: ElectionSettingsProps) {
               </option>
             </select>
           </div>
-          <div className="card-footer">
+          <div
+            className={
+              changesSaved() ? "card-footer" : "card-footer bg-warning"
+            }
+          >
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button className="btn btn-secondary" onClick={cancelVisibility}>
                 {localizations["revert"]}
@@ -99,7 +105,7 @@ function ElectionSettings(props: ElectionSettingsProps) {
               <button
                 className="btn btn-primary"
                 onClick={saveVisibility}
-                disabled={props.election.visibility === visibility}
+                disabled={changesSaved()}
               >
                 {localizations["save"]}
               </button>
