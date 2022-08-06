@@ -36,6 +36,7 @@ interface ElectionTallyProps {
     availability: Map<string, Availability>,
     timeZone?: string
   ) => void;
+  deleteVote: (name: string, voted: Date) => void;
 }
 
 function prettyLocalDateTimeString(locale: string, dateTime: string) {
@@ -119,6 +120,15 @@ function ElectionTally(props: ElectionTallyProps) {
 
   const columnCounts = columnsAll(candidates, votes);
   const best = columnBest(columnCounts);
+
+  const deleteVote = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    name: string,
+    voted: Date
+  ) => {
+    e.preventDefault();
+    props.deleteVote(name, voted);
+  };
 
   return (
     <React.Fragment>
@@ -204,7 +214,7 @@ function ElectionTally(props: ElectionTallyProps) {
                   <button
                     type="button"
                     className="btn btn-light"
-                    onClick={() => alert("Hello, world!")}
+                    onClick={(e) => deleteVote(e, vote.name, vote.voted)}
                   >
                     <i className="bi bi-trash"></i>
                   </button>

@@ -33,6 +33,7 @@ import domain.value_objects.Error._
 import domain.value_objects.Id
 
 import java.net.URL
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -92,6 +93,13 @@ trait Elections {
       name: String,
       timeZone: Option[TimeZone],
       availability: Map[LocalDateTime, Availability]
+  ): Future[Either[Error, Unit]]
+
+  def deleteVote(
+      id: Id,
+      token: AccessToken,
+      name: String,
+      voted: Instant
   ): Future[Either[Error, Unit]]
 
   def sendLinksReminder(

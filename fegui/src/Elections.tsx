@@ -31,6 +31,7 @@ export enum Availability {
 export interface Vote {
   name: string;
   availability: Map<string, Availability>;
+  voted: Date;
 }
 
 export enum Visibility {

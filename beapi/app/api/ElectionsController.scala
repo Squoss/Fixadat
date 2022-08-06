@@ -41,6 +41,7 @@ import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
 
+import java.time.Instant
 import java.time.ZoneId
 import java.util.TimeZone
 import java.util.UUID
@@ -248,6 +249,27 @@ class ElectionsController @Inject() (implicit
         case Failure(exception) => Future(Forbidden(exception.getMessage))
       }
     }
+
+  def deleteVote(election: Id, name: String, voted: String) = Action.async {
+    request =>
+      Try(UUID.fromString(request.headers(xAccessToken))) match {
+        case Success(accessToken) =>
+          elections
+            .deleteVote(
+              election,
+              AccessToken(accessToken),
+              name,
+              Instant.parse(voted)
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                _ => NoContent
+              )
+            )
+        case Failure(exception) => Future(Forbidden(exception.getMessage))
+      }
+  }
 
   def postReminder(election: Id) =
     Action.async(validateJson[Subscriptions]) { request =>

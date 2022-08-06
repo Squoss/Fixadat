@@ -38,6 +38,7 @@ import domain.persistence.Repository
 import domain.persistence.RepublishedEvent
 import domain.persistence.RetextedEvent
 import domain.persistence.SubscribedEvent
+import domain.persistence.VoteDeletedEvent
 import domain.persistence.VotedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Availability._
@@ -100,6 +101,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val EmailAddressKey = "ea"
   val PhoneNumberKey = "pn"
   val AvailabilityKey = "availability"
+  val VotedKey = "voted"
   val TypeKey = "et"
   val PublishedValue = "published"
   val RetextedValue = "retexted"
@@ -109,6 +111,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   val PrivatizedValue = "privatized"
   val RepublishedValue = "republished"
   val VotedValue = "voted"
+  val VoteDeletedValue = "voteDeleted"
 
   logger.info(s"ensuring indices for ${Collection}")
   mdb(Collection)
@@ -237,6 +240,15 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       )
       timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
       logEvent(event.id, document.toBsonDocument)
+    case VoteDeletedEvent(_, name, voted, _) =>
+      val document = Document(
+        TypeKey -> VoteDeletedValue,
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> event.version,
+        NameKey -> name,
+        VotedKey -> new BsonTimestamp(voted.toEpochMilli)
+      )
+      logEvent(event.id, document)
   }
 
   private def toElectionEvent(id: Id, doc: Document) = {
@@ -305,12 +317,21 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           toAvailability(doc(AvailabilityKey).asDocument),
           Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
+      case VoteDeletedValue =>
+        VoteDeletedEvent(
+          id,
+          doc(NameKey).asString.getValue,
+          Instant.ofEpochMilli(doc(VotedKey).asTimestamp.getValue),
+          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+        )
     }
   }
 
   private def toVote(document: Document) = Vote(
     document(NameKey).asString.getValue,
-    toAvailability(document(AvailabilityKey).asDocument)
+    toAvailability(document(AvailabilityKey).asDocument),
+    Instant
+      .ofEpochMilli(document(VotedKey).asTimestamp.getValue)
   )
 
   private def toSnapshot(id: Id, document: Document, replayedEvents: Int) =

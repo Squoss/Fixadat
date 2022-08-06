@@ -34,6 +34,7 @@ import domain.persistence.PublishedEvent
 import domain.persistence.RepublishedEvent
 import domain.persistence.RetextedEvent
 import domain.persistence.SubscribedEvent
+import domain.persistence.VoteDeletedEvent
 import domain.persistence.VotedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.EmailAddress
@@ -129,7 +130,7 @@ final class Election private (
               name,
               timeZone,
               availabilities,
-              _
+              occurred
             ) =>
           _votes += Vote(
             name,
@@ -147,8 +148,18 @@ final class Election private (
                     a
                   )
               })
-            } else { availabilities }
+            } else { availabilities },
+            occurred
           )
+        case VoteDeletedEvent(
+              _,
+              name,
+              voted,
+              _
+            ) =>
+          _votes
+            .find(vote => vote.name == name && vote.voted == voted)
+            .foreach(vote => _votes -= vote)
         case SubscribedEvent(_, locale, email, text, webHook, _) =>
           subscriptions = (locale, email, text, webHook)
       }

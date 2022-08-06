@@ -24,11 +24,13 @@
 
 package domain.value_objects
 
-import java.time.LocalDateTime
-
 import domain.value_objects.Availability._
+
+import java.time.Instant
+import java.time.LocalDateTime
 
 case class Vote(
     name: String,
-    availability: Map[LocalDateTime, Availability]
+    availability: Map[LocalDateTime, Availability],
+    voted: Instant
 )

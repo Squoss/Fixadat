@@ -54,6 +54,7 @@ interface ElectionTabsProps {
     availability: Map<string, Availability>,
     timeZone?: string
   ) => void;
+  deleteVote: (name: string, voted: Date) => void;
   deleteElection: () => void;
   isOrganizer: boolean;
   isBrandNew: boolean;
@@ -103,6 +104,7 @@ function ElectionTabs(props: ElectionTabsProps) {
           token={props.token}
           timeZones={props.timeZones}
           saveVote={props.saveVote}
+          deleteVote={props.deleteVote}
         />
       );
       break;

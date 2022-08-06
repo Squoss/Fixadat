@@ -35,6 +35,7 @@ import domain.persistence.Repository
 import domain.persistence.RepublishedEvent
 import domain.persistence.RetextedEvent
 import domain.persistence.SubscribedEvent
+import domain.persistence.VoteDeletedEvent
 import domain.persistence.VotedEvent
 import domain.service_interfaces.Elections
 import domain.value_objects.AccessToken
@@ -157,7 +158,8 @@ class ElectionsService @Inject() (implicit
                               .toLocalDateTime,
                             a
                           )
-                      })
+                      }),
+                      vote.voted
                     )
                   )
                 )
@@ -339,6 +341,34 @@ class ElectionsService @Inject() (implicit
               name,
               timeZone,
               availability,
+              Instant.now()
+            )
+          )
+          Right(())
+        }
+      )
+  )
+  override def deleteVote(
+      id: Id,
+      token: AccessToken,
+      name: String,
+      voted: Instant
+  ): Future[Either[Error, Unit]] = readElection(id).map(
+    _.map(Right(_))
+      .getOrElse(Left(NotFound))
+      .flatMap(election =>
+        if (election.voterToken != token && election.organizerToken != token) {
+          Left(AccessDenied)
+        } else if (election.visibility == Private) {
+          Left(PrivateAccess)
+        } else if (election.visibility == Protected) {
+          Left(ProtectedAccess)
+        } else {
+          repository.logEvent(
+            VoteDeletedEvent(
+              id,
+              name,
+              voted,
               Instant.now()
             )
           )

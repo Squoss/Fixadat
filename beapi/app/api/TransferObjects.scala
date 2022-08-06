@@ -78,7 +78,8 @@ case class Subscriptions(
 case class VoteTransferObject(
     name: String,
     timeZone: Option[TimeZone],
-    availability: Map[LocalDateTime, Availability]
+    availability: Map[LocalDateTime, Availability],
+    voted: Option[Instant]
 )
 
 object TransferObjects {

@@ -19,6 +19,7 @@ POST    /iapi/elections/:election/reminders      api.ElectionsController.postRem
 PATCH   /iapi/elections/:election/subscriptions  api.ElectionsController.patchSubscriptions(election: domain.value_objects.Id)
 DELETE  /iapi/elections/:election                api.ElectionsController.deleteElection(election: domain.value_objects.Id)
 POST    /iapi/elections/:election/votes          api.ElectionsController.postVote(election: domain.value_objects.Id)
+DELETE  /iapi/elections/:election/votes          api.ElectionsController.deleteVote(election: domain.value_objects.Id, name: String, voted: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                            controllers.Assets.versioned(path="/public", file: Asset)

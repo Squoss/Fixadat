@@ -113,3 +113,13 @@ final case class VotedEvent(
 
   val version = 1
 }
+
+final case class VoteDeletedEvent(
+    id: Id,
+    name: String,
+    voted: Instant,
+    occurred: Instant
+) extends ElectionEvent {
+
+  val version = 1
+}
