@@ -59,7 +59,9 @@ function columnsAll(candidates: Array<string>, votes: Array<Vote>) {
       const bla = new Map(Object.entries(vote.availability)).get(
         candidate.substring(0, candidate.indexOf("T") + 6)
       );
-      if (bla === "No") {
+      if (bla === undefined) {
+        // yep, nothing!
+      } else if (bla === "No") {
         columnCounts[ccIndex] = [y, inb, n + 1];
       } else if (bla === "IfNeedBe") {
         columnCounts[ccIndex] = [y, inb + 1, n];
@@ -106,7 +108,11 @@ function ElectionTally(props: ElectionTallyProps) {
     </li>
   ));
 
-  const cN = (bla: string) => {
+  const cN = (bla?: string) => {
+    if (bla === undefined) {
+      return "table-light";
+    }
+
     if (bla === "No") {
       return "table-danger";
     } else if (bla === "IfNeedBe") {
@@ -127,7 +133,20 @@ function ElectionTally(props: ElectionTallyProps) {
     voted: Date
   ) => {
     e.preventDefault();
-    props.deleteVote(name, voted);
+    if (
+      window.confirm(
+        localizations["votes.revocationConfirmation"]
+          .replace("{0}", name)
+          .replace(
+            "{1}",
+            new Date(voted).toLocaleDateString(localizations["locale"], {
+              dateStyle: "full",
+            })
+          )
+      )
+    ) {
+      props.deleteVote(name, voted);
+    }
   };
 
   return (
@@ -216,6 +235,7 @@ function ElectionTally(props: ElectionTallyProps) {
                     className="btn btn-light"
                     onClick={(e) => deleteVote(e, vote.name, vote.voted)}
                   >
+                    {localizations["votes.revoke"]}{" "}
                     <i className="bi bi-trash"></i>
                   </button>
                 </td>

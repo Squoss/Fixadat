@@ -134,8 +134,8 @@ final class Election private (
             ) =>
           _votes += Vote(
             name,
-            if (timeZone != this.timeZone) {
-              assert(timeZone != None && this.timeZone != None)
+            if (this.timeZone != None && timeZone != this.timeZone) {
+              assert(timeZone != None)
               availabilities.map(_ match {
                 case (ldt, a) =>
                   (

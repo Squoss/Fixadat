@@ -61,6 +61,8 @@ votes.castVote = Cast your vote
 votes.convertToDifferentTimeZone = Convert to different time zone
 votes.gameOver = The election is over
 votes.name = Name
+votes.revocationConfirmation = Do you really want to revoke the vote cast by {0} on {1}?
+votes.revoke = Revoke
 votes.yourName = Your name
 
 reloadNotice = A new version of {0} is available.

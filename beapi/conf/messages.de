@@ -61,6 +61,8 @@ votes.castVote = Geben Sie Ihre Stimme ab
 votes.convertToDifferentTimeZone = In andere Zeitzone umwandeln
 votes.gameOver = Die Wahl ist vorbei
 votes.name = Name
+votes.revocationConfirmation = Wollen Sie wirklich die Stimme annulieren, welche {0} am {1} abgegeben hat?
+votes.revoke = Annulieren
 votes.yourName = Ihr Name
 
 reloadNotice = Eine neue Version von Fixadat ist verfügbar.
