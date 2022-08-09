@@ -52,4 +52,5 @@ trait ElectionT {
   def votes: Seq[Vote]
   def subscriptions
       : (Locale, Option[EmailAddress], Option[PhoneNumber], Option[URL])
+  def replayedEvents: Int
 }

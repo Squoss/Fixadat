@@ -443,7 +443,8 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = org.mongodb.scala.bson.collection.mutable
         .Document(
           NameKey -> vote.name,
-          AvailabilityKey -> fromAvailability(vote.availability)
+          AvailabilityKey -> fromAvailability(vote.availability),
+          VotedKey -> new BsonTimestamp(vote.voted.toEpochMilli)
         )
       bsonArray.add(document.toBsonDocument)
     })
@@ -497,12 +498,12 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     )
   }
 
-  private def fastForwardSnapshot(
-      snapshot: ElectionSnapshot
+  override def fastForwardSnapshot(
+      snapshot: ElectionT
   ): Future[Unit] = {
     val document = org.mongodb.scala.bson.collection.mutable.Document(
       CreatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
-      UpdatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
+      UpdatedKey -> new BsonTimestamp(snapshot.updated.toEpochMilli),
       OrganizerTokenKey -> new BsonBinary(snapshot.organizerToken.wert),
       VoterTokenKey -> new BsonBinary(snapshot.voterToken.wert),
       VisibilityKey -> snapshot.visibility.id,
@@ -526,13 +527,6 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       )
       .toFuture()
       .map(_ => ())
-  }
-
-  override def fastForwardSnapshot(
-      election: ElectionT
-  ): Future[Unit] = election match {
-    case es: ElectionSnapshot => fastForwardSnapshot(es)
-    case _                    => Future.successful(())
   }
 
   override def deleteEvents(id: Id): Future[Unit] = mdb(

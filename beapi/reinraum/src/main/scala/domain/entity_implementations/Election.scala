@@ -68,7 +68,8 @@ final class Election private (
         Option[EmailAddress],
         Option[PhoneNumber],
         Option[URL]
-    )
+    ),
+    var replayedEvents: Int
 ) extends ElectionT {
 
   def votes: Seq[Vote] = _votes.toSeq
@@ -90,8 +91,9 @@ final class Election private (
           Option[EmailAddress],
           Option[PhoneNumber],
           Option[URL]
-      ) = this.subscriptions
-  ) = Election(
+      ) = this.subscriptions,
+      replayedEvents: Int = this.replayedEvents
+  ) = new Election(
     id,
     created,
     updated,
@@ -102,8 +104,9 @@ final class Election private (
     description,
     timeZone,
     candidates,
-    votes,
-    subscriptions
+    votes.toBuffer,
+    subscriptions,
+    replayedEvents
   )
 
   override def equals(that: Any) = that match {
@@ -163,6 +166,7 @@ final class Election private (
         case SubscribedEvent(_, locale, email, text, webHook, _) =>
           subscriptions = (locale, email, text, webHook)
       }
+      replayedEvents += 1
       updated = event.occurred
     })
     this
@@ -170,57 +174,27 @@ final class Election private (
 }
 
 object Election {
-  def apply(
-      id: Id,
-      created: Instant,
-      updated: Instant,
-      organizerToken: AccessToken,
-      voterToken: AccessToken,
-      visibility: Visibility,
-      name: String,
-      description: Option[String],
-      timeZone: Option[TimeZone],
-      candidates: Set[LocalDateTime],
-      votes: Seq[Vote],
-      subscriptions: (
-          Locale,
-          Option[EmailAddress],
-          Option[PhoneNumber],
-          Option[URL]
+  def apply(snapshot: ElectionT): Election = snapshot match {
+    case e: Election => e
+    case _ =>
+      new Election(
+        snapshot.id,
+        snapshot.created,
+        snapshot.updated,
+        snapshot.organizerToken,
+        snapshot.voterToken,
+        snapshot.visibility,
+        snapshot.name,
+        snapshot.description,
+        snapshot.timeZone,
+        snapshot.candidates,
+        snapshot.votes.toBuffer,
+        snapshot.subscriptions,
+        snapshot.replayedEvents
       )
-  ) =
-    new Election(
-      id,
-      created,
-      updated,
-      organizerToken,
-      voterToken,
-      visibility,
-      name,
-      description,
-      timeZone,
-      candidates,
-      votes.toBuffer,
-      subscriptions
-    )
+  }
 
-  def apply(snapshot: ElectionT) =
-    new Election(
-      snapshot.id,
-      snapshot.created,
-      snapshot.updated,
-      snapshot.organizerToken,
-      snapshot.voterToken,
-      snapshot.visibility,
-      snapshot.name,
-      snapshot.description,
-      snapshot.timeZone,
-      snapshot.candidates,
-      snapshot.votes.toBuffer,
-      snapshot.subscriptions
-    )
-
-  def replay(events: Seq[ElectionEvent]): Election =
+  def apply(events: Seq[ElectionEvent]): Election =
     events match {
       case PublishedEvent(
             id,
@@ -228,7 +202,7 @@ object Election {
             voterToken,
             occurred
           ) :: eventsTail =>
-        Election(
+        new Election(
           id,
           occurred,
           occurred,
@@ -239,8 +213,9 @@ object Election {
           None,
           None,
           Set.empty,
-          Nil,
-          (Locale.getDefault, None, None, None)
+          Nil.toBuffer,
+          (Locale.getDefault, None, None, None),
+          1
         )
           .replay(eventsTail)
     }

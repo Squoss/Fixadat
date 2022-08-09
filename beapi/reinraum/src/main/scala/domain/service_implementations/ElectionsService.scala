@@ -103,7 +103,7 @@ class ElectionsService @Inject() (implicit
         }
         case (None, Nil) => None
         case (None, events) => {
-          val election = Election.replay(events)
+          val election = Election(events)
           repository.fastForwardSnapshot(election) // fire & forget
           Some(election)
         }
