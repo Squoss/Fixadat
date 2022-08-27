@@ -23,7 +23,7 @@ scalaVersion := "2.13.8"
 libraryDependencies += guice
 libraryDependencies += "com.google.inject" % "guice" % "5.1.0" // bumping the Guice version manually allows for using Play 2.8 with Java 17
 libraryDependencies += ws
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.7.0"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.7.1"
 // bumping the Jackson versions manually avoids CVE-400 and evicts older versions consistently
 libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.13.3"
 libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.3"
