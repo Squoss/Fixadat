@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
     .dependsOn(reinraum)
 lazy val reinraum = project
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.9"
 
 libraryDependencies += guice
 libraryDependencies += "com.google.inject" % "guice" % "5.1.0" // bumping the Guice version manually allows for using Play 2.8 with Java 17
