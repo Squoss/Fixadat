@@ -25,11 +25,11 @@ libraryDependencies += "com.google.inject" % "guice" % "5.1.0" // bumping the Gu
 libraryDependencies += ws
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.7.1"
 // bumping the Jackson versions manually avoids CVE-400 and evicts older versions consistently
-libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.13.3"
-libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.3"
-libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % "2.13.3"
-libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.13.3"
-libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.3"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.13.4"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.13.4"
+libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % "2.13.4"
+libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.13.4"
+libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.4"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "0.23.1" % Test
