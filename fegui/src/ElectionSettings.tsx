@@ -69,7 +69,9 @@ function ElectionSettings(props: ElectionSettingsProps) {
       <form className="d-grid gap-4">
         <div className={changesSaved() ? "card" : "card border-warning"}>
           <div className="card-body">
-            <h5 className="card-title">{localizations["settings.visibility"]}</h5>
+            <h5 className="card-title">
+              {localizations["settings.visibility"]}
+            </h5>
             <select
               className="form-select"
               id="visibilitySelect"
@@ -113,15 +115,25 @@ function ElectionSettings(props: ElectionSettingsProps) {
           </div>
         </div>
       </form>
-      <button
-        type="button"
-        className="btn btn-danger"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteElectionModal"
-      >
-        DELETE
-      </button>
-
+      <div className="card border-danger">
+        <div className="card-body">
+          <h5 className="card-title">
+            <i className="bi bi-trash"></i>
+          </h5>
+          {localizations["settings.trash.finality"]}
+        </div>
+        <div className="card-footer">
+          <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button
+              className="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteElectionModal"
+            >
+              {localizations["settings.trash"]}
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className="modal fade"
         id="deleteElectionModal"
@@ -142,7 +154,14 @@ function ElectionSettings(props: ElectionSettingsProps) {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">REALLY?!</div>
+            <div className="modal-body">
+              {
+                localizations["settings.trash.pointOfNoReturn"].replace(
+                  "{0}",
+                  props.election.name
+                ) /* FIXME/TODO: XSS?! */
+              }
+            </div>
             <div className="modal-footer">
               <button
                 type="button"
@@ -152,7 +171,7 @@ function ElectionSettings(props: ElectionSettingsProps) {
                 {localizations["no"]}
               </button>
               <form onSubmit={handleDeleteElection}>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-danger">
                   {localizations["yes"]}
                 </button>
               </form>

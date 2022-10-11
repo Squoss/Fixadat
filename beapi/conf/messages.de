@@ -56,6 +56,10 @@ settings.visibilityPrivate = Wahl verstecken
 settings.visibilityProtected = Wahl zeigen, aber Stimmen können nicht mehr abgegeben werden
 settings.visibilityPublic = Stimmen können noch immer abgegeben werden
 
+settings.trash = Löschen
+settings.trash.finality = Wahl endgültig löschen.
+settings.trash.pointOfNoReturn = Das Löschen einer Umfrage ist unumkehrbar! Wollen Sie mit der Löschung von {0} wirklich fortfahren?
+
 votes = Stimmen
 votes.castVote = Geben Sie Ihre Stimme ab
 votes.convertToDifferentTimeZone = In andere Zeitzone umwandeln

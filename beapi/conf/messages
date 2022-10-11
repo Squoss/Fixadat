@@ -56,6 +56,10 @@ settings.visibilityPrivate = Hide election
 settings.visibilityProtected = Show election, but votes can no longer be cast
 settings.visibilityPublic = Votes can still be cast
 
+settings.trash = Delete
+settings.trash.finality = Delete election for good.
+settings.trash.pointOfNoReturn = Deleting an election is irreversible! Do you really want to go ahead with the deletion of {0}?
+
 votes = Votes
 votes.castVote = Cast your vote
 votes.convertToDifferentTimeZone = Convert to different time zone
