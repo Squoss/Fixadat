@@ -40,6 +40,12 @@ export enum Visibility {
   PRIVATE = "Private",
 }
 
+export interface SubscriptionChannels {
+  emailAddress?: string;
+  phoneNumber?: string;
+  url?: string;
+}
+
 export interface ElectionT {
   id: number;
   organizerToken: string;
@@ -52,4 +58,5 @@ export interface ElectionT {
   created: Date;
   updated: Date;
   votes: Array<Vote>;
+  subscriptions: SubscriptionChannels;
 }

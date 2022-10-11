@@ -320,6 +320,7 @@ class ElectionsService @Inject() (implicit
   override def vote(
       id: Id,
       token: AccessToken,
+      host: String,
       locale: Locale,
       name: String,
       timeZone: Option[TimeZone],
@@ -344,6 +345,27 @@ class ElectionsService @Inject() (implicit
               Instant.now()
             )
           )
+          election.subscriptions._2.foreach(ea =>
+            email.send(
+              ea,
+              MessageFormat.format("VOTED", election.name),
+              MessageFormat.format(
+                "VOTED: {0}, {1}",
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
+              )
+            )
+          )
+          election.subscriptions._3.foreach(pn =>
+            sms.send(
+              pn,
+              MessageFormat.format(
+                "VOTED: {0}, {1}",
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
+              )
+            )
+          )
           Right(())
         }
       )
@@ -351,6 +373,7 @@ class ElectionsService @Inject() (implicit
   override def deleteVote(
       id: Id,
       token: AccessToken,
+      host: String,
       name: String,
       voted: Instant
   ): Future[Either[Error, Unit]] = readElection(id).map(
@@ -370,6 +393,27 @@ class ElectionsService @Inject() (implicit
               name,
               voted,
               Instant.now()
+            )
+          )
+          election.subscriptions._2.foreach(ea =>
+            email.send(
+              ea,
+              MessageFormat.format("VOTEDELETED", election.name),
+              MessageFormat.format(
+                "VOTEDELETED: {0}, {1}",
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
+              )
+            )
+          )
+          election.subscriptions._3.foreach(pn =>
+            sms.send(
+              pn,
+              MessageFormat.format(
+                "VOTEDELETED: {0}, {1}",
+                election.name,
+                s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
+              )
             )
           )
           Right(())

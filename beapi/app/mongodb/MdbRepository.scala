@@ -283,7 +283,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
         )
       case SubscribedValue =>
-        val subscriptions = toSubscriptions(doc(SubscriptionsKey).asDocument)
+        val subscriptions = toSubscriptions(doc)
         SubscribedEvent(
           id,
           subscriptions._1,

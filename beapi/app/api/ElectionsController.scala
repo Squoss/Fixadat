@@ -235,6 +235,7 @@ class ElectionsController @Inject() (implicit
             .vote(
               election,
               AccessToken(accessToken),
+              request.host,
               request.lang.locale,
               request.body.name,
               request.body.timeZone,
@@ -258,6 +259,7 @@ class ElectionsController @Inject() (implicit
             .deleteVote(
               election,
               AccessToken(accessToken),
+              request.host,
               name,
               Instant.parse(voted)
             )

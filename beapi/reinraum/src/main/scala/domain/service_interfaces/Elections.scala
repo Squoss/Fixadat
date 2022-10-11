@@ -89,6 +89,7 @@ trait Elections {
   def vote(
       id: Id,
       token: AccessToken,
+      host: String,
       locale: Locale,
       name: String,
       timeZone: Option[TimeZone],
@@ -98,6 +99,7 @@ trait Elections {
   def deleteVote(
       id: Id,
       token: AccessToken,
+      host: String,
       name: String,
       voted: Instant
   ): Future[Either[Error, Unit]]

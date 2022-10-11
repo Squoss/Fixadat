@@ -46,6 +46,10 @@ interface ElectionTabsProps {
   activeTab: ACTIVE_TAB;
   saveElectionText: (name: string, description?: string) => void;
   saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+  saveElectionSubscriptions: (
+    emailAddress?: string,
+    phoneNumber?: string
+  ) => void;
   saveElectionVisibility: (visibility: Visibility) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
   timeZones: Array<string>;
@@ -112,6 +116,7 @@ function ElectionTabs(props: ElectionTabsProps) {
       content = (
         <ElectionSettings
           election={props.election}
+          saveElectionSubscriptions={props.saveElectionSubscriptions}
           saveElectionVisibility={props.saveElectionVisibility}
           deleteElection={props.deleteElection}
         />

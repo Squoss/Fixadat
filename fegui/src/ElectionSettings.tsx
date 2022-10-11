@@ -26,9 +26,14 @@ import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
 import { ElectionT, Visibility } from "./Elections";
 import { l10nContext } from "./l10nContext";
+import ValidatingInput from "./ValidatingInput";
 
 interface ElectionSettingsProps {
   election: ElectionT;
+  saveElectionSubscriptions: (
+    emailAddress?: string,
+    phoneNumber?: string
+  ) => void;
   saveElectionVisibility: (visibility: Visibility) => void;
   deleteElection: () => void;
 }
@@ -38,9 +43,31 @@ function ElectionSettings(props: ElectionSettingsProps) {
 
   const localizations = useContext(l10nContext);
 
+  const [emailAddress, setEmailAddress] = useState<string | undefined>(
+    props.election.subscriptions.emailAddress
+  );
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(
+    props.election.subscriptions.phoneNumber
+  );
+
   const [visibility, setVisibility] = useState<Visibility>(
     props.election.visibility
   );
+
+  const cancelSubscriptions = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setEmailAddress(props.election.subscriptions.emailAddress);
+    setPhoneNumber(props.election.subscriptions.phoneNumber);
+  };
+
+  const saveSubscriptions = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    props.saveElectionSubscriptions(emailAddress, phoneNumber);
+  };
 
   const cancelVisibility = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -62,12 +89,70 @@ function ElectionSettings(props: ElectionSettingsProps) {
     props.deleteElection();
   };
 
-  const changesSaved = () => props.election.visibility === visibility;
+  const subscriptionChangesSaved = () =>
+    props.election.subscriptions.emailAddress === emailAddress &&
+    props.election.subscriptions.phoneNumber === phoneNumber;
+
+  const visibilityChangesSaved = () => props.election.visibility === visibility;
 
   return (
     <React.Fragment>
       <form className="d-grid gap-4">
-        <div className={changesSaved() ? "card" : "card border-warning"}>
+        <div
+          className={
+            subscriptionChangesSaved() ? "card" : "card border-warning"
+          }
+        >
+          <div className="card-body">
+            <h5 className="card-title">SUBSCRIPTIONS</h5>
+            <ValidatingInput
+              id="emailAddress"
+              placeholder="yours.truly@fixadat.com"
+              type="email"
+              validation="emailAddresses?emailAddress"
+              value={emailAddress}
+              setValue={setEmailAddress}
+              readOnly={false}
+            />
+            <ValidatingInput
+              id="cellPhoneNumber"
+              placeholder="078 965 43 21"
+              type="tel"
+              validation="cellPhoneNumbers?cellPhoneNumber"
+              value={phoneNumber}
+              setValue={setPhoneNumber}
+              readOnly={false}
+            />
+          </div>
+          <div
+            className={
+              subscriptionChangesSaved()
+                ? "card-footer"
+                : "card-footer bg-warning"
+            }
+          >
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                className="btn btn-secondary"
+                onClick={cancelSubscriptions}
+              >
+                {localizations["revert"]}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={saveSubscriptions}
+                disabled={subscriptionChangesSaved()}
+              >
+                {localizations["save"]}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <form className="d-grid gap-4">
+        <div
+          className={visibilityChangesSaved() ? "card" : "card border-warning"}
+        >
           <div className="card-body">
             <h5 className="card-title">
               {localizations["settings.visibility"]}
@@ -97,7 +182,9 @@ function ElectionSettings(props: ElectionSettingsProps) {
           </div>
           <div
             className={
-              changesSaved() ? "card-footer" : "card-footer bg-warning"
+              visibilityChangesSaved()
+                ? "card-footer"
+                : "card-footer bg-warning"
             }
           >
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -107,7 +194,7 @@ function ElectionSettings(props: ElectionSettingsProps) {
               <button
                 className="btn btn-primary"
                 onClick={saveVisibility}
-                disabled={changesSaved()}
+                disabled={visibilityChangesSaved()}
               >
                 {localizations["save"]}
               </button>

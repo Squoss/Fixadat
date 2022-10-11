@@ -30,7 +30,7 @@ import {
   Routes,
   useLocation,
   useParams,
-  useSearchParams
+  useSearchParams,
 } from "react-router-dom";
 import { Availability, ElectionT, Visibility } from "./Elections";
 import ElectionTabs, { ACTIVE_TAB } from "./ElectionTabs";
@@ -126,6 +126,30 @@ function Election(props: {}) {
       })
       .catch((error) =>
         console.error(`failed to put election schedule: ${error}`)
+      );
+
+  const saveElectionSubscriptions = (
+    emailAddress?: string,
+    phoneNumber?: string
+  ) =>
+    fetchResource(
+      Method.Patch,
+      `/iapi/elections/${id}/subscriptions`,
+      token.substring(1),
+      {
+        emailAddress,
+        phoneNumber,
+      }
+    )
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error(`HTTP status ${response.status} instead of 204`);
+        } else {
+          setElection({ ...election, emailAddress, phoneNumber } as ElectionT);
+        }
+      })
+      .catch((error) =>
+        console.error(`failed to put election subscriptions: ${error}`)
       );
 
   const saveElectionVisibility = (visibility: Visibility) =>
@@ -271,6 +295,7 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
+                saveElectionSubscriptions={saveElectionSubscriptions}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -291,6 +316,7 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
+                saveElectionSubscriptions={saveElectionSubscriptions}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -311,6 +337,7 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
+                saveElectionSubscriptions={saveElectionSubscriptions}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -331,6 +358,7 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
+                saveElectionSubscriptions={saveElectionSubscriptions}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
@@ -351,6 +379,7 @@ function Election(props: {}) {
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
+                saveElectionSubscriptions={saveElectionSubscriptions}
                 saveElectionVisibility={saveElectionVisibility}
                 sendLinksReminder={sendLinksReminder}
                 timeZones={timeZones}
