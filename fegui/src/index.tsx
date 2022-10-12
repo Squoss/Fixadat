@@ -35,7 +35,7 @@ import Prices from "./Prices";
 import PrivacyPolicy from "./PrivacyPolicy";
 import ToDo from "./ToDo";
 
-import "bootstrap/dist/css/bootstrap.min.css";
+import "bootswatch/dist/lux/bootstrap.min.css"; // import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
