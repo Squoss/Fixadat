@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import Clipboard from "./Clipboard";
 import { l10nContext } from "./l10nContext";
-import ValidatingInput from "./ValidatingInput";
+import useInputValidation, { InputType } from "./useInputValidation";
 
 interface ElectionLinksProps {
   id: number;
@@ -46,12 +46,12 @@ function ElectionLinks(props: ElectionLinksProps) {
   const guestLink = `${window.origin}/elections/${id}#${voterToken}`;
   const hostLink = `${window.origin}/elections/${id}#${organizerToken}`;
 
-  const [emailAddress, setEmailAddress] = useState<string | undefined>(
-    undefined
+  const [emailAddressValid, emailAddress, setEmailAddress] = useInputValidation(
+    InputType.EMAILADDRESS,
+    ""
   );
-  const [cellPhoneNumber, setCellPhoneNumber] = useState<string | undefined>(
-    undefined
-  );
+  const [cellPhoneNumberValid, cellPhoneNumber, setCellPhoneNumber] =
+    useInputValidation(InputType.CELLPHONENUMBER, "");
 
   const sendLinksReminderEmail = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -116,13 +116,16 @@ function ElectionLinks(props: ElectionLinksProps) {
             <form className="col">
               <div className="row">
                 <div className="col-auto">
-                  <ValidatingInput
-                    id="emailAddress"
-                    placeholder="yours.truly@fixadat.com"
+                  <input
                     type="email"
-                    validation="emailAddresses?emailAddress"
-                    value={undefined}
-                    setValue={setEmailAddress}
+                    placeholder="yours.truly@fixadat.com"
+                    id="emailAddress"
+                    className={
+                      "form-control" +
+                      (emailAddressValid ? " is-valid" : " is-invalid")
+                    }
+                    value={emailAddress}
+                    onChange={(event) => setEmailAddress(event.target.value)}
                     readOnly={false}
                   />
                 </div>
@@ -130,7 +133,7 @@ function ElectionLinks(props: ElectionLinksProps) {
                   <button
                     className="btn btn-light"
                     onClick={sendLinksReminderEmail}
-                    disabled={emailAddress === undefined}
+                    disabled={emailAddress === "" || !emailAddressValid}
                   >
                     {localizations["links.byEmail"]}
                   </button>
@@ -140,13 +143,16 @@ function ElectionLinks(props: ElectionLinksProps) {
             <form className="col">
               <div className="row">
                 <div className="col-auto">
-                  <ValidatingInput
-                    id="cellPhoneNumber"
-                    placeholder="078 965 43 21"
+                  <input
                     type="tel"
-                    validation="cellPhoneNumbers?cellPhoneNumber"
-                    value={undefined}
-                    setValue={setCellPhoneNumber}
+                    placeholder="078 965 43 21"
+                    id="cellPhoneNumber"
+                    className={
+                      "form-control" +
+                      (cellPhoneNumberValid ? " is-valid" : " is-invalid")
+                    }
+                    value={cellPhoneNumber}
+                    onChange={(event) => setCellPhoneNumber(event.target.value)}
                     readOnly={false}
                   />
                 </div>
@@ -154,7 +160,7 @@ function ElectionLinks(props: ElectionLinksProps) {
                   <button
                     className="btn btn-light"
                     onClick={sendLinksReminderSms}
-                    disabled={cellPhoneNumber === undefined}
+                    disabled={cellPhoneNumber === "" || !cellPhoneNumberValid}
                   >
                     {localizations["links.bySms"]}
                   </button>
