@@ -26,7 +26,7 @@ import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
 import { ElectionT, Visibility } from "./Elections";
 import { l10nContext } from "./l10nContext";
-import ValidatingInput from "./ValidatingInput";
+import useInputValidation, { InputType } from "./useInputValidation";
 
 interface ElectionSettingsProps {
   election: ElectionT;
@@ -43,11 +43,17 @@ function ElectionSettings(props: ElectionSettingsProps) {
 
   const localizations = useContext(l10nContext);
 
-  const [emailAddress, setEmailAddress] = useState<string | undefined>(
+  const [emailAddressValid, emailAddress, setEmailAddress] = useInputValidation(
+    InputType.EMAILADDRESS,
     props.election.subscriptions.emailAddress
+      ? props.election.subscriptions.emailAddress
+      : ""
   );
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(
+  const [phoneNumberValid, phoneNumber, setPhoneNumber] = useInputValidation(
+    InputType.CELLPHONENUMBER,
     props.election.subscriptions.phoneNumber
+      ? props.election.subscriptions.phoneNumber
+      : ""
   );
 
   const [visibility, setVisibility] = useState<Visibility>(
@@ -58,15 +64,26 @@ function ElectionSettings(props: ElectionSettingsProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    setEmailAddress(props.election.subscriptions.emailAddress);
-    setPhoneNumber(props.election.subscriptions.phoneNumber);
+    setEmailAddress(
+      props.election.subscriptions.emailAddress
+        ? props.election.subscriptions.emailAddress
+        : ""
+    );
+    setPhoneNumber(
+      props.election.subscriptions.phoneNumber
+        ? props.election.subscriptions.phoneNumber
+        : ""
+    );
   };
 
   const saveSubscriptions = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    props.saveElectionSubscriptions(emailAddress, phoneNumber);
+    props.saveElectionSubscriptions(
+      emailAddress && emailAddress !== "" ? emailAddress : undefined,
+      phoneNumber && phoneNumber !== "" ? phoneNumber : undefined
+    );
   };
 
   const cancelVisibility = (
@@ -90,8 +107,10 @@ function ElectionSettings(props: ElectionSettingsProps) {
   };
 
   const subscriptionChangesSaved = () =>
-    props.election.subscriptions.emailAddress === emailAddress &&
-    props.election.subscriptions.phoneNumber === phoneNumber;
+    ((!props.election.subscriptions.emailAddress && emailAddress === "") ||
+      props.election.subscriptions.emailAddress === emailAddress) &&
+    ((!props.election.subscriptions.phoneNumber && phoneNumber === "") ||
+      props.election.subscriptions.phoneNumber === phoneNumber);
 
   const visibilityChangesSaved = () => props.election.visibility === visibility;
 
@@ -105,22 +124,28 @@ function ElectionSettings(props: ElectionSettingsProps) {
         >
           <div className="card-body">
             <h5 className="card-title">SUBSCRIPTIONS</h5>
-            <ValidatingInput
-              id="emailAddress"
-              placeholder="yours.truly@fixadat.com"
+            <input
               type="email"
-              validation="emailAddresses?emailAddress"
+              placeholder="yours.truly@fixadat.com"
+              id="emailAddress"
+              className={
+                "form-control" +
+                (emailAddressValid ? " is-valid" : " is-invalid")
+              }
               value={emailAddress}
-              setValue={setEmailAddress}
+              onChange={(event) => setEmailAddress(event.target.value)}
               readOnly={false}
             />
-            <ValidatingInput
-              id="cellPhoneNumber"
-              placeholder="078 965 43 21"
+            <input
               type="tel"
-              validation="cellPhoneNumbers?cellPhoneNumber"
+              placeholder="078 965 43 21"
+              id="cellPhoneNumber"
+              className={
+                "form-control" +
+                (phoneNumberValid ? " is-valid" : " is-invalid")
+              }
               value={phoneNumber}
-              setValue={setPhoneNumber}
+              onChange={(event) => setPhoneNumber(event.target.value)}
               readOnly={false}
             />
           </div>
@@ -141,7 +166,11 @@ function ElectionSettings(props: ElectionSettingsProps) {
               <button
                 className="btn btn-primary"
                 onClick={saveSubscriptions}
-                disabled={subscriptionChangesSaved()}
+                disabled={
+                  subscriptionChangesSaved() ||
+                  !emailAddressValid ||
+                  !phoneNumberValid
+                }
               >
                 {localizations["save"]}
               </button>

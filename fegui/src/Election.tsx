@@ -145,7 +145,10 @@ function Election(props: {}) {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
-          setElection({ ...election, emailAddress, phoneNumber } as ElectionT);
+          setElection({
+            ...election,
+            subscriptions: { emailAddress, phoneNumber },
+          } as ElectionT);
         }
       })
       .catch((error) =>
