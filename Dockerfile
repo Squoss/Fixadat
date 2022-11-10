@@ -3,7 +3,7 @@
 # https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
 
 
-FROM node:16 as react
+FROM node:18 as react
 
 WORKDIR /squeng/fixadat
 
@@ -34,7 +34,7 @@ COPY --from=react /squeng/fixadat/build ./public/build
 RUN sbt stage
 
 
-FROM openjdk:17-slim
+FROM amazoncorretto:17
 
 WORKDIR /squeng/fixadat
 
