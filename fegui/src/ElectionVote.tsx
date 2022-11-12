@@ -92,6 +92,7 @@ function ElectionVote(props: ElectionVoteProps) {
               onChange={updateAvailability}
             />
             <label
+              title={localizations["no"]}
               className="btn btn-outline-danger"
               htmlFor={"notAvailable" + i}
             >
@@ -107,6 +108,7 @@ function ElectionVote(props: ElectionVoteProps) {
               onChange={updateAvailability}
             />
             <label
+              title={localizations["ifNeedBe"]}
               className="btn btn-outline-warning"
               htmlFor={"ifneedbeAvailable" + i}
             >
@@ -122,6 +124,7 @@ function ElectionVote(props: ElectionVoteProps) {
               onChange={updateAvailability}
             />
             <label
+              title={localizations["yes"]}
               className="btn btn-outline-success"
               htmlFor={"yesAvailable" + i}
             >
