@@ -51,6 +51,7 @@ links.bySms = … SMS
 links.bySms.text = {1} is the Fixadat organizer link for the election {0}.
 
 settings = Settings
+settings.subscriptions = Receive a notification when a vote is cast (or revoked)
 settings.visibility = Visibility
 settings.visibilityPrivate = Hide election
 settings.visibilityProtected = Show election, but votes can no longer be cast

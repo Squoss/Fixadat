@@ -51,6 +51,7 @@ links.bySms = … SMS
 links.bySms.text = {1} ist der Fixadat-Organisator-Link für die Wahl {0}.
 
 settings = Einstellungen
+settings.subscriptions = Erhalten Sie eine Mitteilung, wenn eine Stimme abgegeben (or annuliert) wurde
 settings.visibility = Sichtbarkeit
 settings.visibilityPrivate = Wahl verstecken
 settings.visibilityProtected = Wahl zeigen, aber Stimmen können nicht mehr abgegeben werden

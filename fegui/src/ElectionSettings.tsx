@@ -123,7 +123,9 @@ function ElectionSettings(props: ElectionSettingsProps) {
           }
         >
           <div className="card-body">
-            <h5 className="card-title">SUBSCRIPTIONS</h5>
+            <h5 className="card-title">
+              {localizations["settings.subscriptions"]}
+            </h5>
             <input
               type="email"
               placeholder="yours.truly@fixadat.com"
