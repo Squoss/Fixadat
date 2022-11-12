@@ -153,7 +153,9 @@ function ElectionTally(props: ElectionTallyProps) {
     <React.Fragment>
       <blockquote className="blockquote">
         {description
-          ? description.split("\n").map((line) => <p>{line}</p>)
+          ? description
+              .split("\n")
+              .map((line, i) => <p key={`l${i}`}>{line}</p>)
           : ""}
       </blockquote>
       <form>
@@ -186,8 +188,8 @@ function ElectionTally(props: ElectionTallyProps) {
                   ""
                 )}
               </th>
-              {candidates.map((candidate) => (
-                <th>
+              {candidates.map((candidate, i) => (
+                <th key={`c${i}`}>
                   {prettyLocalDateTimeString(
                     localizations["locale"],
                     candidate
@@ -198,8 +200,9 @@ function ElectionTally(props: ElectionTallyProps) {
             </tr>
             <tr>
               <th></th>
-              {columnCounts.map((yinbn) => (
+              {columnCounts.map((yinbn, i) => (
                 <th
+                  key={`cc${i}`}
                   className={
                     best[0] === yinbn[0] &&
                     best[1] === yinbn[1] &&
@@ -215,11 +218,12 @@ function ElectionTally(props: ElectionTallyProps) {
             </tr>
           </thead>
           <tbody>
-            {votes.map((vote) => (
-              <tr>
+            {votes.map((vote, i) => (
+              <tr key={`v${i}`}>
                 <td>{vote.name}</td>
-                {candidates.map((c) => (
+                {candidates.map((c, j) => (
                   <td
+                    key={`v${i}c${j}`}
                     className={cN(
                       new Map(Object.entries(vote.availability)).get(
                         c.substring(0, c.indexOf("T") + 6)

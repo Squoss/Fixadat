@@ -80,7 +80,7 @@ function ElectionVote(props: ElectionVoteProps) {
         />
       </td>
       {candidates.sort().map((candidate, i) => (
-        <td>
+        <td key={`sc${i}`}>
           <div className="form-check form-check-inline">
             <input
               className="btn-check"
