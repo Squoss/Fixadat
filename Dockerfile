@@ -34,7 +34,7 @@ COPY --from=react /squeng/fixadat/build ./public/build
 RUN sbt stage
 
 
-FROM amazoncorretto:17
+FROM eclipse-temurin:17-jre
 
 WORKDIR /squeng/fixadat
 
