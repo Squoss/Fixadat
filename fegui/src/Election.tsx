@@ -88,6 +88,12 @@ function Election(props: {}) {
     getTimeZones();
   }, []);
 
+  useEffect(() => {
+    if (election) {
+      document.title = election.name;
+    }
+  }, [election]);
+
   const saveElectionText = (name: string, description?: string) =>
     fetchResource(
       Method.Put,

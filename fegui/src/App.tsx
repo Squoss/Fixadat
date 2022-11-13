@@ -50,6 +50,12 @@ function App(props: {}) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!location.pathname.includes("elections")) {
+      document.title = "Fixadat";
+    }
+  }, [location]);
+
   return (
     <React.Fragment>
       <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
