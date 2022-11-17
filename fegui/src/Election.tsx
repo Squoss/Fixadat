@@ -281,14 +281,14 @@ function Election(props: {}) {
       default:
         return <p>{responseStatusCode}</p>;
     }
-  } else {
+  } else if (election !== undefined) {
     return (
       <Routes>
         <Route path="/" element={<Outlet />}>
           <Route
             index
             element={
-              token.substring(1) === election!.organizerToken && brandNew ? (
+              token.substring(1) === election.organizerToken && brandNew ? (
                 <Navigate to={`/elections/${id}/texts?brandNew=true${token}`} />
               ) : (
                 <Navigate to={`/elections/${id}/tally${token}`} />
@@ -300,7 +300,7 @@ function Election(props: {}) {
             element={
               <ElectionTabs
                 activeTab={ACTIVE_TAB.TEXTS}
-                election={election as ElectionT}
+                election={election}
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
@@ -311,7 +311,7 @@ function Election(props: {}) {
                 saveVote={saveVote}
                 deleteVote={deleteVote}
                 deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election!.organizerToken}
+                isOrganizer={token.substring(1) === election.organizerToken}
                 isBrandNew={brandNew}
               />
             }
@@ -321,7 +321,7 @@ function Election(props: {}) {
             element={
               <ElectionTabs
                 activeTab={ACTIVE_TAB.CANDIDATES}
-                election={election as ElectionT}
+                election={election}
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
@@ -332,7 +332,7 @@ function Election(props: {}) {
                 saveVote={saveVote}
                 deleteVote={deleteVote}
                 deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election!.organizerToken}
+                isOrganizer={token.substring(1) === election.organizerToken}
                 isBrandNew={brandNew}
               />
             }
@@ -342,7 +342,7 @@ function Election(props: {}) {
             element={
               <ElectionTabs
                 activeTab={ACTIVE_TAB.LINKS}
-                election={election as ElectionT}
+                election={election}
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
@@ -353,7 +353,7 @@ function Election(props: {}) {
                 saveVote={saveVote}
                 deleteVote={deleteVote}
                 deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election!.organizerToken}
+                isOrganizer={token.substring(1) === election.organizerToken}
                 isBrandNew={brandNew}
               />
             }
@@ -363,7 +363,7 @@ function Election(props: {}) {
             element={
               <ElectionTabs
                 activeTab={ACTIVE_TAB.VOTES}
-                election={election as ElectionT}
+                election={election}
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
@@ -374,7 +374,7 @@ function Election(props: {}) {
                 saveVote={saveVote}
                 deleteVote={deleteVote}
                 deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election!.organizerToken}
+                isOrganizer={token.substring(1) === election.organizerToken}
                 isBrandNew={brandNew}
               />
             }
@@ -384,7 +384,7 @@ function Election(props: {}) {
             element={
               <ElectionTabs
                 activeTab={ACTIVE_TAB.SETTINGS}
-                election={election as ElectionT}
+                election={election}
                 token={token.substring(1)}
                 saveElectionText={saveElectionText}
                 saveElectionSchedule={saveElectionSchedule}
@@ -395,7 +395,7 @@ function Election(props: {}) {
                 saveVote={saveVote}
                 deleteVote={deleteVote}
                 deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election!.organizerToken}
+                isOrganizer={token.substring(1) === election.organizerToken}
                 isBrandNew={brandNew}
               />
             }
@@ -403,6 +403,15 @@ function Election(props: {}) {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+    );
+  } else {
+    return (
+      <dl>
+        <dt>assert false</dt>
+        <dd>
+          election is {election} and responseStatusCode is {responseStatusCode}
+        </dd>
+      </dl>
     );
   }
 }

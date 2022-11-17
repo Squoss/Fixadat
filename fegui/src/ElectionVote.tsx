@@ -41,6 +41,7 @@ function ElectionVote(props: ElectionVoteProps) {
   const localizations = useContext(l10nContext);
 
   const { candidates } = props.election;
+  candidates.sort();
 
   const defaultAvailabiity = new Map<string, Availability>();
   candidates.forEach((candidate) =>
@@ -79,7 +80,7 @@ function ElectionVote(props: ElectionVoteProps) {
           onChange={(event) => setName(event.target.value)}
         />
       </td>
-      {candidates.sort().map((candidate, i) => (
+      {candidates.map((candidate, i) => (
         <td key={`sc${i}`}>
           <div className="form-check form-check-inline">
             <input
