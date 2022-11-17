@@ -33,7 +33,7 @@ interface ElectionTextsProps {
 
 function tte(s?: string) {
   // trim to empty
-  return s === undefined ? "" : s.trim();
+  return s?.trim() ?? "";
 }
 
 function ttu(s?: string) {

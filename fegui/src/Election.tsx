@@ -55,7 +55,7 @@ function Election(props: {}) {
     fetchResource<ElectionT>(
       Method.Get,
       `/iapi/elections/${id}?timeZone=${
-        tz != null ? tz : Intl.DateTimeFormat().resolvedOptions().timeZone
+        tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone
       }`,
       token.substring(1)
     )

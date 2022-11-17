@@ -70,7 +70,7 @@ function buildRequestInit(
     redirect: "error",
     headers: {
       "Content-Type": "application/json",
-      "X-Access-Token": accessToken ? accessToken : "",
+      "X-Access-Token": accessToken ?? "",
     },
   };
 }

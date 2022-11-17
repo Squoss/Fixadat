@@ -45,15 +45,11 @@ function ElectionSettings(props: ElectionSettingsProps) {
 
   const [emailAddressValid, emailAddress, setEmailAddress] = useInputValidation(
     InputType.EMAILADDRESS,
-    props.election.subscriptions.emailAddress
-      ? props.election.subscriptions.emailAddress
-      : ""
+    props.election.subscriptions.emailAddress ?? ""
   );
   const [phoneNumberValid, phoneNumber, setPhoneNumber] = useInputValidation(
     InputType.CELLPHONENUMBER,
-    props.election.subscriptions.phoneNumber
-      ? props.election.subscriptions.phoneNumber
-      : ""
+    props.election.subscriptions.phoneNumber ?? ""
   );
 
   const [visibility, setVisibility] = useState<Visibility>(
@@ -64,16 +60,8 @@ function ElectionSettings(props: ElectionSettingsProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    setEmailAddress(
-      props.election.subscriptions.emailAddress
-        ? props.election.subscriptions.emailAddress
-        : ""
-    );
-    setPhoneNumber(
-      props.election.subscriptions.phoneNumber
-        ? props.election.subscriptions.phoneNumber
-        : ""
-    );
+    setEmailAddress(props.election.subscriptions.emailAddress ?? "");
+    setPhoneNumber(props.election.subscriptions.phoneNumber ?? "");
   };
 
   const saveSubscriptions = (

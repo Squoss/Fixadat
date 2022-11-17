@@ -153,10 +153,8 @@ function ElectionTally(props: ElectionTallyProps) {
     <React.Fragment>
       <blockquote className="blockquote">
         {description
-          ? description
-              .split("\n")
-              .map((line, i) => <p key={`l${i}`}>{line}</p>)
-          : ""}
+          ?.split("\n")
+          .map((line, i) => <p key={`l${i}`}>{line}</p>) ?? ""}
       </blockquote>
       <form>
         <table className="table table-bordered">

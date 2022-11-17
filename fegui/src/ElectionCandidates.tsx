@@ -35,7 +35,7 @@ interface ElectionCandidatesProps {
 
 function tte(s?: string) {
   // trim to empty
-  return s === undefined ? "" : s.trim();
+  return s?.trim() ?? "";
 }
 
 function ttu(s?: string) {
@@ -53,9 +53,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
   );
   const [dateTime, setDateTime] = useState("");
   const [timeZone, setTimeZone] = useState(
-    props.election.timeZone === undefined
-      ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      : props.election.timeZone
+    props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const timeZones = props.timeZones.map((tz) => (
     <option key={tz} value={tz}>
@@ -81,9 +79,8 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     e.preventDefault();
     setDateTimes(props.election.candidates.map((dt) => tte(dt)));
     setTimeZone(
-      props.election.timeZone === undefined
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : props.election.timeZone
+      props.election.timeZone ??
+        Intl.DateTimeFormat().resolvedOptions().timeZone
     );
   };
 
