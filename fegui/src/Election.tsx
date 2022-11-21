@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Navigate,
   Outlet,
@@ -51,7 +51,11 @@ function Election(props: {}) {
   const [responseStatusCode, setResponseStatusCode] = useState<number>(200);
   const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
-  const getElection = () =>
+  const getElection = useCallback(() => {
+    if (token === "") {
+      return;
+    }
+
     fetchResource<ElectionT>(
       Method.Get,
       `/iapi/elections/${id}?timeZone=${
@@ -66,12 +70,11 @@ function Election(props: {}) {
         }
       })
       .catch((error) => console.error(`failed to get election: ${error}`));
+  }, [id, token, tz]);
 
   useEffect(() => {
-    if (token !== "") {
-      getElection();
-    }
-  }, [id, token, tz]);
+    getElection();
+  }, [getElection]);
 
   useEffect(() => {
     const getTimeZones = () =>
