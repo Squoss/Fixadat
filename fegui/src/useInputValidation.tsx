@@ -71,7 +71,7 @@ function useInputValidation(inputType: InputType, inputValue: string) {
     } else {
       getValidity();
     }
-  }, [potentiallyInvalidValue]);
+  }, [inputType, potentiallyInvalidValue]);
 
   return [
     valueValid,
