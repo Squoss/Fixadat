@@ -24,9 +24,11 @@
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
-import org.scalatest.funsuite.AnyFunSuite
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-class DependencyRulesTestSuite extends AnyFunSuite {
+@DisplayName("inner dependency rules")
+class DependencyRulesTestSuite {
 
   val DEFAULT = ""
   val DOMAIN_ENTITYIMPS = "domain.entity_implementations.."
@@ -58,7 +60,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       (THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
     )
 
-  test("the domain depends on itself and third-party APIs only") {
+  @Test
+  @DisplayName("the domain depends on itself and third-party APIs only")
+  def test1() = {
 
     noClasses()
       .that()
@@ -71,9 +75,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "the repositories port depends on itself and the domain types only"
-  ) {
+  )
+  def test2() = {
 
     noClasses()
       .that()
@@ -86,9 +92,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "besides the repositories port, only the domain services and domain entities depend on the repositories port"
-  ) {
+  )
+  def test3() = {
 
     noClasses()
       .that()
@@ -103,7 +111,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the services port depends on itself and the domain types only") {
+  @Test
+  @DisplayName("the services port depends on itself and the domain types only")
+  def test4() = {
 
     noClasses()
       .that()
@@ -116,7 +126,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("only the domain services depend on the services port") {
+  @Test
+  @DisplayName("only the domain services depend on the services port")
+  def test5() = {
 
     noClasses()
       .that()
@@ -127,7 +139,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the third-party APIs port depends on itself only") {
+  @Test
+  @DisplayName("the third-party APIs port depends on itself only")
+  def test6() = {
 
     noClasses()
       .that()
@@ -138,7 +152,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("only the domain services depend on the third-party APIs port") {
+  @Test
+  @DisplayName("only the domain services depend on the third-party APIs port")
+  def test7() = {
 
     noClasses()
       .that()
@@ -149,9 +165,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "the domain services depend on themselves, the domain entities, the domain types, and the ports only"
-  ) {
+  )
+  def test8() = {
 
     noClasses()
       .that()
@@ -164,7 +182,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("nothing depends on the domain services") {
+  @Test
+  @DisplayName("nothing depends on the domain services")
+  def test9() = {
 
     noClasses()
       .that()
@@ -175,9 +195,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "the entities depend on the domain types and the domain (persistence) events only"
-  ) {
+  )
+  def test10() = {
 
     noClasses()
       .that()
@@ -190,7 +212,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the domain types depend on the value objects only") {
+  @Test
+  @DisplayName("the domain types depend on the value objects only")
+  def test11() = {
 
     noClasses()
       .that()
@@ -203,7 +227,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the value objects depend on themselves only") {
+  @Test
+  @DisplayName("the value objects depend on themselves only")
+  def test12() = {
 
     noClasses()
       .that()

@@ -6,5 +6,5 @@ libraryDependencies += "commons-validator" % "commons-validator" % "1.7"
 
 libraryDependencies += "org.apache.commons" % "commons-text" % "1.10.0"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test
+libraryDependencies += "net.aichler" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.0.0" % Test

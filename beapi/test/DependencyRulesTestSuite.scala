@@ -24,9 +24,11 @@
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
-import org.scalatest.funsuite.AnyFunSuite
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-class DependencyRulesTestSuite extends AnyFunSuite {
+@DisplayName("outer dependency rules")
+class DependencyRulesTestSuite {
 
   val AKKA = "akka.."
   val API = "api.."
@@ -42,7 +44,8 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val MAILJET = "com.mailjet.."
   val MONGODB_ADAPTER =
     "mongodb.." // the MongoDB driver starts its packages with com or org
-  val MONGODB_DRIVER = Seq("com.mongodb..", "org.bson..", "org.mongodb..", "org.reactivestreams..")
+  val MONGODB_DRIVER =
+    Seq("com.mongodb..", "org.bson..", "org.mongodb..", "org.reactivestreams..")
   val PLAY_API = "play.api.." // "play.." would also include Play's Java API
   val PLAY_CORE = "play.core.."
   val PLAY_FILTERS = "play.filters.."
@@ -72,9 +75,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val classes =
     new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN: _*)
 
-  test(
+  @Test
+  @DisplayName(
     "the controllers depend on themselves, the SPI, the (abstract) types, and the value objects only"
-  ) {
+  )
+  def test1() = {
 
     noClasses()
       .that()
@@ -87,7 +92,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("nothing depends on the controllers") {
+  @Test
+  @DisplayName("nothing depends on the controllers")
+  def test2() = {
 
     noClasses()
       .that()
@@ -100,7 +107,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
   // we don't care what DEV implementations depend on
 
-  test("nothing depends on DEV implementations") {
+  @Test
+  @DisplayName("nothing depends on DEV implementations")
+  def test3() = {
 
     noClasses()
       .that()
@@ -113,7 +122,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("the filters depend on themselves only") {
+  @Test
+  @DisplayName("the filters depend on themselves only")
+  def test4() = {
 
     noClasses()
       .that()
@@ -126,7 +137,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("nothing depends on the filters") {
+  @Test
+  @DisplayName("nothing depends on the filters")
+  def test5() = {
 
     noClasses()
       .that()
@@ -137,9 +150,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "the MongoDB adapter depends on itself and the repositories only"
-  ) {
+  )
+  def test6() = {
 
     noClasses()
       .that()
@@ -152,7 +167,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("nothing depends on the MongoDB adapter") {
+  @Test
+  @DisplayName("nothing depends on the MongoDB adapter")
+  def test7() = {
 
     noClasses()
       .that()
@@ -165,9 +182,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test(
+  @Test
+  @DisplayName(
     "third-party services depend on themselves and the third-party APIs only"
-  ) {
+  )
+  def test8() = {
 
     noClasses()
       .that()
@@ -180,7 +199,9 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .check(classes)
   }
 
-  test("nothing depends on third-party services") {
+  @Test
+  @DisplayName("nothing depends on third-party services")
+  def test9() = {
 
     noClasses()
       .that()
