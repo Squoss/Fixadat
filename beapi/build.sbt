@@ -27,7 +27,7 @@ libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.8.0"
 
 libraryDependencies += "org.apache.commons" % "commons-text" % "1.10.0"
 
-libraryDependencies += "net.aichler" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.0.0" % Test
 
 // Adds additional packages into Twirl

@@ -24,11 +24,9 @@
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.scalatest.funsuite.AnyFunSuite
 
-@DisplayName("inner dependency rules")
-class DependencyRulesTestSuite {
+class DependencyRulesTestSuite extends AnyFunSuite {
 
   val DEFAULT = ""
   val DOMAIN_ENTITYIMPS = "domain.entity_implementations.."
@@ -60,9 +58,7 @@ class DependencyRulesTestSuite {
       (THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
     )
 
-  @Test
-  @DisplayName("the domain depends on itself and third-party APIs only")
-  def test1() = {
+  test("the domain depends on itself and third-party APIs only") {
 
     noClasses()
       .that()
@@ -75,11 +71,9 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName(
+  test(
     "the repositories port depends on itself and the domain types only"
-  )
-  def test2() = {
+  ) {
 
     noClasses()
       .that()
@@ -92,11 +86,9 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName(
+  test(
     "besides the repositories port, only the domain services and domain entities depend on the repositories port"
-  )
-  def test3() = {
+  ) {
 
     noClasses()
       .that()
@@ -111,9 +103,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("the services port depends on itself and the domain types only")
-  def test4() = {
+  test("the services port depends on itself and the domain types only") {
 
     noClasses()
       .that()
@@ -126,9 +116,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("only the domain services depend on the services port")
-  def test5() = {
+  test("only the domain services depend on the services port") {
 
     noClasses()
       .that()
@@ -139,9 +127,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("the third-party APIs port depends on itself only")
-  def test6() = {
+  test("the third-party APIs port depends on itself only") {
 
     noClasses()
       .that()
@@ -152,9 +138,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("only the domain services depend on the third-party APIs port")
-  def test7() = {
+  test("only the domain services depend on the third-party APIs port") {
 
     noClasses()
       .that()
@@ -165,11 +149,9 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName(
+  test(
     "the domain services depend on themselves, the domain entities, the domain types, and the ports only"
-  )
-  def test8() = {
+  ) {
 
     noClasses()
       .that()
@@ -182,9 +164,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("nothing depends on the domain services")
-  def test9() = {
+  test("nothing depends on the domain services") {
 
     noClasses()
       .that()
@@ -195,11 +175,9 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName(
+  test(
     "the entities depend on the domain types and the domain (persistence) events only"
-  )
-  def test10() = {
+  ) {
 
     noClasses()
       .that()
@@ -212,9 +190,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("the domain types depend on the value objects only")
-  def test11() = {
+  test("the domain types depend on the value objects only") {
 
     noClasses()
       .that()
@@ -227,9 +203,7 @@ class DependencyRulesTestSuite {
       .check(classes)
   }
 
-  @Test
-  @DisplayName("the value objects depend on themselves only")
-  def test12() = {
+  test("the value objects depend on themselves only") {
 
     noClasses()
       .that()
