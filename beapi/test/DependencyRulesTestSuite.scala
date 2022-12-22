@@ -30,19 +30,21 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
   val AKKA = "akka.."
   val API = "api.."
-  val DEFAULT = ""
+  // val DEFAULT = ""
   val DEV = "dev.."
   val DOMAIN_ENTITYINTS = "domain.entity_interfaces.."
   val DOMAIN_SERVICEINTS = "domain.service_interfaces.."
   val DOMAIN_PERSISTENCE = "domain.persistence.."
   val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
   val FILTERS = "filters.."
+  val GUI = "gui.."
   val JAVA = "java.."
   val JAVAX = "javax.."
   val MAILJET = "com.mailjet.."
   val MONGODB_ADAPTER =
     "mongodb.." // the MongoDB driver starts its packages with com or org
-  val MONGODB_DRIVER = Seq("com.mongodb..", "org.bson..", "org.mongodb..", "org.reactivestreams..")
+  val MONGODB_DRIVER =
+    Seq("com.mongodb..", "org.bson..", "org.mongodb..", "org.reactivestreams..")
   val PLAY_API = "play.api.." // "play.." would also include Play's Java API
   val PLAY_CORE = "play.core.."
   val PLAY_FILTERS = "play.filters.."
@@ -67,7 +69,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       VALIDATORS
     )
   val THE_APP_OUTSIDE_OF_THE_DOMAIN =
-    Seq(DEFAULT, API, DEV, FILTERS, MONGODB_ADAPTER, THIRDPARTY_SERVICES)
+    Seq(/*DEFAULT,*/ API, DEV, FILTERS, GUI, MONGODB_ADAPTER, THIRDPARTY_SERVICES)
 
   val classes =
     new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN: _*)

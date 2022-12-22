@@ -28,7 +28,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class DependencyRulesTestSuite extends AnyFunSuite {
 
-  val DEFAULT = ""
+  // val DEFAULT = ""
   val DOMAIN_ENTITYIMPS = "domain.entity_implementations.."
   val DOMAIN_ENTITYINTS = "domain.entity_interfaces.."
   val DOMAIN_PERSISTENCE = "domain.persistence.."
