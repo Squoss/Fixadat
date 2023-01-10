@@ -246,7 +246,7 @@ function App(props: {}) {
               </div>
               <div className="col">
                 Copyright &copy; <time dateTime="2021">2021</time>-
-                <time dateTime="2022">2022</time> Squeng AG
+                <time dateTime="2023">2023</time> Squeng AG
               </div>
             </div>
           </div>
