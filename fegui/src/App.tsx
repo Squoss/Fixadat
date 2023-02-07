@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -222,7 +222,7 @@ function App(props: {}) {
             <div className="row">
               <div className="col">
                 <Link
-                  className="link-dark text-decoration-none"
+                  className="link text-decoration-none"
                   to="/legalese/im"
                 >
                   {localizations["legalese.masthead"]}
@@ -230,7 +230,7 @@ function App(props: {}) {
               </div>
               <div className="col">
                 <Link
-                  className="link-dark text-decoration-none"
+                  className="link text-decoration-none"
                   to="/legalese/pp"
                 >
                   {localizations["legalese.pp"]}
@@ -238,7 +238,7 @@ function App(props: {}) {
               </div>
               <div className="col">
                 <Link
-                  className="link-dark text-decoration-none"
+                  className="link text-decoration-none"
                   to="/legalese/tos"
                 >
                   {localizations["legalese.tos"]}
