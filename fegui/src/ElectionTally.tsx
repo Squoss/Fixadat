@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -157,97 +157,102 @@ function ElectionTally(props: ElectionTallyProps) {
           .map((line, i) => <p key={`l${i}`}>{line}</p>) ?? ""}
       </blockquote>
       <form>
-        <table className="table table-bordered">
-          <thead>
-            <tr className="table-info">
-              <th>
-                {timeZone ? (
-                  <React.Fragment>
-                    {localizations["datesAndTimes.timeZone"]}: {timeZone}
-                    <div className="dropdown">
-                      <button
-                        className="btn btn-sm btn-link dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuLink"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        {localizations["votes.convertToDifferentTimeZone"]}
-                      </button>
-                      <ul
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        {timeZones}
-                      </ul>
-                    </div>
-                  </React.Fragment>
-                ) : (
-                  ""
-                )}
-              </th>
-              {candidates.map((candidate, i) => (
-                <th key={`c${i}`}>
-                  {prettyLocalDateTimeString(
-                    localizations["locale"],
-                    candidate
+        <div className="table-responsive">
+          <table className="table table-bordered">
+            <thead>
+              <tr className="table-info">
+                <th>
+                  {timeZone ? (
+                    <React.Fragment>
+                      {localizations["datesAndTimes.timeZone"]}: {timeZone}
+                      <div className="dropdown">
+                        <button
+                          className="btn btn-sm btn-link dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuLink"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          {localizations["votes.convertToDifferentTimeZone"]}
+                        </button>
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuLink"
+                        >
+                          {timeZones}
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  ) : (
+                    ""
                   )}
                 </th>
-              ))}
-              <th></th>
-            </tr>
-            <tr>
-              <th></th>
-              {columnCounts.map((yinbn, i) => (
-                <th
-                  key={`cc${i}`}
-                  className={
-                    best[0] === yinbn[0] &&
-                    best[1] === yinbn[1] &&
-                    best[2] === yinbn[2]
-                      ? "table-primary"
-                      : "table-secondary"
-                  }
-                >
-                  {yinbn[0] + yinbn[1]} ({yinbn[0]}:{yinbn[1]})
-                </th>
-              ))}
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {votes.map((vote, i) => (
-              <tr key={`v${i}`}>
-                <td>{vote.name}</td>
-                {candidates.map((c, j) => (
-                  <td
-                    key={`v${i}c${j}`}
-                    className={cN(
-                      new Map(Object.entries(vote.availability)).get(
-                        c.substring(0, c.indexOf("T") + 6)
-                      )
+                {candidates.map((candidate, i) => (
+                  <th key={`c${i}`}>
+                    {prettyLocalDateTimeString(
+                      localizations["locale"],
+                      candidate
                     )}
-                  >
-                    &nbsp;
-                  </td>
+                  </th>
                 ))}
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-light"
-                    onClick={(e) => deleteVote(e, vote.name, vote.voted)}
-                  >
-                    {localizations["votes.revoke"]}{" "}
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </td>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <ElectionVote election={props.election} saveVote={props.saveVote} />
-          </tfoot>
-        </table>
+              <tr>
+                <th></th>
+                {columnCounts.map((yinbn, i) => (
+                  <th
+                    key={`cc${i}`}
+                    className={
+                      best[0] === yinbn[0] &&
+                      best[1] === yinbn[1] &&
+                      best[2] === yinbn[2]
+                        ? "table-primary"
+                        : "table-secondary"
+                    }
+                  >
+                    {yinbn[0] + yinbn[1]} ({yinbn[0]}:{yinbn[1]})
+                  </th>
+                ))}
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {votes.map((vote, i) => (
+                <tr key={`v${i}`}>
+                  <td>{vote.name}</td>
+                  {candidates.map((c, j) => (
+                    <td
+                      key={`v${i}c${j}`}
+                      className={cN(
+                        new Map(Object.entries(vote.availability)).get(
+                          c.substring(0, c.indexOf("T") + 6)
+                        )
+                      )}
+                    >
+                      &nbsp;
+                    </td>
+                  ))}
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-light"
+                      onClick={(e) => deleteVote(e, vote.name, vote.voted)}
+                    >
+                      {localizations["votes.revoke"]}{" "}
+                      <i className="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <ElectionVote
+                election={props.election}
+                saveVote={props.saveVote}
+              />
+            </tfoot>
+          </table>
+        </div>
       </form>
     </React.Fragment>
   );

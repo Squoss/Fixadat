@@ -221,26 +221,17 @@ function App(props: {}) {
           <div className="card-body">
             <div className="row">
               <div className="col">
-                <Link
-                  className="link text-decoration-none"
-                  to="/legalese/im"
-                >
+                <Link className="link text-decoration-none" to="/legalese/im">
                   {localizations["legalese.masthead"]}
                 </Link>
               </div>
               <div className="col">
-                <Link
-                  className="link text-decoration-none"
-                  to="/legalese/pp"
-                >
+                <Link className="link text-decoration-none" to="/legalese/pp">
                   {localizations["legalese.pp"]}
                 </Link>
               </div>
               <div className="col">
-                <Link
-                  className="link text-decoration-none"
-                  to="/legalese/tos"
-                >
+                <Link className="link text-decoration-none" to="/legalese/tos">
                   {localizations["legalese.tos"]}
                 </Link>
               </div>
@@ -260,7 +251,7 @@ function App(props: {}) {
         aria-labelledby="cookieConsentModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-fullscreen">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="cookieConsentModalLabel">
@@ -280,45 +271,62 @@ function App(props: {}) {
                 >
                   cookies
                 </a>
-                . For the time being, it uses two{" "}
+                .{" "}
                 <a
-                  href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_the_lifetime_of_a_cookie"
-                  target="MDN"
+                  className="link-info"
+                  data-bs-toggle="collapse"
+                  href="#cookieConsentCollapse"
+                  role="button"
+                  aria-expanded="false"
+                  aria-controls="cookieConsentCollapse"
                 >
-                  session cookies
-                </a>{" "}
-                of its own (but neither permanent nor third-party cookies):
+                  Learn more …
+                </a>
               </p>
-              <ol>
-                <li>
-                  The{" "}
-                  <a
-                    href="https://www.playframework.com/documentation/latest/SettingsSession"
-                    target="Play"
-                  >
-                    Play session cookie
-                  </a>
-                  , typically called <code>PLAY_SESSION</code>, to{" "}
-                  <a
-                    href="https://www.playframework.com/documentation/latest/ScalaCsrf#Adding-a-CSRF-token-to-the-session"
-                    target="Play"
-                  >
-                    add an anti-CSRF token
-                  </a>
-                  .
-                </li>
-                <li>
-                  The{" "}
-                  <a
-                    href="https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support"
-                    target="Play"
-                  >
-                    Play language cookie
-                  </a>
-                  , typically called <code>PLAY_LANG</code>, to remember your
-                  preferred language.
-                </li>
-              </ol>
+              <div className="collapse" id="cookieConsentCollapse">
+                <div className="card card-body">
+                  <p>
+                    For the time being, Fixadat uses two{" "}
+                    <a
+                      href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_the_lifetime_of_a_cookie"
+                      target="MDN"
+                    >
+                      session cookies
+                    </a>{" "}
+                    of its own (but neither permanent nor third-party cookies):
+                  </p>
+                  <ol>
+                    <li>
+                      The{" "}
+                      <a
+                        href="https://www.playframework.com/documentation/latest/SettingsSession"
+                        target="Play"
+                      >
+                        Play session cookie
+                      </a>
+                      , typically called <code>PLAY_SESSION</code>, to{" "}
+                      <a
+                        href="https://www.playframework.com/documentation/latest/ScalaCsrf#Adding-a-CSRF-token-to-the-session"
+                        target="Play"
+                      >
+                        add an anti-CSRF token
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      The{" "}
+                      <a
+                        href="https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support"
+                        target="Play"
+                      >
+                        Play language cookie
+                      </a>
+                      , typically called <code>PLAY_LANG</code>, to remember
+                      your preferred language.
+                    </li>
+                  </ol>
+                </div>
+              </div>
             </div>
             <div className="modal-footer">
               <button

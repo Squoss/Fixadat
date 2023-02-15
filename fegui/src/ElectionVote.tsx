@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -82,55 +82,61 @@ function ElectionVote(props: ElectionVoteProps) {
       </td>
       {candidates.map((candidate, i) => (
         <td key={`sc${i}`}>
-          <div className="form-check form-check-inline">
-            <input
-              className="btn-check"
-              type="radio"
-              name={candidate}
-              value={Availability.NO}
-              id={"notAvailable" + i}
-              checked={availability.get(candidate) === Availability.NO}
-              onChange={updateAvailability}
-            />
-            <label
-              title={localizations["no"]}
-              className="btn btn-outline-danger"
-              htmlFor={"notAvailable" + i}
-            >
-              <span title={localizations["no"]}>🙁</span>
-            </label>
-            <input
-              className="btn-check"
-              type="radio"
-              name={candidate}
-              value={Availability.IFNEEDBE}
-              id={"ifneedbeAvailable" + i}
-              checked={availability.get(candidate) === Availability.IFNEEDBE}
-              onChange={updateAvailability}
-            />
-            <label
-              title={localizations["ifNeedBe"]}
-              className="btn btn-outline-warning"
-              htmlFor={"ifneedbeAvailable" + i}
-            >
-              <span title={localizations["ifNeedBe"]}>😐</span>
-            </label>
-            <input
-              className="btn-check"
-              type="radio"
-              name={candidate}
-              value={Availability.YES}
-              id={"yesAvailable" + i}
-              checked={availability.get(candidate) === Availability.YES}
-              onChange={updateAvailability}
-            />
-            <label
-              title={localizations["yes"]}
-              className="btn btn-outline-success"
-              htmlFor={"yesAvailable" + i}
-            >
-              <span title={localizations["yes"]}>🙂</span>
-            </label>
+          <div className="form-check row row-cols-1">
+            <div className="col">
+              <input
+                className="btn-check"
+                type="radio"
+                name={candidate}
+                value={Availability.NO}
+                id={"notAvailable" + i}
+                checked={availability.get(candidate) === Availability.NO}
+                onChange={updateAvailability}
+              />
+              <label
+                title={localizations["no"]}
+                className="btn btn-outline-danger"
+                htmlFor={"notAvailable" + i}
+              >
+                <span title={localizations["no"]}>🙁</span>
+              </label>
+            </div>
+            <div className="col">
+              <input
+                className="btn-check"
+                type="radio"
+                name={candidate}
+                value={Availability.IFNEEDBE}
+                id={"ifneedbeAvailable" + i}
+                checked={availability.get(candidate) === Availability.IFNEEDBE}
+                onChange={updateAvailability}
+              />
+              <label
+                title={localizations["ifNeedBe"]}
+                className="btn btn-outline-warning"
+                htmlFor={"ifneedbeAvailable" + i}
+              >
+                <span title={localizations["ifNeedBe"]}>😐</span>
+              </label>
+            </div>
+            <div className="col">
+              <input
+                className="btn-check"
+                type="radio"
+                name={candidate}
+                value={Availability.YES}
+                id={"yesAvailable" + i}
+                checked={availability.get(candidate) === Availability.YES}
+                onChange={updateAvailability}
+              />
+              <label
+                title={localizations["yes"]}
+                className="btn btn-outline-success"
+                htmlFor={"yesAvailable" + i}
+              >
+                <span title={localizations["yes"]}>🙂</span>
+              </label>
+            </div>
           </div>
         </td>
       ))}
