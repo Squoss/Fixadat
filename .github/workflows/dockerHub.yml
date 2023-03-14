@@ -24,4 +24,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: squoss/squawg:latest
+          tags: squeng/squawg:latest
