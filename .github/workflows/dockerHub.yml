@@ -24,4 +24,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: squeng/squawg:latest
+          tags: squeng/fixadat:latest
