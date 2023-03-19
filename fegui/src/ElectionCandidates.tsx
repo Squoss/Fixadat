@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -158,7 +158,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                         readOnly
                       />
                       <button
-                        className="btn btn-outline-danger"
+                        className="btn btn-danger"
                         type="button"
                         onClick={() => removeDateTime(dt)}
                       >
@@ -176,7 +176,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                     onChange={(event) => setDateTime(event.target.value)}
                   />
                   <button
-                    className="btn btn-outline-success"
+                    className="btn btn-success"
                     type="button"
                     id="button-addon2"
                     disabled={tte(dateTime) === ""}
