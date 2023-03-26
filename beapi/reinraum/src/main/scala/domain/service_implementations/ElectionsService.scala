@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -324,7 +324,10 @@ class ElectionsService @Inject() (implicit
       locale: Locale,
       name: String,
       timeZone: Option[TimeZone],
-      availability: Map[LocalDateTime, Availability]
+      availability: Map[LocalDateTime, Availability],
+      subject: String,
+      plainText: String,
+      text: String
   ): Future[Either[Error, Unit]] = readElection(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
@@ -348,9 +351,10 @@ class ElectionsService @Inject() (implicit
           election.subscriptions._2.foreach(ea =>
             email.send(
               ea,
-              MessageFormat.format("VOTED", election.name),
+              MessageFormat.format(subject, election.name),
               MessageFormat.format(
-                "VOTED: {0}, {1}",
+                plainText,
+                name,
                 election.name,
                 s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
               )
@@ -360,7 +364,8 @@ class ElectionsService @Inject() (implicit
             sms.send(
               pn,
               MessageFormat.format(
-                "VOTED: {0}, {1}",
+                text,
+                name,
                 election.name,
                 s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
               )
@@ -375,7 +380,10 @@ class ElectionsService @Inject() (implicit
       token: AccessToken,
       host: String,
       name: String,
-      voted: Instant
+      voted: Instant,
+      subject: String,
+      plainText: String,
+      text: String
   ): Future[Either[Error, Unit]] = readElection(id).map(
     _.map(Right(_))
       .getOrElse(Left(NotFound))
@@ -398,9 +406,10 @@ class ElectionsService @Inject() (implicit
           election.subscriptions._2.foreach(ea =>
             email.send(
               ea,
-              MessageFormat.format("VOTEDELETED", election.name),
+              MessageFormat.format(subject, election.name),
               MessageFormat.format(
-                "VOTEDELETED: {0}, {1}",
+                plainText,
+                name,
                 election.name,
                 s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
               )
@@ -410,7 +419,8 @@ class ElectionsService @Inject() (implicit
             sms.send(
               pn,
               MessageFormat.format(
-                "VOTEDELETED: {0}, {1}",
+                text,
+                name,
                 election.name,
                 s"https://${host}/elections/${election.id.wert}#${election.voterToken.wert}"
               )

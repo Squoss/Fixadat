@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -93,7 +93,10 @@ trait Elections {
       locale: Locale,
       name: String,
       timeZone: Option[TimeZone],
-      availability: Map[LocalDateTime, Availability]
+      availability: Map[LocalDateTime, Availability],
+      subject: String,
+      plainText: String,
+      text: String
   ): Future[Either[Error, Unit]]
 
   def deleteVote(
@@ -101,7 +104,10 @@ trait Elections {
       token: AccessToken,
       host: String,
       name: String,
-      voted: Instant
+      voted: Instant,
+      subject: String,
+      plainText: String,
+      text: String
   ): Future[Either[Error, Unit]]
 
   def sendLinksReminder(

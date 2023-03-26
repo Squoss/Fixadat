@@ -45,8 +45,8 @@ links.voters = Copy the following link and send it to the voters:
 links.organizers = Only share the following link with other organizers:
 links.reminderTo = Send it to yourself by …
 links.byEmail = … e-mail
-links.byEmail.subject = Fixadat organizer link for {0}
 links.byEmail.plainText = {1}\nis the Fixadat organizer link for the election {0}.
+links.byEmail.subject = Fixadat organizer link for {0}
 links.bySms = … SMS
 links.bySms.text = {1} is the Fixadat organizer link for the election {0}.
 
@@ -68,6 +68,12 @@ votes.gameOver = The election is over
 votes.name = Name
 votes.revocationConfirmation = Do you really want to revoke the vote cast by {0} on {1}?
 votes.revoke = Revoke
+votes.revoked.plainText = The vote cast by {0} has been revoked from election {1}:\n{2}
+votes.revoked.subject = Vote revoked from {0}
+votes.revoked.text = The vote cast by {0} has been revoked from election {1}: {2}
+votes.voted.plainText =  A vote has been cast by {0} for election {1}:\n{2}
+votes.voted.subject = Vote cast for {0}
+votes.voted.text = A vote has been cast by {0} for election {1}: {2}
 votes.yourName = Your name
 
 reloadNotice = A new version of {0} is available.

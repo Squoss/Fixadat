@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +238,10 @@ class ElectionsController @Inject() (implicit
               request.lang.locale,
               request.body.name,
               request.body.timeZone,
-              request.body.availability
+              request.body.availability,
+              messagesApi("votes.voted.subject")(request.lang),
+              messagesApi("votes.voted.plainText")(request.lang),
+              messagesApi("votes.voted.text")(request.lang)
             )
             .map(
               _.fold(
@@ -260,7 +263,10 @@ class ElectionsController @Inject() (implicit
               AccessToken(accessToken),
               request.host,
               name,
-              Instant.parse(voted)
+              Instant.parse(voted),
+              messagesApi("votes.revoked.subject")(request.lang),
+              messagesApi("votes.revoked.plainText")(request.lang),
+              messagesApi("votes.revoked.text")(request.lang)
             )
             .map(
               _.fold(
