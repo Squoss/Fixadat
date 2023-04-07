@@ -23,7 +23,7 @@ scalaVersion := "2.13.10"
 libraryDependencies += guice
 libraryDependencies += "com.google.inject" % "guice" % "5.1.0" // bumping the Guice version manually allows for using Play 2.8 with Java 17
 libraryDependencies += ws
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.9.0"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.9.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.0.1" % Test
