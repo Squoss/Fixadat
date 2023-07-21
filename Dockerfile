@@ -3,7 +3,7 @@
 # https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
 
 
-FROM node:18 as react
+FROM node:18 AS react
 
 WORKDIR /squeng/fixadat
 
@@ -20,7 +20,7 @@ COPY fegui/src ./src
 RUN INLINE_RUNTIME_CHUNK=false npm run build
 
 
-FROM sbtscala/scala-sbt:eclipse-temurin-jammy-17.0.5_8_1.9.2_2.13.11 as play
+FROM sbtscala/scala-sbt:eclipse-temurin-jammy-17.0.5_8_1.9.2_2.13.11 AS play
 
 WORKDIR /squeng/fixadat
 
