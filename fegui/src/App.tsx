@@ -23,7 +23,7 @@
  */
 
 import { Modal } from "bootstrap";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { l10nContext } from "./l10nContext";
 
@@ -40,6 +40,11 @@ function App(props: {}) {
   );
   locationString += "locale=NEWLOCALE";
   locationString += location.hash;
+
+  const [mode, setMode] = useState<"light"|"dark">("light");
+  useEffect(() => {
+    document.getElementById("rootElement")?.setAttribute("data-bs-theme", mode);
+  }, [mode]);
 
   useEffect(() => {
     const cookieConsentFlag = window.sessionStorage.getItem("cookieConsent");
@@ -200,6 +205,13 @@ function App(props: {}) {
                 </li>
               </ul>
             </div>
+            &nbsp;
+            &nbsp;
+            <div className="form-check form-switch text-bg-primary">
+              <input className="form-check-input" type="checkbox" role="switch" id="modeLightDark" checked={mode==="dark"} onChange={() => mode==="light"?setMode("dark"):setMode("light")}/>
+              <label className="form-check-label" htmlFor="modeLightDark"><i className="bi bi-emoji-sunglasses-fill"></i> / <i className="bi bi-emoji-sunglasses"></i></label>
+            </div>
+            &nbsp;
             &nbsp;
             <a
               className="btn btn-outline-light"

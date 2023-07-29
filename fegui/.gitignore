@@ -25,3 +25,4 @@ yarn-error.log*
 # default entries are above
 
 /.eslintcache
+/.metals
