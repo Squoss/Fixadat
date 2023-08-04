@@ -22,10 +22,14 @@
  * THE SOFTWARE.
  */
 
-import { Popover } from "bootstrap";
-import React, { useContext, useEffect, useState } from "react";
+import { de } from "date-fns/locale"; // en is imported by default
+import React, { useContext, useState } from "react";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
+
+registerLocale("de", de); // en is registered by default
 
 interface ElectionCandidatesProps {
   election: ElectionT;
@@ -51,7 +55,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
   const [dateTimes, setDateTimes] = useState<Array<string>>(
     props.election.candidates
   );
-  const [dateTime, setDateTime] = useState("");
+  const [dateTime, setDateTime] = useState<null | Date>(new Date());
   const [timeZone, setTimeZone] = useState(
     props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   );
@@ -61,11 +65,13 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     </option>
   ));
 
-  const addDateTime = () => {
+  const addDateTime = (dateTimeArg: string) => {
     const dts = dateTimes.slice();
-    dts.push(dateTime.substring(0, dateTime.indexOf("T") + 6) + ":00");
-    setDateTimes(dts);
-    setDateTime("");
+    const dta = dateTimeArg.substring(0, dateTimeArg.indexOf("T") + 6) + ":00";
+    if (!dts.includes(dta)) {
+      dts.push(dta);
+      setDateTimes(dts);
+    }
   };
 
   const removeDateTime = (dateTimeArg: string) => {
@@ -97,10 +103,6 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
     return set.size === new Set(arr1).size && set.size === new Set(arr2).size;
   };
 
-  useEffect(() => {
-    const popover = new Popover(document.getElementById("popoverButton")!);
-  }, []);
-
   const changesSaved = () =>
     sameElements(props.election.candidates, dateTimes) &&
     tte(props.election.timeZone) === timeZone;
@@ -116,20 +118,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
             <div className="col-sm">
               <div>
                 <label htmlFor="timeZoneSelect" className="form-label">
-                  {localizations["datesAndTimes.timeZone"]}{" "}
-                  <button
-                    type="button"
-                    id="popoverButton"
-                    className="btn btn-sm btn-outline-info"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="focus"
-                    data-bs-placement="bottom"
-                    data-bs-content={
-                      localizations["datesAndTimes.timeZoneMotivation"]
-                    }
-                  >
-                    <i className="bi bi-info-circle-fill"></i>
-                  </button>
+                  {localizations["datesAndTimes.timeZone"]}
                 </label>
                 <select
                   className="form-select"
@@ -140,6 +129,10 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                 >
                   {timeZones}
                 </select>
+                <p className="card-text">
+                  <i className="bi bi-info-circle-fill"></i>{" "}
+                  {localizations["datesAndTimes.timeZoneMotivation"]}
+                </p>
               </div>
             </div>
             <div className="col-sm">
@@ -148,7 +141,7 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                   {localizations["datesAndTimes"]}
                 </label>
                 {dateTimes.map((dt) => (
-                  <React.Fragment>
+                  <React.Fragment key={dt}>
                     <div className="input-group mb-3">
                       <input
                         type="datetime-local"
@@ -168,26 +161,31 @@ function ElectionCandidates(props: ElectionCandidatesProps) {
                   </React.Fragment>
                 ))}
                 <div className="input-group mb-3">
-                  <input
-                    type="datetime-local"
+                  <p className="card-text">
+                    <i className="bi bi-info-circle-fill"></i>{" "}
+                    {localizations["datesAndTimes.order"]}
+                  </p>
+                  <DatePicker
+                    selected={dateTime}
+                    onChange={(date) => setDateTime(date)}
+                    onCalendarClose={() => {
+                      if (dateTime !== null) {
+                        const localTime = new Date();
+                        localTime.setTime(
+                          dateTime.getTime() -
+                            dateTime.getTimezoneOffset() * 60 * 1000
+                        );
+                        addDateTime(localTime.toISOString());
+                      }
+                    }}
+                    locale={localizations["locale"]}
+                    showTimeSelect
+                    timeFormat="p"
+                    timeIntervals={15}
+                    dateFormat="Pp"
                     className="form-control"
-                    id="dateTimeSchedule"
-                    value={dateTime}
-                    onChange={(event) => setDateTime(event.target.value)}
                   />
-                  <button
-                    className="btn btn-success"
-                    type="button"
-                    id="button-addon2"
-                    disabled={tte(dateTime) === ""}
-                    onClick={addDateTime}
-                  >
-                    <i className="bi bi-plus-lg"></i>
-                  </button>
                 </div>
-                <p className="card-text">
-                  {localizations["datesAndTimes.order"]}
-                </p>
               </div>
             </div>
             <div
