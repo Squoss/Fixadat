@@ -20,7 +20,7 @@ COPY fegui/src ./src
 RUN INLINE_RUNTIME_CHUNK=false npm run build
 
 
-FROM sbtscala/scala-sbt:eclipse-temurin-jammy-17.0.5_8_1.9.4_2.13.11 AS play
+FROM sbtscala/scala-sbt:eclipse-temurin-jammy-17.0.5_8_1.9.4_2.13.12 AS play
 
 WORKDIR /squeng/fixadat
 
