@@ -21,7 +21,6 @@ lazy val reinraum = project
 scalaVersion := "2.13.12"
 
 libraryDependencies += guice
-libraryDependencies += "com.google.inject" % "guice" % "6.0.0" // bumping the Guice version manually allows for using Play 2.8 with Java 17
 libraryDependencies += ws
 libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.10.2"
 
