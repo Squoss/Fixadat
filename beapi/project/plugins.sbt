@@ -1,4 +1,4 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0-RC3")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0")
 
 // https://github.com/sbt/sbt/issues/6997#issue-1332853454
 ThisBuild / libraryDependencySchemes ++= Seq(
