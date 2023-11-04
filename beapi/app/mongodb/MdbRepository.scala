@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,6 +61,7 @@ import org.mongodb.scala.model.Projections
 import org.mongodb.scala.model.Updates
 import play.api.Logging
 
+import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.time.LocalDateTime
@@ -494,7 +495,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
         .map(pn =>
           PhoneNumberUtil.getInstance().parse(pn.asString.getValue, "CH")
         ),
-      document.get(UrlKey).map(u => new URL(u.asString.getValue))
+      document.get(UrlKey).map(u => URI.create(u.asString.getValue).toURL)
     )
   }
 

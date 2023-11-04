@@ -3,7 +3,7 @@
 # https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
 
 
-FROM node:18 AS react
+FROM node:20 AS react
 
 WORKDIR /squeng/fixadat
 

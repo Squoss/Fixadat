@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ import domain.value_objects.Visibility._
 import domain.value_objects.Vote
 import play.api.libs.json._
 
+import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.time.LocalDateTime
@@ -214,7 +215,7 @@ object TransferObjects {
 
   implicit val urlReads = new Reads[URL] {
     def reads(json: JsValue): JsResult[URL] = Try(
-      new URL(json.as[String])
+      URI.create(json.as[String]).toURL
     ) match {
       case Success(value)     => JsSuccess(value)
       case Failure(exception) => JsError(exception.getMessage)
