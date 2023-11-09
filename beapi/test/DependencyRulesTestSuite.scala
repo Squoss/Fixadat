@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class DependencyRulesTestSuite extends AnyFunSuite {
 
-  val AKKA = "akka.."
+  val PEKKO = "org.apache.pekko.."
   val API = "api.."
   // val DEFAULT = ""
   val DEV = "dev.."
@@ -60,7 +60,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       JAVA,
       JAVAX,
       SCALA,
-      AKKA,
+      PEKKO,
       PLAY_API,
       PLAY_CORE,
       PLAY_FILTERS,
