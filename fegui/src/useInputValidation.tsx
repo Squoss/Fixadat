@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchResource, Method } from "./fetchJson";
 
 export enum InputType {
@@ -51,6 +51,9 @@ function useInputValidation(inputType: InputType, inputValue: string) {
     useState(inputValue);
   const [valueValid, setValueValid] = useState(true);
 
+  // see "Using setTimeout with useRef" in https://bignerdranch.com/books/react-programming-the-big-nerd-ranch-guide/
+  const debounceRef = useRef<any>(null);
+
   useEffect(() => {
     const getValidity = () =>
       fetchResource<ValidityType>(
@@ -66,10 +69,14 @@ function useInputValidation(inputType: InputType, inputValue: string) {
         })
         .catch((error) => console.error(`failed to get validity: ${error}`));
 
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     if (potentiallyInvalidValue === "") {
+      debounceRef.current = null;
       setValueValid(true);
     } else {
-      getValidity();
+      debounceRef.current = setTimeout(() => getValidity(), 500);
     }
   }, [inputType, potentiallyInvalidValue]);
 
