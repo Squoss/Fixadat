@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,14 @@
 package mongodb
 
 // Replaces the default UuidCodec with one that uses the new standard UUID representation
-// cf. https://mongodb.github.io/mongo-java-driver/4.3/driver-scala/tutorials/databases-collections/#codecregistry
+// cf. https://mongodb.github.io/mongo-java-driver/4.11/driver-reactive/tutorials/databases-collections/#codecregistry
+import com.mongodb.MongoClientSettings
+import com.mongodb.reactivestreams.client.MongoClients
+import com.mongodb.reactivestreams.client.MongoCollection
+import org.bson.BsonDocument
 import org.bson.UuidRepresentation
 import org.bson.codecs.UuidCodec
 import org.bson.codecs.configuration.CodecRegistries
-import org.mongodb.scala.Document
-import org.mongodb.scala.MongoClient
-import org.mongodb.scala.MongoCollection
 import play.api.Configuration
 import play.api.Logging
 import play.api.inject.ApplicationLifecycle
@@ -48,11 +49,11 @@ class Mdb @Inject() (
 
   val codecRegistry = CodecRegistries.fromRegistries(
     CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
-    MongoClient.DEFAULT_CODEC_REGISTRY
+    MongoClientSettings.getDefaultCodecRegistry
   )
 
   logger.info("opening connection to MongoDB")
-  private val client = MongoClient(config.get[String]("mongodb.uri"))
+  private val client = MongoClients.create(config.get[String]("mongodb.uri"))
   private val database = client
     .getDatabase(config.get[String]("mongodb.db"))
     .withCodecRegistry(codecRegistry)
@@ -63,6 +64,6 @@ class Mdb @Inject() (
     Future.successful(client.close())
   })
 
-  def apply(collection: String): MongoCollection[Document] =
-    database.getCollection(collection)
+  def apply(collection: String): MongoCollection[BsonDocument] =
+    database.getCollection(collection, classOf[BsonDocument])
 }

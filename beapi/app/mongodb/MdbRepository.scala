@@ -28,6 +28,11 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.mongodb.DuplicateKeyException
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Updates
 import domain.entity_interfaces.ElectionT
 import domain.persistence.CandidatesNominatedEvent
 import domain.persistence.ElectionEvent
@@ -45,20 +50,15 @@ import domain.value_objects.Availability._
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
 import domain.value_objects.Vote
-import org.mongodb.scala.Document
-import org.mongodb.scala.Observer
-import org.mongodb.scala.bson.BsonArray
-import org.mongodb.scala.bson.BsonBinary
-import org.mongodb.scala.bson.BsonDocument
-import org.mongodb.scala.bson.BsonInt32
-import org.mongodb.scala.bson.BsonString
-import org.mongodb.scala.bson.BsonTimestamp
-import org.mongodb.scala.bson.BsonValue
-import org.mongodb.scala.model.Filters
-import org.mongodb.scala.model.IndexOptions
-import org.mongodb.scala.model.Indexes
-import org.mongodb.scala.model.Projections
-import org.mongodb.scala.model.Updates
+import org.bson.BsonArray
+import org.bson.BsonBinary
+import org.bson.BsonDocument
+import org.bson.BsonElement
+import org.bson.BsonInt32
+import org.bson.BsonString
+import org.bson.BsonTimestamp
+import org.bson.BsonValue
+import org.reactivestreams.Subscription
 import play.api.Logging
 
 import java.net.URI
@@ -70,6 +70,7 @@ import java.util.TimeZone
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import scala.jdk.CollectionConverters._
 import scala.util.Failure
 import scala.util.Success
@@ -118,57 +119,118 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   mdb(Collection)
     .createIndex(
       Indexes.ascending(IdKey),
-      IndexOptions().unique(true)
+      new IndexOptions().unique(true)
     )
     .subscribe(
-      new Observer[String] {
+      new org.reactivestreams.Subscriber[String] {
 
-        override def onNext(s: String): Unit = {
+        override def onSubscribe(s: Subscription): Unit =
+          s.request(Long.MaxValue)
+
+        override def onNext(s: String): Unit =
           logger.info(s"created indices ${s} for ${Collection}")
-        }
 
-        override def onError(e: Throwable): Unit = {
+        override def onError(e: Throwable): Unit =
           logger.error(s"failed to create indices for ${Collection}", e)
-        }
 
-        override def onComplete(): Unit = {
+        override def onComplete(): Unit =
           logger.info(s"created indices for ${Collection}")
-        }
       }
     )
 
-  override def logEvent(event: PublishedEvent): Future[Boolean] = {
-    val document = Document(
-      IdKey -> event.id.wert,
-      ReplayedEventsKey -> 0,
-      EventsKey -> Seq(
-        Document(
-          TypeKey -> PublishedValue,
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-          VersionKey -> event.version,
-          OrganizerTokenKey -> new BsonBinary(event.organizerToken.wert),
-          VoterTokenKey -> new BsonBinary(event.voterToken.wert)
-        )
-      )
+  private def toFutureResult[R](publisher: org.reactivestreams.Publisher[R]) = {
+    val promise = Promise[R]()
+
+    publisher.subscribe(
+      new org.reactivestreams.Subscriber[R] {
+
+        override def onSubscribe(s: Subscription): Unit = s.request(1)
+
+        override def onNext(result: R): Unit =
+          promise.success(result)
+
+        override def onError(e: Throwable): Unit =
+          promise.failure(e)
+
+        override def onComplete(): Unit =
+          if (!promise.isCompleted) {
+            promise.failure(
+              new RuntimeException(
+                "premature completion: onComplete before onNext and onError"
+              )
+            )
+          }
+      }
     )
-    mdb(Collection)
-      .insertOne(document)
-      .toFuture()
-      .transform(_ match {
-        case Success(_)                                => Success(true)
-        case Failure(exception: DuplicateKeyException) => Success(false)
-        case Failure(throwable)                        => Failure(throwable)
-      })
+
+    promise.future
   }
 
-  private def logEvent(id: Id, document: Document): Future[Unit] =
-    mdb(Collection)
-      .updateOne(
-        Filters.equal(IdKey, id.wert),
-        Updates.push(EventsKey, document)
-      )
-      .toFuture()
-      .map(_ => ())
+  private def toFutureDocSeq(
+      publisher: org.reactivestreams.Publisher[BsonDocument]
+  ) = {
+    val promise = Promise[Seq[BsonDocument]]()
+
+    publisher.subscribe(
+      new org.reactivestreams.Subscriber[BsonDocument] {
+
+        override def onSubscribe(s: Subscription): Unit =
+          s.request(Long.MaxValue)
+
+        val docs = scala.collection.mutable.ListBuffer[BsonDocument]()
+
+        override def onNext(doc: BsonDocument): Unit = docs += doc
+
+        override def onError(e: Throwable): Unit =
+          promise.failure(e)
+
+        override def onComplete(): Unit =
+          promise.success(docs.toSeq)
+      }
+    )
+
+    promise.future
+  }
+
+  override def logEvent(event: PublishedEvent): Future[Boolean] = {
+    val document = new BsonDocument(
+      Map(
+        IdKey -> new BsonInt32(event.id.wert),
+        ReplayedEventsKey -> new BsonInt32(0),
+        EventsKey -> new BsonArray(
+          Seq(
+            new BsonDocument(
+              Map(
+                TypeKey -> new BsonString(PublishedValue),
+                OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+                VersionKey -> new BsonInt32(event.version),
+                OrganizerTokenKey -> new BsonBinary(event.organizerToken.wert),
+                VoterTokenKey -> new BsonBinary(event.voterToken.wert)
+              ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
+            )
+          ).asJava
+        )
+      ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
+    )
+
+    toFutureResult(
+      mdb(Collection)
+        .insertOne(document)
+    ).transform(_ match {
+      case Success(_)                                => Success(true)
+      case Failure(exception: DuplicateKeyException) => Success(false)
+      case Failure(throwable)                        => Failure(throwable)
+    })
+  }
+
+  private def logEvent(id: Id, document: BsonDocument): Future[Unit] =
+    toFutureResult(
+      mdb(Collection)
+        .updateOne(
+          Filters.eq(IdKey, id.wert),
+          Updates.push(EventsKey, document)
+        )
+    ).map(_ => ())
 
   private def logEvent(
       event: ElectionEvent,
@@ -178,10 +240,12 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       typeValue == ProtectedValue || typeValue == PrivatizedValue || typeValue == RepublishedValue
     )
 
-    val document = Document(
-      TypeKey -> typeValue,
-      OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-      VersionKey -> event.version
+    val document = new BsonDocument(
+      Map(
+        TypeKey -> new BsonString(typeValue),
+        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        VersionKey -> new BsonInt32(event.version)
+      ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
     )
     logEvent(event.id, document)
   }
@@ -193,38 +257,57 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       logger.error(msg)
       Future.failed(new RuntimeException(msg))
     case RetextedEvent(_, name, description, _) =>
-      val document = org.mongodb.scala.bson.collection.mutable.Document(
-        TypeKey -> RetextedValue,
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-        VersionKey -> event.version,
-        NameKey -> name
+      val document = new BsonDocument(
+        Map(
+          TypeKey -> new BsonString(RetextedValue),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          VersionKey -> new BsonInt32(event.version),
+          NameKey -> new BsonString(name)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
-      description.foreach(d => document += (DescriptionKey -> d))
-      logEvent(event.id, document.toBsonDocument)
+      description.foreach(d =>
+        document.append(DescriptionKey, new BsonString(d))
+      )
+      logEvent(event.id, document)
     case CandidatesNominatedEvent(_, timeZone, candidates, _) =>
-      val document = org.mongodb.scala.bson.collection.mutable.Document(
-        TypeKey -> CandidatesNominatedValue,
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-        VersionKey -> event.version,
-        CandidatesKey -> fromCandidates(candidates)
+      val document = new BsonDocument(
+        Map(
+          TypeKey -> new BsonString(CandidatesNominatedValue),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          VersionKey -> new BsonInt32(event.version),
+          CandidatesKey -> fromCandidates(candidates)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
-      timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
-      logEvent(event.id, document.toBsonDocument)
+      timeZone.foreach(tz =>
+        document.append(TimeZoneKey, new BsonString(tz.getID))
+      )
+      logEvent(event.id, document)
     case SubscribedEvent(_, locale, email, text, webHook, _) =>
-      val document = org.mongodb.scala.bson.collection.mutable.Document(
-        TypeKey -> SubscribedValue,
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-        VersionKey -> event.version,
-        LocaleKey -> locale.toLanguageTag
+      val document = new BsonDocument(
+        Map(
+          TypeKey -> new BsonString(SubscribedValue),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          VersionKey -> new BsonInt32(event.version),
+          LocaleKey -> new BsonString(locale.toLanguageTag)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
-      email.foreach(ea => document += (EmailAddressKey -> ea.wert))
+      email.foreach(ea =>
+        document.append(EmailAddressKey, new BsonString(ea.wert))
+      )
       text.foreach(pn =>
-        document += (PhoneNumberKey -> PhoneNumberUtil
-          .getInstance()
-          .format(pn, PhoneNumberFormat.E164))
+        document.append(
+          PhoneNumberKey,
+          new BsonString(
+            PhoneNumberUtil
+              .getInstance()
+              .format(pn, PhoneNumberFormat.E164)
+          )
+        )
       )
-      webHook.foreach(u => document += (UrlKey -> u.toExternalForm))
-      logEvent(event.id, document.toBsonDocument)
+      webHook.foreach(u =>
+        document.append(UrlKey, new BsonString(u.toExternalForm))
+      )
+      logEvent(event.id, document)
     case ProtectedEvent(_, _) =>
       logEvent(event, ProtectedValue)
     case PrivatizedEvent(_, _) =>
@@ -232,56 +315,72 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     case RepublishedEvent(_, _) =>
       logEvent(event, RepublishedValue)
     case VotedEvent(_, name, timeZone, availability, _) =>
-      val document = org.mongodb.scala.bson.collection.mutable.Document(
-        TypeKey -> VotedValue,
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-        VersionKey -> event.version,
-        NameKey -> name,
-        AvailabilityKey -> fromAvailability(availability)
+      val document = new BsonDocument(
+        Map(
+          TypeKey -> new BsonString(VotedValue),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          VersionKey -> new BsonInt32(event.version),
+          NameKey -> new BsonString(name),
+          AvailabilityKey -> fromAvailability(availability)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
-      timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
-      logEvent(event.id, document.toBsonDocument)
+      timeZone.foreach(tz =>
+        document.append(TimeZoneKey, new BsonString(tz.getID))
+      )
+      logEvent(event.id, document)
     case VoteDeletedEvent(_, name, voted, _) =>
-      val document = Document(
-        TypeKey -> VoteDeletedValue,
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
-        VersionKey -> event.version,
-        NameKey -> name,
-        VotedKey -> new BsonTimestamp(voted.toEpochMilli)
+      val document = new BsonDocument(
+        Map(
+          TypeKey -> new BsonString(VoteDeletedValue),
+          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          VersionKey -> new BsonInt32(event.version),
+          NameKey -> new BsonString(name),
+          VotedKey -> new BsonTimestamp(voted.toEpochMilli)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
       logEvent(event.id, document)
   }
 
-  private def toElectionEvent(id: Id, doc: Document) = {
-    val eventType = doc(TypeKey).asString.getValue
-    val version = doc(VersionKey).asInt32.getValue
+  private def toElectionEvent(id: Id, doc: BsonDocument) = {
+    val eventType = doc.getString(TypeKey).getValue
+    val version = doc.getInt32(VersionKey).getValue.toInt
     assume(version == 1)
 
     eventType match {
       case PublishedValue =>
         PublishedEvent(
           id,
-          AccessToken(doc(OrganizerTokenKey).asBinary.asUuid),
-          AccessToken(doc(VoterTokenKey).asBinary.asUuid),
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          AccessToken(doc.getBinary(OrganizerTokenKey).asUuid),
+          AccessToken(doc.getBinary(VoterTokenKey).asUuid),
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case RetextedValue =>
         RetextedEvent(
           id,
-          doc(NameKey).asString.getValue,
-          doc.get(DescriptionKey).map(_.asString.getValue),
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          doc.getString(NameKey).getValue,
+          Option(doc.getString(DescriptionKey, null)).map(_.getValue),
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case CandidatesNominatedValue =>
         CandidatesNominatedEvent(
           id,
-          doc
-            .get(TimeZoneKey)
-            .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
-          doc(CandidatesKey).asArray.getValues.asScala.toSet.map(
-            (bv: BsonValue) => LocalDateTime.parse(bv.asString.getValue)
-          ),
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          Option(
+            doc
+              .getString(TimeZoneKey, null)
+          )
+            .map(tz => TimeZone.getTimeZone(tz.getValue)),
+          doc.getArray(CandidatesKey)
+            .getValues
+            .asScala
+            .toSet
+            .map((bv: BsonValue) => LocalDateTime.parse(bv.asString.getValue)),
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case SubscribedValue =>
         val subscriptions = toSubscriptions(doc)
@@ -291,112 +390,147 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           subscriptions._2,
           subscriptions._3,
           subscriptions._4,
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case ProtectedValue =>
         ProtectedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case PrivatizedValue =>
         PrivatizedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case RepublishedValue =>
         RepublishedEvent(
           id,
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case VotedValue =>
         VotedEvent(
           id,
-          doc(NameKey).asString.getValue,
-          doc
-            .get(TimeZoneKey)
-            .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
-          toAvailability(doc(AvailabilityKey).asDocument),
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          doc.getString(NameKey).getValue,
+          Option(
+            doc
+              .getString(TimeZoneKey, null)
+          )
+            .map(tz => TimeZone.getTimeZone(tz.getValue)),
+          toAvailability(
+            doc.getDocument(AvailabilityKey).asScala.toMap
+          ),
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
       case VoteDeletedValue =>
         VoteDeletedEvent(
           id,
-          doc(NameKey).asString.getValue,
-          Instant.ofEpochMilli(doc(VotedKey).asTimestamp.getValue),
-          Instant.ofEpochMilli(doc(OccurredKey).asTimestamp.getValue)
+          doc.getString(NameKey).getValue,
+          Instant.ofEpochMilli(
+            doc.getTimestamp(VotedKey).getValue
+          ),
+          Instant.ofEpochMilli(
+            doc.getTimestamp(OccurredKey).getValue
+          )
         )
     }
   }
 
-  private def toVote(document: Document) = Vote(
-    document(NameKey).asString.getValue,
-    toAvailability(document(AvailabilityKey).asDocument),
+  private def toVote(document: BsonDocument) = Vote(
+    document.getString(NameKey).getValue,
+    toAvailability(
+      document.getDocument(AvailabilityKey).asScala.toMap
+    ),
     Instant
-      .ofEpochMilli(document(VotedKey).asTimestamp.getValue)
+      .ofEpochMilli(document.getTimestamp(VotedKey).getValue)
   )
 
-  private def toSnapshot(id: Id, document: Document, replayedEvents: Int) =
+  private def toSnapshot(id: Id, document: BsonDocument, replayedEvents: Int) =
     ElectionSnapshot(
       id,
       Instant
-        .ofEpochMilli(document(CreatedKey).asTimestamp.getValue),
+        .ofEpochMilli(
+          document.getTimestamp(CreatedKey).getValue
+        ),
       Instant
-        .ofEpochMilli(document(UpdatedKey).asTimestamp.getValue),
-      AccessToken(document(OrganizerTokenKey).asBinary.asUuid),
-      AccessToken(document(VoterTokenKey).asBinary.asUuid),
-      document(NameKey).asString.getValue,
-      document.get(DescriptionKey).map(_.asString.getValue),
+        .ofEpochMilli(
+          document.getTimestamp(UpdatedKey).getValue
+        ),
+      AccessToken(document.getBinary(OrganizerTokenKey).asUuid),
+      AccessToken(document.getBinary(VoterTokenKey).asUuid),
+      document.getString(NameKey).getValue,
+      Option(document.getString(DescriptionKey, null)).map(_.getValue),
+      Option(
+        document
+          .getString(TimeZoneKey, null)
+      )
+        .map(tz => TimeZone.getTimeZone(tz.getValue)),
       document
-        .get(TimeZoneKey)
-        .map(tz => TimeZone.getTimeZone(tz.asString.getValue)),
-      document(CandidatesKey).asArray.getValues.asScala.toSet.map(
-        (bv: BsonValue) => LocalDateTime.parse(bv.asString.getValue)
-      ),
-      document(VotesKey).asArray.getValues.asScala.toSeq.map(bv =>
-        toVote(bv.asDocument)
-      ),
+        .getArray(CandidatesKey)
+        .getValues
+        .asScala
+        .toSet
+        .map((bv: BsonValue) => LocalDateTime.parse(bv.asString.getValue)),
+      document
+        .getArray(VotesKey)
+        .getValues
+        .asScala
+        .toSeq
+        .map(bv => toVote(bv.asDocument)),
       domain.value_objects
-        .Visibility(document(VisibilityKey).asInt32.getValue),
-      toSubscriptions(document(SubscriptionsKey).asDocument),
+        .Visibility(document.getInt32(VisibilityKey).getValue),
+      toSubscriptions(
+        document.getDocument(SubscriptionsKey)
+      ),
       replayedEvents
     )
 
   override def readEvents(
       id: Id
-  ): Future[(Option[ElectionT], Seq[ElectionEvent])] = mdb(
-    Collection
-  ).find(Filters.equal(IdKey, id.wert))
-    .projection(Projections.exclude(EventsKey))
-    .toFuture()
+  ): Future[(Option[ElectionT], Seq[ElectionEvent])] = toFutureDocSeq(
+    mdb(
+      Collection
+    ).find(Filters.eq(IdKey, id.wert))
+      .projection(Projections.exclude(EventsKey))
+  )
     .flatMap(_ match {
       case Nil => Future((None, Seq()))
       case Seq(document) =>
-        val replayedEvents = document(ReplayedEventsKey).asInt32.getValue
-        mdb(Collection)
-          .find(Filters.equal(IdKey, id.wert))
-          .projection(
-            Projections.slice(EventsKey, replayedEvents, Int.MaxValue)
-          )
-          .toFuture()
+        val replayedEvents = document.getInt32(ReplayedEventsKey).getValue.toInt
+        toFutureDocSeq(
+          mdb(Collection)
+            .find(Filters.eq(IdKey, id.wert))
+            .projection(
+              Projections.slice(EventsKey, replayedEvents, Int.MaxValue)
+            )
+        )
           .map(docs =>
             (
               if (replayedEvents > 0) {
                 Some(
                   toSnapshot(
                     id,
-                    document(SnapshotKey).asDocument,
+                    document.getDocument(SnapshotKey),
                     replayedEvents
                   )
                 )
               } else { None },
-              docs
-                .head(EventsKey)
-                .asArray
+              docs.head
+                .getArray(EventsKey)
                 .getValues
                 .asScala
                 .map(eventDoc =>
                   toElectionEvent(
-                    Id(document(IdKey).asInt32.getValue),
+                    Id(document.getInt32(IdKey).getValue.toInt),
                     eventDoc.asDocument
                   )
                 )
@@ -428,8 +562,8 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     bsonDocument
   }
 
-  private def toAvailability(document: Document) = {
-    document.toMap.map(_ match {
+  private def toAvailability(document: Map[String, BsonValue]) = {
+    document.map(_ match {
       case (ldt, a) =>
         (
           LocalDateTime.parse(ldt),
@@ -441,13 +575,14 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   private def fromVotes(votes: Seq[Vote]): BsonArray = {
     val bsonArray = new BsonArray()
     votes.foreach(vote => {
-      val document = org.mongodb.scala.bson.collection.mutable
-        .Document(
-          NameKey -> vote.name,
+      val document = new BsonDocument(
+        Map(
+          NameKey -> new BsonString(vote.name),
           AvailabilityKey -> fromAvailability(vote.availability),
           VotedKey -> new BsonTimestamp(vote.voted.toEpochMilli)
-        )
-      bsonArray.add(document.toBsonDocument)
+        ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
+      )
+      bsonArray.add(document)
     })
     bsonArray
   }
@@ -484,55 +619,67 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     bsonDocument
   }
 
-  private def toSubscriptions(document: Document) = {
+  private def toSubscriptions(document: BsonDocument) = {
     (
-      Locale.forLanguageTag(document(LocaleKey).asString.getValue),
-      document
-        .get(EmailAddressKey)
-        .map(ea => EmailAddress(ea.asString.getValue)),
-      document
-        .get(PhoneNumberKey)
-        .map(pn =>
-          PhoneNumberUtil.getInstance().parse(pn.asString.getValue, "CH")
-        ),
-      document.get(UrlKey).map(u => URI.create(u.asString.getValue).toURL)
+      Locale.forLanguageTag(document.getString(LocaleKey).getValue),
+      Option(
+        document
+          .getString(EmailAddressKey, null)
+      )
+        .map(ea => EmailAddress(ea.getValue)),
+      Option(
+        document
+          .getString(PhoneNumberKey, null)
+      )
+        .map(pn => PhoneNumberUtil.getInstance().parse(pn.getValue, "CH")),
+      Option(document.getString(UrlKey, null)).map(u =>
+        URI.create(u.getValue).toURL
+      )
     )
   }
 
   override def fastForwardSnapshot(
       snapshot: ElectionT
   ): Future[Unit] = {
-    val document = org.mongodb.scala.bson.collection.mutable.Document(
-      CreatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
-      UpdatedKey -> new BsonTimestamp(snapshot.updated.toEpochMilli),
-      OrganizerTokenKey -> new BsonBinary(snapshot.organizerToken.wert),
-      VoterTokenKey -> new BsonBinary(snapshot.voterToken.wert),
-      VisibilityKey -> snapshot.visibility.id,
-      NameKey -> snapshot.name,
-      CandidatesKey -> fromCandidates(snapshot.candidates),
-      VotesKey -> fromVotes(snapshot.votes),
-      SubscriptionsKey -> fromSubscriptions(snapshot.subscriptions)
+    val document = new BsonDocument(
+      Map(
+        CreatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
+        UpdatedKey -> new BsonTimestamp(snapshot.updated.toEpochMilli),
+        OrganizerTokenKey -> new BsonBinary(snapshot.organizerToken.wert),
+        VoterTokenKey -> new BsonBinary(snapshot.voterToken.wert),
+        VisibilityKey -> new BsonInt32(snapshot.visibility.id),
+        NameKey -> new BsonString(snapshot.name),
+        CandidatesKey -> fromCandidates(snapshot.candidates),
+        VotesKey -> fromVotes(snapshot.votes),
+        SubscriptionsKey -> fromSubscriptions(snapshot.subscriptions)
+      ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
     )
-    snapshot.description.foreach(d => document += (DescriptionKey -> d))
-    snapshot.timeZone.foreach(tz => document += (TimeZoneKey -> tz.getID))
-    mdb(Collection)
-      .updateOne(
-        Filters.and(
-          Filters.equal(IdKey, snapshot.id.wert),
-          Filters.lt(ReplayedEventsKey, snapshot.replayedEvents)
-        ),
-        Updates.combine(
-          Updates.set(ReplayedEventsKey, snapshot.replayedEvents),
-          Updates.set(SnapshotKey, document)
+    snapshot.description.foreach(d =>
+      document.append(DescriptionKey, new BsonString(d))
+    )
+    snapshot.timeZone.foreach(tz =>
+      document.append(TimeZoneKey, new BsonString(tz.getID))
+    )
+    toFutureResult(
+      mdb(Collection)
+        .updateOne(
+          Filters.and(
+            Filters.eq(IdKey, snapshot.id.wert),
+            Filters.lt(ReplayedEventsKey, snapshot.replayedEvents)
+          ),
+          Updates.combine(
+            Updates.set(ReplayedEventsKey, snapshot.replayedEvents),
+            Updates.set(SnapshotKey, document)
+          )
         )
-      )
-      .toFuture()
+    )
       .map(_ => ())
   }
 
-  override def deleteEvents(id: Id): Future[Unit] = mdb(
-    Collection
-  ).deleteOne(Filters.equal(IdKey, id.wert))
-    .toFuture()
+  override def deleteEvents(id: Id): Future[Unit] = toFutureResult(
+    mdb(
+      Collection
+    ).deleteOne(Filters.eq(IdKey, id.wert))
+  )
     .map(_ => ())
 }

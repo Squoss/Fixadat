@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ class Module(
     with Logging {
   override def configure() = {
 
-    // https://www.playframework.com/documentation/2.8.x/ScalaDependencyInjection#Eager-bindings
+    // https://www.playframework.com/documentation/3.0.x/ScalaDependencyInjection#Eager-bindings
     bind(classOf[Mdb]).asEagerSingleton
     // we may not need it when env.mode == play.api.Mode.Dev, but it won't cause any problem as long as nobody invokes Mdb.apply()
 
