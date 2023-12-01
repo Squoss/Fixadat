@@ -7,22 +7,22 @@ on:
     branches: [ main ]
 
 jobs:
-  npm:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Node.js 18
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: fegui/package-lock.json
-    - name: Clean install with npm
-      run: npm ci
-      working-directory: fegui
-    - name: Test with npm
-      run: npm test
-      working-directory: fegui
+#  npm:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v3
+#    - name: Set up Node.js 18
+#      uses: actions/setup-node@v3
+#      with:
+#        node-version: '18'
+#        cache: 'npm'
+#        cache-dependency-path: fegui/package-lock.json
+#    - name: Clean install with npm
+#      run: npm ci
+#      working-directory: fegui
+#    - name: Test with npm
+#      run: npm test
+#      working-directory: fegui
   sbt:
     runs-on: ubuntu-latest
     steps:

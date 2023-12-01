@@ -10,14 +10,16 @@ WORKDIR /squeng/fixadat
 COPY fegui/.env ./
 # COPY fegui/.npmrc ./
 COPY fegui/package*.json ./
-COPY fegui/tsconfig.json ./
-# https://docs.npmjs.com/cli/v7/commands/npm-ci
+# https://docs.npmjs.com/cli/v10/commands/npm-ci
 RUN npm ci
 
+COPY fegui/index.html ./
 COPY fegui/public ./public
 COPY fegui/src ./src
-# https://create-react-app.dev/docs/adding-custom-environment-variables#linux-macos-bash
-RUN INLINE_RUNTIME_CHUNK=false npm run build
+COPY fegui/tsconfig.json ./
+COPY fegui/tsconfig.node.json ./
+COPY fegui/vite.config.ts ./
+RUN npm run build
 
 
 FROM sbtscala/scala-sbt:eclipse-temurin-jammy-21.0.1_12_1.9.7_2.13.12 AS play
