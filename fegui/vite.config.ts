@@ -1,12 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const ASSET_URL = process.env.ASSET_URL || '';
-
 export default defineConfig(() => {
   return {
-    base: `${ASSET_URL}`,
     build: {
+      assetsDir: 'fegui',
       // assetsInlineLimit: 0, <- had hoped to mimic INLINE_RUNTIME_CHUNK=false (https://create-react-app.dev/docs/advanced-configuration/)
       outDir: 'build',
     },
