@@ -7,7 +7,7 @@ export default defineConfig(() => {
   return {
     base: `${ASSET_URL}`,
     build: {
-      assetsInlineLimit: 0,
+      // assetsInlineLimit: 0, <- had hoped to mimic INLINE_RUNTIME_CHUNK=false (https://create-react-app.dev/docs/advanced-configuration/)
       outDir: 'build',
     },
     plugins: [react()],
