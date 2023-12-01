@@ -19,7 +19,7 @@ export default defineConfig(() => {
       // https://vitejs.dev/guide/build.html#advanced-base-options
       renderBuiltUrl(filename: string, { hostId, hostType, type }: { hostId: string, hostType: 'js' | 'css' | 'html', type: 'public' | 'asset' }) {
         if (type === 'asset' || type === 'public') {
-          return 'fegui/' + filename
+          return '/fegui/' + filename
         }
       }
     }
