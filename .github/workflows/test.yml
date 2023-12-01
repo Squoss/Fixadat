@@ -10,11 +10,11 @@ jobs:
 #  npm:
 #    runs-on: ubuntu-latest
 #    steps:
-#    - uses: actions/checkout@v3
-#    - name: Set up Node.js 18
-#      uses: actions/setup-node@v3
+#    - uses: actions/checkout@v4
+#    - name: Set up Node.js 20
+#      uses: actions/setup-node@v4
 #      with:
-#        node-version: '18'
+#        node-version: '20'
 #        cache: 'npm'
 #        cache-dependency-path: fegui/package-lock.json
 #    - name: Clean install with npm
@@ -26,7 +26,7 @@ jobs:
   sbt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:

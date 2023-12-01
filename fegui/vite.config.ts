@@ -7,6 +7,7 @@ export default defineConfig(() => {
   return {
     base: `${ASSET_URL}`,
     build: {
+      assetsInlineLimit: 0,
       outDir: 'build',
     },
     plugins: [react()],
