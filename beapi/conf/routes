@@ -25,4 +25,6 @@ DELETE  /iapi/elections/:election/votes          api.ElectionsController.deleteV
 GET     /assets/*file                            controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /fegui/*reactFile                        gui.ReactController.guiFile(reactFile)
+GET     /browserconfig.xml                       controllers.Assets.at(path="/public", file="browserconfig.xml")
+GET     /robots.txt                              controllers.Assets.at(path="/public", file="robots.txt")
 GET     /*reactRoute                             gui.ReactController.guiRoute(reactRoute)
