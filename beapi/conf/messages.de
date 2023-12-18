@@ -47,7 +47,7 @@ links.reminderTo = Schicken Sie ihn sich selbst per …
 links.byEmail = … E-Mail
 links.byEmail.plainText = {1}\nist der Fixadat-Organisator-Link für die Wahl {0}.
 links.byEmail.subject = Fixadat-Organisator-Link für {0}
-links.bySms = … SMS
+links.bySms = … Threema
 links.bySms.text = {1} ist der Fixadat-Organisator-Link für die Wahl {0}.
 
 settings = Einstellungen

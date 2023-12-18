@@ -47,7 +47,7 @@ links.reminderTo = Send it to yourself by …
 links.byEmail = … e-mail
 links.byEmail.plainText = {1}\nis the Fixadat organizer link for the election {0}.
 links.byEmail.subject = Fixadat organizer link for {0}
-links.bySms = … SMS
+links.bySms = … Threema
 links.bySms.text = {1} is the Fixadat organizer link for the election {0}.
 
 settings = Settings
