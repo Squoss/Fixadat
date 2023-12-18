@@ -61,7 +61,6 @@ class Threema @Inject() (implicit
     val data =
       s"from=${URLEncoder.encode(id, utf8)}&phone=${PhoneNumberUtil.getInstance().format(to, PhoneNumberUtil.PhoneNumberFormat.E164).substring(1)}&text=${URLEncoder
           .encode(text, utf8)}&secret=${URLEncoder.encode(secret, utf8)}"
-    logger.debug(data)
 
     val responseFuture: Future[WSResponse] =
       ws.url(smsUrl)
@@ -73,7 +72,6 @@ class Threema @Inject() (implicit
     responseFuture.transform(
       response => {
         logger.debug(response.status.toString)
-        logger.debug(response.statusText)
         logger.debug(response.body)
       },
       exception => {
