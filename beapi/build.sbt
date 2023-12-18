@@ -25,7 +25,7 @@ libraryDependencies += ws
 libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "4.11.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.2.0" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.2.1" % Test
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
