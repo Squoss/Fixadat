@@ -41,7 +41,7 @@ function ElectionVote(props: ElectionVoteProps) {
   const localizations = useContext(l10nContext);
 
   const { candidates } = props.election;
-  candidates.sort();
+  candidates.sort((a, b) => Date.parse(a) - Date.parse(b));
 
   const defaultAvailabiity = new Map<string, Availability>();
   candidates.forEach((candidate) =>

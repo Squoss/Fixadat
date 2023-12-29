@@ -89,13 +89,13 @@ function columnBest(columnCounts: Array<[number, number, number]>) {
   return best;
 }
 
-function ElectionTally(props: ElectionTallyProps) {
+function ElectionTally(props: Readonly<ElectionTallyProps>) {
   console.log("ElectionTally props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);
 
   const { id, description, timeZone, candidates, votes } = props.election;
-  candidates.sort();
+  candidates.sort((a,b)=>Date.parse(a)-Date.parse(b));
 
   const timeZones = props.timeZones.map((tz) => (
     <li key={tz}>

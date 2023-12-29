@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ interface ElectionTabsProps {
   isBrandNew: boolean;
 }
 
-function ElectionTabs(props: ElectionTabsProps) {
+function ElectionTabs(props: Readonly<ElectionTabsProps>) {
   console.log("ElectionTabs props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);

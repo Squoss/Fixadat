@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ function ttu(s?: string) {
   return s === undefined || s.trim() === "" ? undefined : s.trim();
 }
 
-function ElectionTexts(props: ElectionTextsProps) {
+function ElectionTexts(props: Readonly<ElectionTextsProps>) {
   console.log("ElectionTexts props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);

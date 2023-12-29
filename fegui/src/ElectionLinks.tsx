@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2023 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ interface ElectionLinksProps {
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
 }
 
-function ElectionLinks(props: ElectionLinksProps) {
+function ElectionLinks(props: Readonly<ElectionLinksProps>) {
   console.log("ElectionLinks props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);

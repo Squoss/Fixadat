@@ -47,7 +47,7 @@ function ttu(s?: string) {
   return s === undefined || s.trim() === "" ? undefined : s.trim();
 }
 
-function ElectionCandidates(props: ElectionCandidatesProps) {
+function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
   console.log("ElectionCandidates props: " + JSON.stringify(props));
 
   const localizations = useContext(l10nContext);
