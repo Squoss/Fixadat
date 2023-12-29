@@ -81,7 +81,7 @@ function ElectionVote(props: ElectionVoteProps) {
         />
       </td>
       {candidates.map((candidate, i) => (
-        <td key={`sc${i}`}>
+        <td key={Date.parse(candidate)}>
           <div className="form-check row row-cols-1">
             <div className="col">
               <input

@@ -187,8 +187,8 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
                     ""
                   )}
                 </th>
-                {candidates.map((candidate, i) => (
-                  <th key={`c${i}`}>
+                {candidates.map((candidate) => (
+                  <th key={Date.parse(candidate)}>
                     {prettyLocalDateTimeString(
                       localizations["locale"],
                       candidate
