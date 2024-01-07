@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -249,7 +249,7 @@ function App(props: {}) {
               </div>
               <div className="col">
                 Copyright &copy; <time dateTime="2021">2021</time>-
-                <time dateTime="2023">2023</time> Squeng AG
+                <time dateTime="2024">2024</time> Squeng AG
               </div>
             </div>
           </div>
