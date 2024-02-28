@@ -1,7 +1,7 @@
-scalaVersion := "2.13.12"
+scalaVersion := "2.13.13"
 
 libraryDependencies += "com.google.inject" % "guice" % "6.0.0"
-libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.13.30"
+libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.13.31"
 libraryDependencies += "commons-validator" % "commons-validator" % "1.8.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % Test
