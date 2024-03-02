@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,9 +46,12 @@ import domain.persistence.SubscribedEvent
 import domain.persistence.VoteDeletedEvent
 import domain.persistence.VotedEvent
 import domain.value_objects.AccessToken
-import domain.value_objects.Availability._
+import domain.value_objects.Availability
+import domain.value_objects.Availability.*
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
+import domain.value_objects.Visibility
+import domain.value_objects.Visibility.*
 import domain.value_objects.Vote
 import org.bson.BsonArray
 import org.bson.BsonBinary
@@ -486,8 +489,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
         .asScala
         .toSeq
         .map(bv => toVote(bv.asDocument)),
-      domain.value_objects
-        .Visibility(document.getInt32(VisibilityKey).getValue),
+      Visibility.fromOrdinal(document.getInt32(VisibilityKey).getValue),
       toSubscriptions(
         document.getDocument(SubscriptionsKey)
       ),
@@ -557,7 +559,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   ): BsonDocument = {
     val bsonDocument = new BsonDocument()
     availabilities.foreach(_ match {
-      case (ldt, a) => bsonDocument.append(ldt.toString, new BsonInt32(a.id))
+      case (ldt, a) => bsonDocument.append(ldt.toString, new BsonInt32(a.ordinal))
     })
     bsonDocument
   }
@@ -567,7 +569,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       case (ldt, a) =>
         (
           LocalDateTime.parse(ldt),
-          domain.value_objects.Availability(a.asInt32.getValue)
+          Availability.fromOrdinal(a.asInt32.getValue)
         )
     })
   }
@@ -647,7 +649,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
         UpdatedKey -> new BsonTimestamp(snapshot.updated.toEpochMilli),
         OrganizerTokenKey -> new BsonBinary(snapshot.organizerToken.wert),
         VoterTokenKey -> new BsonBinary(snapshot.voterToken.wert),
-        VisibilityKey -> new BsonInt32(snapshot.visibility.id),
+        VisibilityKey -> new BsonInt32(snapshot.visibility.ordinal),
         NameKey -> new BsonString(snapshot.name),
         CandidatesKey -> fromCandidates(snapshot.candidates),
         VotesKey -> fromVotes(snapshot.votes),

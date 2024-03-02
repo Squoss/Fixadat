@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,5 @@
 
 package domain.value_objects
 
-object Error extends Enumeration {
-
-  type Error = Value
-  val NotFound, AccessDenied, PrivateAccess, ProtectedAccess,
-      CommandIncomplete = Value
-}
+enum Error:
+  case NotFound, AccessDenied, PrivateAccess, ProtectedAccess, CommandIncomplete

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 package domain.value_objects
 
-import domain.value_objects.Availability._
+import domain.value_objects.Availability
 
 import java.time.Instant
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-scalaVersion := "2.13.13"
+scalaVersion := "3.3.3"
 
 libraryDependencies += "com.google.inject" % "guice" % "6.0.0"
 libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.13.31"

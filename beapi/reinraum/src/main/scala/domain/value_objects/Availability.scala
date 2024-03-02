@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,7 @@
 
 package domain.value_objects
 
-object Availability extends Enumeration {
-
-  type Availability = Value
-  val No = Value(0)
-  val IfNeedBe = Value(1)
-  val Yes = Value(2)
-}
+enum Availability(val a: Int):
+  case No extends Availability(0)
+  case IfNeedBe extends Availability(1)
+  case Yes extends Availability(2)

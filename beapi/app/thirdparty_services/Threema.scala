@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2023 Squeng AG
+ * Copyright (c) 2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
 import play.api.Configuration
 import play.api.Logging
+import play.api.libs.ws.WSBodyWritables.writeableOf_String
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.WSResponse
 import thirdparty_apis.Sms

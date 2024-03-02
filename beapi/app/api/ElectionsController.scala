@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,11 @@ package api
 import api.TransferObjects._
 import domain.service_interfaces.Elections
 import domain.value_objects.AccessToken
-import domain.value_objects.Error._
+import domain.value_objects.Error
+import domain.value_objects.Error.*
 import domain.value_objects.Id
-import domain.value_objects.Visibility._
+import domain.value_objects.Visibility
+import domain.value_objects.Visibility.*
 import play.api.Environment
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsError

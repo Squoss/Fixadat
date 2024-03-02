@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,10 @@ package api
 import play.api.i18n.I18nSupport
 import play.api.i18n.Lang
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
+import play.api.mvc.Request
 
 import java.util.TimeZone
 import javax.inject.Inject
@@ -38,7 +40,7 @@ class I18nController @Inject() (
 ) extends BaseController
     with I18nSupport {
 
-  def l10nMessages = Action { implicit request =>
+  def l10nMessages = Action { implicit request: Request[AnyContent] =>
     val lang = request.lang
     val default = messagesApi.messages.get("default").getOrElse(Map())
     val language =
@@ -55,7 +57,7 @@ class I18nController @Inject() (
     Ok(Json.toJson(default ++ language ++ country ++ script ++ variant))
   }
 
-  def timeZones = Action { implicit request =>
+  def timeZones = Action { implicit request: Request[AnyContent] =>
     val timeZones = TimeZone.getAvailableIDs
     Ok(Json.toJson(timeZones))
   }

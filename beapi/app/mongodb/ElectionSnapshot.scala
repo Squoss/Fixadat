@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,8 @@ import domain.entity_interfaces.ElectionT
 import domain.value_objects.AccessToken
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
-import domain.value_objects.Visibility._
+import domain.value_objects.Visibility
+import domain.value_objects.Visibility.*
 import domain.value_objects.Vote
 
 import java.net.URL
