@@ -22,10 +22,10 @@ scalaVersion := "3.3.3"
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.0.0"
+libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.0.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.1" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.2.1" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.3.0" % Test
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"

@@ -5,4 +5,4 @@ libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "8.1
 libraryDependencies += "commons-validator" % "commons-validator" % "1.8.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % Test
-libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.2.1" % Test
+libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.3.0" % Test
