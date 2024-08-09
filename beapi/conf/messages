@@ -1,6 +1,6 @@
 locale = en
 
-HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a> and can be used free of charge. If you would like to support it, consider buying a copy of the <a href="https://leanpub.com/DevWebApps" target="Leanpub">textbook</a>.
+HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/JKS" target="Leanpub">textbook</a> and can be used free of charge. If you would like to support it, consider buying a copy of the <a href="https://leanpub.com/JKS" target="Leanpub">textbook</a>.
 readMe = You will not have to read it. 😉
 
 notFound.title = Not Found
@@ -35,6 +35,8 @@ texts.instruction = Give the group event a name and optionally a description (e.
 texts.name = Name
 
 datesAndTimes = Dates & Times
+datesAndTimes.duration = Event duration in minutes
+datesAndTimes.durationOptional = This is optional.
 datesAndTimes.instruction = Suggest dates & times for the group event.
 datesAndTimes.order = Don't worry about their order; Fixadat will sort them chronologically.
 datesAndTimes.timeZone = Time zone
