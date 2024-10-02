@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
     .dependsOn(reinraum)
 lazy val reinraum = project
 
-scalaVersion := "3.3.3"
+scalaVersion := "3.3.4"
 
 libraryDependencies += guice
 libraryDependencies += ws
