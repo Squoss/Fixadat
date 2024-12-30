@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2024 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,9 @@
  * THE SOFTWARE.
  */
 
-import { de } from "date-fns/locale"; // en is imported by default
 import React, { useContext, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
-
-registerLocale("de", de); // en is registered by default
 
 interface ElectionCandidatesProps {
   election: ElectionT;
@@ -55,7 +50,22 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
   const [dateTimes, setDateTimes] = useState<Array<string>>(
     props.election.candidates
   );
-  const [dateTime, setDateTime] = useState<null | Date>(new Date());
+  const [dateTime, setDateTime] = useState<string>("");
+
+  const dateTtime = (dt: Date) => {
+    return (
+      dt.getFullYear() +
+      "-" +
+      ("" + (dt.getMonth() + 1)).padStart(2, "0") +
+      "-" +
+      ("" + dt.getDate()).padStart(2, "0") +
+      "T" +
+      ("" + dt.getHours()).padStart(2, "0") +
+      ":" +
+      ("" + dt.getMinutes()).padStart(2, "0")
+    );
+  };
+
   const [timeZone, setTimeZone] = useState(
     props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   );
@@ -146,7 +156,6 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                       <input
                         type="datetime-local"
                         className="form-control"
-                        id="dateTimeSchedule"
                         value={dt}
                         readOnly
                       />
@@ -165,24 +174,18 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                     <i className="bi bi-info-circle-fill"></i>{" "}
                     {localizations["datesAndTimes.order"]}
                   </p>
-                  <DatePicker
-                    selected={dateTime}
-                    onChange={(date) => setDateTime(date)}
-                    onCalendarClose={() => {
-                      if (dateTime !== null) {
-                        const localTime = new Date();
-                        localTime.setTime(
-                          dateTime.getTime() -
-                            dateTime.getTimezoneOffset() * 60 * 1000
-                        );
-                        addDateTime(localTime.toISOString());
+                  <input
+                    id="dateTimeSchedule"
+                    value={dateTime}
+                    type="datetime-local"
+                    min={dateTtime(new Date())}
+                    onChange={(event) => {
+                      setDateTime(event.target.value);
+                      if (event.target.valueAsDate !== null) { // yep, valueAsDate
+                        addDateTime(event.target.value); // yep, value
+                        setDateTime("");
                       }
                     }}
-                    locale={localizations["locale"]}
-                    showTimeSelect
-                    timeFormat="p"
-                    timeIntervals={15}
-                    dateFormat="Pp"
                     className="form-control"
                   />
                 </div>
