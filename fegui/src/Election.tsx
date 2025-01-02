@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Navigate,
   Outlet,
@@ -90,12 +90,6 @@ function Election(props: {}) {
 
     getTimeZones();
   }, []);
-
-  useEffect(() => {
-    if (election) {
-      document.title = election.name;
-    }
-  }, [election]);
 
   const saveElectionText = (name: string, description?: string) =>
     fetchResource(
@@ -286,8 +280,10 @@ function Election(props: {}) {
     }
   } else if (election !== undefined) {
     return (
+      <React.Fragment>
+        <title>{election.name}</title>
       <Routes>
-        <Route path="/" element={<Outlet />}>
+      <Route path="/" element={<Outlet />}>
           <Route
             index
             element={
@@ -406,6 +402,7 @@ function Election(props: {}) {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      </React.Fragment>
     );
   } else {
     return (

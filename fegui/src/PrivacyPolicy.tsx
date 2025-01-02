@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,10 @@
  * THE SOFTWARE.
  */
 
-import { Modal } from "bootstrap";
-import React, { useEffect } from "react";
+import React from "react";
 
 function PrivacyPolicy(props: {}) {
   console.log("PrivacyPolicy props: " + JSON.stringify(props));
-
-  useEffect(() => {
-    const lesetippFlag = window.sessionStorage.getItem("lesetipp");
-    if (lesetippFlag === null) {
-      const modal = new Modal(document.getElementById("lesetippModal")!);
-      modal.show();
-      window.sessionStorage.setItem("lesetipp", "shown");
-    }
-  }, []);
 
   return (
     <React.Fragment>
@@ -510,67 +500,6 @@ function PrivacyPolicy(props: {}) {
       <p>
         Quelle: <a href="https://www.e-recht24.de">https://www.e-recht24.de</a>
       </p>
-
-      <div
-        className="modal fade"
-        id="lesetippModal"
-        tabIndex={-1}
-        aria-labelledby="lesetippModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-fullscreen">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="lesetippModalLabel">
-                Lesetipps
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col">
-                  <a
-                    href="https://link.springer.com/book/10.1007/978-3-662-63087-7"
-                    target="Lesetipp"
-                  >
-                    <img
-                      src="https://media.springernature.com/full/springer-static/cover-hires/book/978-3-662-63087-7"
-                      className="img-fluid"
-                      alt="Datenschutz für Softwareentwicklung und IT"
-                    />
-                  </a>
-                </div>
-                <div className="col">
-                  <a
-                    href="https://dpunkt.de/produkt/cloud-computing-nach-der-datenschutz-grundverordnung/"
-                    target="Lesetipp"
-                  >
-                    <img
-                      src="https://dpunkt.de/wp-content/uploads/2021/07/13319.jpg"
-                      className="img-fluid"
-                      alt="Cloud Computing nach der Datenschutz-Grundverordnung"
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                OK, danke für die Lesetipps!
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </React.Fragment>
   );
 }
