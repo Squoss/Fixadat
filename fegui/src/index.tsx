@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2024 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import Prices from "./Prices";
 import PrivacyPolicy from "./PrivacyPolicy";
 import ToDo from "./ToDo";
 
-import "bootswatch/dist/spacelab/bootstrap.min.css"; // import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
