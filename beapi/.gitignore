@@ -1,5 +1,6 @@
 logs
 target
+/.bsp
 /.idea
 /.idea_modules
 /.classpath
@@ -10,10 +11,8 @@ target
 # default entries are above
 
 .bloop
-/.bsp
-/.metals
+.metals
 metals.sbt
-/null
 /.vscode
 
 /conf/delicate.conf
