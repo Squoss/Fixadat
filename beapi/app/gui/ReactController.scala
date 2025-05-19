@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 package gui
 
 import play.api.Environment
+import play.api.i18n.I18nSupport
 import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
@@ -40,7 +41,8 @@ import scala.io.Source
 class ReactController @Inject() (
     val controllerComponents: ControllerComponents,
     val env: Environment
-) extends BaseController {
+) extends BaseController
+    with I18nSupport {
 
   val is = env.classLoader.getResourceAsStream("public/build/index.html")
   val bufferedSource = Source.createBufferedSource(
@@ -64,7 +66,11 @@ class ReactController @Inject() (
     implicit request: Request[AnyContent] =>
       val token =
         CSRF.getToken // // https://www.playframework.com/documentation/latest/ScalaCsrf#Getting-the-current-token
-      Ok(indexHtml.replace("REPLACE_CSRF_TOKEN", token.get.value))
+      Ok(
+        indexHtml
+          .replace("REPLACE_CSRF_TOKEN", token.get.value)
+          .replace("REPLACE_LANG", messagesApi("locale")(request.lang))
+      )
         .as("text/html")
   }
 }
