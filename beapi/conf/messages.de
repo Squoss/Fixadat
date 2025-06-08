@@ -1,6 +1,6 @@
 locale = de
 
-HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/JKS" target="Leanpub">Lehrbuchs</a> und kann kostenlos verwendet werden. Wenn Sie sie unterstützen möchten, ziehen Sie den Kauf des <a href="https://leanpub.com/JKS" target="Leanpub">Lehrbuchs</a> in Betracht.
+HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> und kann kostenlos verwendet werden. Wenn Sie sie unterstützen möchten, ziehen Sie den Kauf des <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> in Betracht.
 readMe = Sie müssen es nicht lesen. 😉
 
 notFound.title = Nicht Gefunden
@@ -24,7 +24,7 @@ revert = Zurücksetzen
 
 executiveSummary = Bestimmen Sie ein Datum & eine Zeit für eine Telefonkonferenz, eine Familliengrillparty oder sonst einen Gruppenanlass, indem Sie eine Wahl duchrführen.
 createRepliesPage = Eine Wahl durchführen
-HTML.backToTheRoodle = Oder <a href="https://doodle.com/de/product/polls/" target="Doodle">machen Sie eine Gruppenumfrage mit Doodle</a>.
+HTML.backToTheRoodle = Oder <a href="https://doodle.com/de/product/polls/" target="Doodle" rel="noreferrer noopener">machen Sie eine Gruppenumfrage mit Doodle</a>.
 electionPageCreated = Wahl-Seite erstellt!
 firstThingsFirst = Sie sollten einen Namen angeben und wenigstens ein Datum & eine Zeit vorschlagen, bevor Sie ihren Link versenden.
 rememberTheMilk = Denken Sie daran, Ihre Stimme auch abzugeben, falls Sie vorhaben, dem Gruppenanlass beizuwohnen.

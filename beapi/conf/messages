@@ -1,6 +1,6 @@
 locale = en
 
-HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/JKS" target="Leanpub">textbook</a> and can be used free of charge. If you would like to support it, consider buying a copy of the <a href="https://leanpub.com/JKS" target="Leanpub">textbook</a>.
+HTML.teachingAid = This app is the teaching aid of a <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">textbook</a> and can be used free of charge. If you would like to support it, consider buying a copy of the <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">textbook</a>.
 readMe = You will not have to read it. 😉
 
 notFound.title = Not Found
@@ -24,7 +24,7 @@ revert = Revert
 
 executiveSummary = Fix a date & time for a conference call, a family BBQ, or any other group event by holding an election.
 createRepliesPage = Hold an election
-HTML.backToTheRoodle = Or <a href="https://doodle.com/en/product/polls/" target="Doodle">poll a group with Doodle</a>.
+HTML.backToTheRoodle = Or <a href="https://doodle.com/en/product/polls/" target="Doodle" rel="noreferrer noopener">poll a group with Doodle</a>.
 electionPageCreated = Election page created!
 firstThingsFirst = Before you send out its link, you should provide a name and suggest at least one date & time.
 rememberTheMilk = Remember to cast your vote, too, if you plan to attend the group event.

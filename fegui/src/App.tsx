@@ -65,7 +65,7 @@ function App(props: {}) {
           <a
             className="navbar-brand"
             href="https://www.squeng.com/"
-            target="Squeng"
+            target="Squeng" rel="noreferrer noopener"
           >
             <small>
               Squeng<sup>&reg;</sup>&nbsp;made
@@ -210,7 +210,7 @@ function App(props: {}) {
             <a
               className="btn btn-outline-light"
               href="https://github.com/Squoss/Fixadat"
-              target="GitHub"
+              target="GitHub" rel="noreferrer noopener"
             >
               <i className="bi bi-github"></i>
             </a>
@@ -267,13 +267,13 @@ function App(props: {}) {
             <div className="modal-body">
               <p>
                 Being a Web app, Fixadat uses various{" "}
-                <a href="https://developer.mozilla.org/" target="MDN">
+                <a href="https://developer.mozilla.org/" target="MDN" rel="noreferrer noopener">
                   Web technologies
                 </a>
                 , including but not limited to{" "}
                 <a
                   href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies"
-                  target="MDN"
+                  target="MDN" rel="noreferrer noopener"
                 >
                   cookies
                 </a>
@@ -295,7 +295,7 @@ function App(props: {}) {
                     For the time being, Fixadat uses two{" "}
                     <a
                       href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_the_lifetime_of_a_cookie"
-                      target="MDN"
+                      target="MDN" rel="noreferrer noopener"
                     >
                       session cookies
                     </a>{" "}
@@ -306,14 +306,14 @@ function App(props: {}) {
                       The{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/SettingsSession"
-                        target="Play"
+                        target="Play" rel="noreferrer noopener"
                       >
                         Play session cookie
                       </a>
                       , typically called <code>PLAY_SESSION</code>, to{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/ScalaCsrf#Adding-a-CSRF-token-to-the-session"
-                        target="Play"
+                        target="Play" rel="noreferrer noopener"
                       >
                         add an anti-CSRF token
                       </a>
@@ -323,7 +323,7 @@ function App(props: {}) {
                       The{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support"
-                        target="Play"
+                        target="Play" rel="noreferrer noopener"
                       >
                         Play language cookie
                       </a>
