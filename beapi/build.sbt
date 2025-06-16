@@ -22,7 +22,7 @@ scalaVersion := "3.3.6"
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.5.0"
+libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.5.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.1" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.4.1" % Test
