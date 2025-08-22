@@ -42,8 +42,7 @@ WORKDIR /squeng/fixadat
 
 COPY --from=play /squeng/fixadat/target/universal/stage ./target/universal/stage
 
-RUN groupadd -r gruppe && useradd --no-log-init -r -g gruppe benutzer
-RUN chown -R benutzer:gruppe /squeng
+RUN groupadd -r gruppe && useradd --no-log-init -r -g gruppe benutzer && chown -R benutzer:gruppe /squeng
 USER benutzer
 
 EXPOSE 8080
