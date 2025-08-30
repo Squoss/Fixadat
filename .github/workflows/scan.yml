@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name: back-end and front-end
-        uses: sonarsource/sonarcloud-github-action@v3
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
           # https://docs.sonarcloud.io/advanced-setup/analysis-scope/#restrict-the-scope-of-analysis-in-general
           args: >
@@ -33,7 +33,7 @@ jobs:
     # https://www.scala-lang.org/blog/2022/07/18/secure-your-dependencies-on-github.html
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: sbt/setup-sbt@v1
       - uses: scalacenter/sbt-dependency-submission@v3
         with:
