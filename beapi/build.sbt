@@ -14,9 +14,9 @@ version := "MVP"
 lazy val root = (project in file("."))
     .enablePlugins(PlayScala)
 // https://www.playframework.com/documentation/latest/SBTSubProjects#Adding-a-simple-library-sub-project
-    .aggregate(reinraum)
-    .dependsOn(reinraum)
-lazy val reinraum = project
+    .aggregate(hexagon)
+    .dependsOn(hexagon)
+lazy val hexagon = project
 
 scalaVersion := "3.3.6"
 
@@ -30,6 +30,7 @@ libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.4.1" % Test
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
 
+libraryDependencies += "org.webjars.npm" % "popperjs__core" % "2.11.8"
 libraryDependencies += "org.webjars.npm" % "bootstrap" % "5.3.7"
 
 // Adds additional packages into conf/routes

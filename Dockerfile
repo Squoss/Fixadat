@@ -30,7 +30,7 @@ COPY beapi/app ./app
 COPY beapi/conf ./conf
 COPY beapi/project ./project
 COPY beapi/public ./public
-COPY beapi/reinraum ./reinraum
+COPY beapi/hexagon ./hexagon
 COPY beapi/build.sbt ./
 COPY --from=react /squeng/fixadat/build ./public/build
 RUN sbt stage
