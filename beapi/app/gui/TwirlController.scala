@@ -37,7 +37,7 @@ import javax.inject.Singleton
 class TwirlController @Inject()(val controllerComponents: ControllerComponents) extends BaseController
   with I18nSupport {
 
-  def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index())
+  def hello() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.hello())
   }
 }

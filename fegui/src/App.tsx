@@ -57,8 +57,8 @@ function App(props: {}) {
 
   return (
     <React.Fragment>
-      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-        <div className="container-fluid">
+      <header className="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <nav className="container-fluid">
           <Link className="navbar-brand" to="/">
             Fixadat
           </Link>{" "}
@@ -215,8 +215,8 @@ function App(props: {}) {
               <i className="bi bi-github"></i>
             </a>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <main className="container">
         <Outlet />

@@ -24,6 +24,7 @@ yarn-error.log*
 
 # default entries are above
 
+/.bsp
 /.eslintcache
 /.metals
 /.scala-build
