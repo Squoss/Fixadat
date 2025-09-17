@@ -1,7 +1,7 @@
 scalaVersion := "3.3.6"
 
 libraryDependencies += "com.google.inject" % "guice" % "6.0.0"
-libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "9.0.13"
+libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "9.0.14"
 libraryDependencies += "commons-validator" % "commons-validator" % "1.10.0"
 
 // using https://scalameta.org/munit/ from the https://docs.scala-lang.org/toolkit/introduction.html#what-is-the-scala-toolkit
