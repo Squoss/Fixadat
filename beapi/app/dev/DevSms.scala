@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@
 package dev
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import domain.driven_ports.notifications.Sms
 import play.api.Logging
-import thirdparty_apis.Sms
 
 import java.net.URL
 import javax.inject.Inject

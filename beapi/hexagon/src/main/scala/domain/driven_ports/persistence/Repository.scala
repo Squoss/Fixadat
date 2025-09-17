@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,23 @@
  * THE SOFTWARE.
  */
 
-package thirdparty_apis
+package domain.driven_ports.persistence
 
-import domain.value_objects.EmailAddress
+import domain.entity_interfaces.ElectionT
+import domain.value_objects.Id
 
 import scala.concurrent.Future
 
-trait Email {
+trait Repository {
 
-  def send(to: EmailAddress, subject: String, plainText: String): Future[Unit]
+  def logEvent(event: PublishedEvent): Future[Boolean]
+  def logEvent(event: ElectionEvent): Future[Unit]
+
+  def readEvents(
+      id: Id
+  ): Future[(Option[ElectionT], Seq[ElectionEvent])]
+
+  def fastForwardSnapshot(snapshot: ElectionT): Future[Unit]
+
+  def deleteEvents(id: Id): Future[Unit]
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   // val DEFAULT = ""
   val DEV = "dev.."
   val DOMAIN_ENTITYINTS = "domain.entity_interfaces.."
-  val DOMAIN_SERVICEINTS = "domain.service_interfaces.."
-  val DOMAIN_PERSISTENCE = "domain.persistence.."
+  val DOMAIN_SERVICEINTS = "domain.driving_ports.."
+  val DOMAIN_PERSISTENCE = "domain.driven_ports.persistence.."
   val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
   val FILTERS = "filters.."
   val GUI = "gui.."
@@ -51,7 +51,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
   val PHONENUMBERS = "com.google.i18n.phonenumbers.."
   val ROUTER = "router.."
   val SCALA = "scala.."
-  val THIRDPARTY_APIS = "thirdparty_apis.."
+  val THIRDPARTY_APIS = "domain.driven_ports.notifications.."
   val THIRDPARTY_SERVICES = "thirdparty_services.."
   val VALIDATORS = "org.apache.commons.validator.."
 

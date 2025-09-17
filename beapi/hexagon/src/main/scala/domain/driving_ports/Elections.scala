@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2024 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package domain.service_interfaces
+package domain.driving_ports
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.entity_interfaces.ElectionT
@@ -44,9 +44,6 @@ import java.util.TimeZone
 import scala.concurrent.Future
 
 trait Elections {
-
-  def publishElection(
-  ): Future[(Id, AccessToken)]
 
   def readElection(
       id: Id,

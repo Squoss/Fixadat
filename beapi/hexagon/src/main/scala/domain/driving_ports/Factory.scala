@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,23 +22,15 @@
  * THE SOFTWARE.
  */
 
-package domain.persistence
+package domain.driving_ports
 
-import domain.entity_interfaces.ElectionT
+import domain.value_objects.AccessToken
 import domain.value_objects.Id
 
 import scala.concurrent.Future
 
-trait Repository {
-
-  def logEvent(event: PublishedEvent): Future[Boolean]
-  def logEvent(event: ElectionEvent): Future[Unit]
-
-  def readEvents(
-      id: Id
-  ): Future[(Option[ElectionT], Seq[ElectionEvent])]
-
-  def fastForwardSnapshot(snapshot: ElectionT): Future[Unit]
-
-  def deleteEvents(id: Id): Future[Unit]
+trait Factory {
+    
+  def publishElection(
+  ): Future[(Id, AccessToken)]
 }

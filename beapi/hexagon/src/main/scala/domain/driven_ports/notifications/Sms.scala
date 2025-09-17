@@ -22,40 +22,13 @@
  * THE SOFTWARE.
  */
 
-package mongodb
+package domain.driven_ports.notifications
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.entity_interfaces.ElectionT
-import domain.value_objects.AccessToken
-import domain.value_objects.EmailAddress
-import domain.value_objects.Id
-import domain.value_objects.Visibility
-import domain.value_objects.Visibility.*
-import domain.value_objects.Vote
 
-import java.net.URL
-import java.time.Instant
-import java.time.LocalDateTime
-import java.util.Locale
-import java.util.TimeZone
+import scala.concurrent.Future
 
-case class ElectionSnapshot(
-    id: Id,
-    created: Instant,
-    updated: Instant,
-    organizerToken: AccessToken,
-    voterToken: AccessToken,
-    name: String,
-    description: Option[String],
-    timeZone: Option[TimeZone],
-    candidates: Set[LocalDateTime],
-    votes: Seq[Vote],
-    visibility: Visibility,
-    subscriptions: (
-        Locale,
-        Option[EmailAddress],
-        Option[PhoneNumber],
-        Option[URL]
-    ),
-    replayedEvents: Int
-) extends ElectionT
+trait Sms {
+
+  def send(to: PhoneNumber, text: String): Future[Unit]
+}

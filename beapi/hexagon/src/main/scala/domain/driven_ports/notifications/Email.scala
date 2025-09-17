@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,13 @@
  * THE SOFTWARE.
  */
 
-package thirdparty_apis
+package domain.driven_ports.notifications
 
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import domain.value_objects.EmailAddress
 
 import scala.concurrent.Future
 
-trait Sms {
+trait Email {
 
-  def send(to: PhoneNumber, text: String): Future[Unit]
+  def send(to: EmailAddress, subject: String, plainText: String): Future[Unit]
 }

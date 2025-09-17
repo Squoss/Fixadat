@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
 
 package dev
 
+import domain.driven_ports.persistence.Repository
+import domain.driven_ports.persistence.ElectionEvent
+import domain.driven_ports.persistence.PublishedEvent
 import domain.entity_interfaces.ElectionT
-import domain.persistence.Repository
-import domain.persistence.ElectionEvent
-import domain.persistence.PublishedEvent
 import domain.value_objects.Id
 import play.api.Logging
 

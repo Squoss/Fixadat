@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,39 @@
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
-import org.scalatest.funsuite.AnyFunSuite
+import munit.FunSuite
 
-class DependencyRulesTestSuite extends AnyFunSuite {
+class DependencyRulesTestSuite extends FunSuite {
 
   // val DEFAULT = ""
-  val DOMAIN_ENTITYIMPS = "domain.entity_implementations.."
-  val DOMAIN_ENTITYINTS = "domain.entity_interfaces.."
-  val DOMAIN_PERSISTENCE = "domain.persistence.."
-  val DOMAIN_SERVICEIMPS = "domain.service_implementations.."
-  val DOMAIN_SERVICEINTS = "domain.service_interfaces.."
-  val DOMAIN_VALUEOBJECTS = "domain.value_objects.."
+  val ENTITYIMPS = "domain.entity_implementations.."
+  val ENTITYINTS = "domain.entity_interfaces.."
+  val NOTIFICATIONS = "domain.driven_ports.notifications.."
+  val PERSISTENCE = "domain.driven_ports.persistence.."
+  val SERVICES = "domain.services.."
+  val DRIVEN_PORTS = "domain.driven_ports.."
+  val DRIVING_PORTS = "domain.driving_ports.."
+  val VALUE_OBJECTS = "domain.value_objects.."
   val JAVA = "java.."
   val JAVAX = "javax.."
   val PHONENUMBERS = "com.google.i18n.phonenumbers.."
   val SCALA = "scala.."
-  val THIRDPARTY_APIS = "thirdparty_apis.."
 
   val NOT_THE_APP =
     Seq(JAVA, JAVAX, SCALA, PHONENUMBERS)
   val THE_APP_INSIDE_THE_DOMAIN =
     Seq(
-      DOMAIN_ENTITYIMPS,
-      DOMAIN_ENTITYINTS,
-      DOMAIN_PERSISTENCE,
-      DOMAIN_SERVICEIMPS,
-      DOMAIN_SERVICEINTS,
-      DOMAIN_VALUEOBJECTS
+      ENTITYIMPS,
+      ENTITYINTS,
+      DRIVEN_PORTS,
+      DRIVING_PORTS,
+      SERVICES,
+      VALUE_OBJECTS
     )
 
   val classes =
     new ClassFileImporter().importPackages(
-      (THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
+      (THE_APP_INSIDE_THE_DOMAIN): _*
     )
 
   test("the domain depends on itself and third-party APIs only") {
@@ -66,7 +67,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN :+ THIRDPARTY_APIS): _*
+        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN): _*
       )
       .check(classes)
   }
@@ -77,11 +78,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_PERSISTENCE)
+      .resideInAPackage(PERSISTENCE)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_PERSISTENCE :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ PERSISTENCE :+ ENTITYINTS :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }
@@ -93,13 +94,13 @@ class DependencyRulesTestSuite extends AnyFunSuite {
     noClasses()
       .that()
       .resideOutsideOfPackages(
-        DOMAIN_PERSISTENCE,
-        DOMAIN_SERVICEIMPS,
-        DOMAIN_ENTITYIMPS
+        PERSISTENCE,
+        SERVICES,
+        ENTITYIMPS
       )
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(DOMAIN_PERSISTENCE)
+      .resideInAPackage(PERSISTENCE)
       .check(classes)
   }
 
@@ -107,11 +108,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_SERVICEINTS)
+      .resideInAPackage(DRIVING_PORTS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_SERVICEINTS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ DRIVING_PORTS :+ ENTITYINTS :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }
@@ -120,32 +121,32 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackages(DOMAIN_SERVICEIMPS)
+      .resideOutsideOfPackages(SERVICES)
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(DOMAIN_SERVICEINTS)
+      .resideInAPackage(DRIVING_PORTS)
       .check(classes)
   }
 
-  test("the third-party APIs port depends on itself only") {
+  test("the notifications port depends on itself only") {
 
     noClasses()
       .that()
-      .resideInAPackage(THIRDPARTY_APIS)
+      .resideInAPackage(NOTIFICATIONS)
       .should()
       .dependOnClassesThat()
-      .resideOutsideOfPackages((NOT_THE_APP :+ THIRDPARTY_APIS): _*)
+      .resideOutsideOfPackages((NOT_THE_APP :+ NOTIFICATIONS): _*)
       .check(classes)
   }
 
-  test("only the domain services depend on the third-party APIs port") {
+  test("only the domain services depend on the notifications port") {
 
     noClasses()
       .that()
-      .resideOutsideOfPackages(DOMAIN_SERVICEIMPS)
+      .resideOutsideOfPackages(SERVICES)
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(THIRDPARTY_APIS)
+      .resideInAPackage(NOTIFICATIONS)
       .check(classes)
   }
 
@@ -155,11 +156,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_SERVICEIMPS)
+      .resideInAPackage(SERVICES)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITYIMPS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE :+ DOMAIN_SERVICEINTS :+ THIRDPARTY_APIS): _*
+        (NOT_THE_APP :+ ENTITYIMPS :+ ENTITYINTS :+ VALUE_OBJECTS :+ DRIVEN_PORTS :+ DRIVING_PORTS): _*
       )
       .check(classes)
   }
@@ -168,10 +169,10 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideOutsideOfPackage(DOMAIN_SERVICEIMPS)
+      .resideOutsideOfPackage(SERVICES)
       .should()
       .dependOnClassesThat()
-      .resideInAPackage(DOMAIN_SERVICEIMPS)
+      .resideInAPackage(SERVICES)
       .check(classes)
   }
 
@@ -181,11 +182,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_ENTITYIMPS)
+      .resideInAPackage(ENTITYIMPS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITYIMPS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP :+ ENTITYIMPS :+ ENTITYINTS :+ VALUE_OBJECTS :+ PERSISTENCE): _*
       )
       .check(classes)
   }
@@ -194,11 +195,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_ENTITYINTS)
+      .resideInAPackage(ENTITYINTS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ ENTITYINTS :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }
@@ -207,11 +208,11 @@ class DependencyRulesTestSuite extends AnyFunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(DOMAIN_VALUEOBJECTS)
+      .resideInAPackage(VALUE_OBJECTS)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2024 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,23 @@
  * THE SOFTWARE.
  */
 
-package domain.service_implementations
+package domain.services
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import domain.driving_ports.Elections
+import domain.driving_ports.Factory
 import domain.entity_implementations.Election
 import domain.entity_interfaces.ElectionT
-import domain.persistence.CandidatesNominatedEvent
-import domain.persistence.PrivatizedEvent
-import domain.persistence.ProtectedEvent
-import domain.persistence.PublishedEvent
-import domain.persistence.Repository
-import domain.persistence.RepublishedEvent
-import domain.persistence.RetextedEvent
-import domain.persistence.SubscribedEvent
-import domain.persistence.VoteDeletedEvent
-import domain.persistence.VotedEvent
-import domain.service_interfaces.Elections
+import domain.driven_ports.persistence.CandidatesNominatedEvent
+import domain.driven_ports.persistence.PrivatizedEvent
+import domain.driven_ports.persistence.ProtectedEvent
+import domain.driven_ports.persistence.PublishedEvent
+import domain.driven_ports.persistence.Repository
+import domain.driven_ports.persistence.RepublishedEvent
+import domain.driven_ports.persistence.RetextedEvent
+import domain.driven_ports.persistence.SubscribedEvent
+import domain.driven_ports.persistence.VoteDeletedEvent
+import domain.driven_ports.persistence.VotedEvent
 import domain.value_objects.AccessToken
 import domain.value_objects.Availability
 import domain.value_objects.Availability.*
@@ -47,8 +48,8 @@ import domain.value_objects.Error.*
 import domain.value_objects.Id
 import domain.value_objects.Visibility.*
 import domain.value_objects.Vote
-import thirdparty_apis.Email
-import thirdparty_apis.Sms
+import domain.driven_ports.notifications.Email
+import domain.driven_ports.notifications.Sms
 
 import java.net.URL
 import java.text.MessageFormat
@@ -68,7 +69,7 @@ class ElectionsService @Inject() (implicit
     repository: Repository,
     email: Email,
     sms: Sms
-) extends Elections {
+) extends Factory, Elections {
 
   val canaryToken = AccessToken(new UUID(0, 0))
 

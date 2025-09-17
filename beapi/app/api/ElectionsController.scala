@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2024 Squeng AG
+ * Copyright (c) 2021-2025 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,8 @@
 package api
 
 import api.TransferObjects._
-import domain.service_interfaces.Elections
+import domain.driving_ports.Elections
+import domain.driving_ports.Factory
 import domain.value_objects.AccessToken
 import domain.value_objects.Error
 import domain.value_objects.Error.*
@@ -57,6 +58,7 @@ import scala.util.Try
 class ElectionsController @Inject() (implicit
     ec: ExecutionContext,
     val controllerComponents: ControllerComponents,
+    val factory: Factory,
     val elections: Elections
 ) extends BaseController
     with I18nSupport {
@@ -65,7 +67,7 @@ class ElectionsController @Inject() (implicit
 
   def postElection() = Action.async {
 
-    elections
+    factory
       .publishElection()
       .map(res =>
         Created(
