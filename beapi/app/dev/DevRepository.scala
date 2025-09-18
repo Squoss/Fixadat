@@ -27,7 +27,7 @@ package dev
 import domain.driven_ports.persistence.Repository
 import domain.driven_ports.persistence.ElectionEvent
 import domain.driven_ports.persistence.PublishedEvent
-import domain.entity_interfaces.ElectionT
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.Id
 import play.api.Logging
 
@@ -62,12 +62,12 @@ class DevRepository @Inject() (implicit ec: ExecutionContext)
 
   override def readEvents(
       id: Id
-  ): Future[(Option[ElectionT], Seq[ElectionEvent])] = Future(
+  ): Future[(Option[ElectionSnapshot], Seq[ElectionEvent])] = Future(
     (None, eventsLog.getOrElse(id, Nil).toSeq)
   )
 
   override def fastForwardSnapshot(
-      snapshot: ElectionT
+      snapshot: ElectionSnapshot
   ): Future[Unit] =
     Future(())
 

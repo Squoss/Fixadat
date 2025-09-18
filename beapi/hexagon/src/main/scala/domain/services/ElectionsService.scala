@@ -27,8 +27,6 @@ package domain.services
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import domain.driving_ports.Elections
 import domain.driving_ports.Factory
-import domain.entity_implementations.Election
-import domain.entity_interfaces.ElectionT
 import domain.driven_ports.persistence.CandidatesNominatedEvent
 import domain.driven_ports.persistence.PrivatizedEvent
 import domain.driven_ports.persistence.ProtectedEvent
@@ -39,9 +37,11 @@ import domain.driven_ports.persistence.RetextedEvent
 import domain.driven_ports.persistence.SubscribedEvent
 import domain.driven_ports.persistence.VoteDeletedEvent
 import domain.driven_ports.persistence.VotedEvent
+import domain.entities.ElectionEntity
 import domain.value_objects.AccessToken
 import domain.value_objects.Availability
 import domain.value_objects.Availability.*
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error
 import domain.value_objects.Error.*
@@ -94,19 +94,19 @@ class ElectionsService @Inject() (implicit
       })
   }
 
-  private def readElection(id: Id): Future[Option[Election]] =
+  private def readElection(id: Id): Future[Option[ElectionSnapshot]] =
     repository
       .readEvents(id)
       .map(_ match {
-        case (Some(snapshot), Nil) => Some(Election(snapshot))
+        case (Some(snapshot), Nil) => Some(snapshot)
         case (Some(snapshot), eventsTail) => {
-          val election = Election(snapshot).replay(eventsTail)
+          val election = ElectionEntity(snapshot).replay(eventsTail).toSnapshot()
           repository.fastForwardSnapshot(election) // fire & forget
           Some(election)
         }
         case (None, Nil) => None
         case (None, events) => {
-          val election = Election(events)
+          val election = ElectionEntity(events).toSnapshot()
           repository.fastForwardSnapshot(election) // fire & forget
           Some(election)
         }
@@ -116,7 +116,7 @@ class ElectionsService @Inject() (implicit
       id: Id,
       token: AccessToken,
       zoneId: Option[ZoneId]
-  ): Future[Either[Error, Election]] =
+  ): Future[Either[Error, ElectionSnapshot]] =
     readElection(id).map(
       _.map(Right(_))
         .getOrElse(Left(NotFound))

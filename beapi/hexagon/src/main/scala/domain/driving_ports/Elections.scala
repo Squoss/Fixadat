@@ -25,10 +25,10 @@
 package domain.driving_ports
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.entity_interfaces.ElectionT
 import domain.value_objects.AccessToken
 import domain.value_objects.Availability
 import domain.value_objects.Availability.*
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error
 import domain.value_objects.Error.*
@@ -49,7 +49,7 @@ trait Elections {
       id: Id,
       token: AccessToken,
       timeZone: Option[ZoneId]
-  ): Future[Either[Error, ElectionT]]
+  ): Future[Either[Error, ElectionSnapshot]]
 
   def retextElection(
       id: Id,

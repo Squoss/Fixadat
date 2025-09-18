@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  */
 
-package mongodb
+package domain.value_objects
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.entity_interfaces.ElectionT
 import domain.value_objects.AccessToken
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
@@ -58,4 +57,4 @@ case class ElectionSnapshot(
         Option[URL]
     ),
     replayedEvents: Int
-) extends ElectionT
+)

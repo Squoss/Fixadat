@@ -29,13 +29,12 @@ import munit.FunSuite
 class DependencyRulesTestSuite extends FunSuite {
 
   // val DEFAULT = ""
-  val ENTITYIMPS = "domain.entity_implementations.."
-  val ENTITYINTS = "domain.entity_interfaces.."
+  val DRIVEN_PORTS = "domain.driven_ports.."
+  val DRIVING_PORTS = "domain.driving_ports.."
+  val ENTITIES = "domain.entities.."
   val NOTIFICATIONS = "domain.driven_ports.notifications.."
   val PERSISTENCE = "domain.driven_ports.persistence.."
   val SERVICES = "domain.services.."
-  val DRIVEN_PORTS = "domain.driven_ports.."
-  val DRIVING_PORTS = "domain.driving_ports.."
   val VALUE_OBJECTS = "domain.value_objects.."
   val JAVA = "java.."
   val JAVAX = "javax.."
@@ -46,8 +45,7 @@ class DependencyRulesTestSuite extends FunSuite {
     Seq(JAVA, JAVAX, SCALA, PHONENUMBERS)
   val THE_APP_INSIDE_THE_DOMAIN =
     Seq(
-      ENTITYIMPS,
-      ENTITYINTS,
+      ENTITIES,
       DRIVEN_PORTS,
       DRIVING_PORTS,
       SERVICES,
@@ -82,7 +80,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PERSISTENCE :+ ENTITYINTS :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ PERSISTENCE :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }
@@ -96,7 +94,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .resideOutsideOfPackages(
         PERSISTENCE,
         SERVICES,
-        ENTITYIMPS
+        ENTITIES
       )
       .should()
       .dependOnClassesThat()
@@ -112,7 +110,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DRIVING_PORTS :+ ENTITYINTS :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ DRIVING_PORTS :+ VALUE_OBJECTS): _*
       )
       .check(classes)
   }
@@ -160,7 +158,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ ENTITYIMPS :+ ENTITYINTS :+ VALUE_OBJECTS :+ DRIVEN_PORTS :+ DRIVING_PORTS): _*
+        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ DRIVEN_PORTS :+ DRIVING_PORTS): _*
       )
       .check(classes)
   }
@@ -182,24 +180,11 @@ class DependencyRulesTestSuite extends FunSuite {
 
     noClasses()
       .that()
-      .resideInAPackage(ENTITYIMPS)
+      .resideInAPackage(ENTITIES)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ ENTITYIMPS :+ ENTITYINTS :+ VALUE_OBJECTS :+ PERSISTENCE): _*
-      )
-      .check(classes)
-  }
-
-  test("the domain types depend on the value objects only") {
-
-    noClasses()
-      .that()
-      .resideInAPackage(ENTITYINTS)
-      .should()
-      .dependOnClassesThat()
-      .resideOutsideOfPackages(
-        (NOT_THE_APP :+ ENTITYINTS :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ PERSISTENCE): _*
       )
       .check(classes)
   }

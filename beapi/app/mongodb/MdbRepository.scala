@@ -44,10 +44,10 @@ import domain.driven_ports.persistence.RetextedEvent
 import domain.driven_ports.persistence.SubscribedEvent
 import domain.driven_ports.persistence.VoteDeletedEvent
 import domain.driven_ports.persistence.VotedEvent
-import domain.entity_interfaces.ElectionT
 import domain.value_objects.AccessToken
 import domain.value_objects.Availability
 import domain.value_objects.Availability.*
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.EmailAddress
 import domain.value_objects.Id
 import domain.value_objects.Visibility
@@ -498,7 +498,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
 
   override def readEvents(
       id: Id
-  ): Future[(Option[ElectionT], Seq[ElectionEvent])] = toFutureDocSeq(
+  ): Future[(Option[ElectionSnapshot], Seq[ElectionEvent])] = toFutureDocSeq(
     mdb(
       Collection
     ).find(Filters.eq(IdKey, id.wert))
@@ -641,7 +641,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   }
 
   override def fastForwardSnapshot(
-      snapshot: ElectionT
+      snapshot: ElectionSnapshot
   ): Future[Unit] = {
     val document = new BsonDocument(
       Map(

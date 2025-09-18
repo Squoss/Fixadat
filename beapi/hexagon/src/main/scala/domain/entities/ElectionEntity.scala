@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  */
 
-package domain.entity_implementations
+package domain.entities
 
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
-import domain.entity_interfaces.ElectionT
 import domain.driven_ports.persistence.CandidatesNominatedEvent
 import domain.driven_ports.persistence.ElectionEvent
 import domain.driven_ports.persistence.PrivatizedEvent
@@ -37,6 +36,7 @@ import domain.driven_ports.persistence.SubscribedEvent
 import domain.driven_ports.persistence.VoteDeletedEvent
 import domain.driven_ports.persistence.VotedEvent
 import domain.value_objects.AccessToken
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.EmailAddress
 import domain.value_objects.Error
 import domain.value_objects.Error.*
@@ -53,7 +53,7 @@ import java.util.Locale
 import java.util.TimeZone
 import scala.collection.mutable
 
-final class Election private (
+final class ElectionEntity private (
     val id: Id,
     val created: Instant,
     var updated: Instant,
@@ -72,7 +72,7 @@ final class Election private (
         Option[URL]
     ),
     var replayedEvents: Int
-) extends ElectionT {
+) {
 
   def votes: Seq[Vote] = _votes.toSeq
 
@@ -95,7 +95,7 @@ final class Election private (
           Option[URL]
       ) = this.subscriptions,
       replayedEvents: Int = this.replayedEvents
-  ) = new Election(
+  ) = new ElectionEntity(
     id,
     created,
     updated,
@@ -112,13 +112,13 @@ final class Election private (
   )
 
   override def equals(that: Any) = that match {
-    case v: Election => this.id == v.id
-    case _           => false
+    case v: ElectionEntity => this.id == v.id
+    case _                 => false
   }
 
   override val hashCode = id.##
 
-  def replay(events: Seq[ElectionEvent]): Election = {
+  def replay(events: Seq[ElectionEvent]): ElectionEntity = {
     events.foreach(event => {
       assert(this.id == id)
       event match {
@@ -173,13 +173,27 @@ final class Election private (
     })
     this
   }
+
+  def toSnapshot(): ElectionSnapshot = ElectionSnapshot(
+    id,
+    created,
+    updated,
+    organizerToken,
+    voterToken,
+    name,
+    description,
+    timeZone,
+    candidates,
+    votes,
+    visibility,
+    subscriptions,
+    replayedEvents
+  )
 }
 
-object Election {
-  def apply(snapshot: ElectionT): Election = snapshot match {
-    case e: Election => e
-    case _ =>
-      new Election(
+object ElectionEntity {
+  def apply(snapshot: ElectionSnapshot): ElectionEntity =
+      new ElectionEntity(
         snapshot.id,
         snapshot.created,
         snapshot.updated,
@@ -194,9 +208,8 @@ object Election {
         snapshot.subscriptions,
         snapshot.replayedEvents
       )
-  }
 
-  def apply(events: Seq[ElectionEvent]): Election =
+  def apply(events: Seq[ElectionEvent]): ElectionEntity =
     events match {
       case PublishedEvent(
             id,
@@ -204,7 +217,7 @@ object Election {
             voterToken,
             occurred
           ) :: eventsTail =>
-        new Election(
+        new ElectionEntity(
           id,
           occurred,
           occurred,

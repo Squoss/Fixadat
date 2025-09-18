@@ -24,7 +24,7 @@
 
 package domain.driven_ports.persistence
 
-import domain.entity_interfaces.ElectionT
+import domain.value_objects.ElectionSnapshot
 import domain.value_objects.Id
 
 import scala.concurrent.Future
@@ -36,9 +36,9 @@ trait Repository {
 
   def readEvents(
       id: Id
-  ): Future[(Option[ElectionT], Seq[ElectionEvent])]
+  ): Future[(Option[ElectionSnapshot], Seq[ElectionEvent])]
 
-  def fastForwardSnapshot(snapshot: ElectionT): Future[Unit]
+  def fastForwardSnapshot(snapshot: ElectionSnapshot): Future[Unit]
 
   def deleteEvents(id: Id): Future[Unit]
 }
