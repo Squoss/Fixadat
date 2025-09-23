@@ -55,11 +55,11 @@ import domain.value_objects.Visibility.*
 import domain.value_objects.Vote
 import org.bson.BsonArray
 import org.bson.BsonBinary
+import org.bson.BsonDateTime // not org.bson.BsonTimestamp, which is for internal MongoDB use (https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps)
 import org.bson.BsonDocument
 import org.bson.BsonElement
 import org.bson.BsonInt32
 import org.bson.BsonString
-import org.bson.BsonTimestamp
 import org.bson.BsonValue
 import org.reactivestreams.Subscription
 import play.api.Logging
@@ -205,7 +205,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
             new BsonDocument(
               Map(
                 TypeKey -> new BsonString(PublishedValue),
-                OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+                OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
                 VersionKey -> new BsonInt32(event.version),
                 OrganizerTokenKey -> new BsonBinary(event.organizerToken.wert),
                 VoterTokenKey -> new BsonBinary(event.voterToken.wert)
@@ -246,7 +246,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
     val document = new BsonDocument(
       Map(
         TypeKey -> new BsonString(typeValue),
-        OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+        OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
         VersionKey -> new BsonInt32(event.version)
       ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
     )
@@ -263,7 +263,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = new BsonDocument(
         Map(
           TypeKey -> new BsonString(RetextedValue),
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
           VersionKey -> new BsonInt32(event.version),
           NameKey -> new BsonString(name)
         ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
@@ -276,7 +276,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = new BsonDocument(
         Map(
           TypeKey -> new BsonString(CandidatesNominatedValue),
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
           VersionKey -> new BsonInt32(event.version),
           CandidatesKey -> fromCandidates(candidates)
         ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
@@ -289,7 +289,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = new BsonDocument(
         Map(
           TypeKey -> new BsonString(SubscribedValue),
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
           VersionKey -> new BsonInt32(event.version),
           LocaleKey -> new BsonString(locale.toLanguageTag)
         ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
@@ -321,7 +321,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = new BsonDocument(
         Map(
           TypeKey -> new BsonString(VotedValue),
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
           VersionKey -> new BsonInt32(event.version),
           NameKey -> new BsonString(name),
           AvailabilityKey -> fromAvailability(availability)
@@ -335,14 +335,24 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       val document = new BsonDocument(
         Map(
           TypeKey -> new BsonString(VoteDeletedValue),
-          OccurredKey -> new BsonTimestamp(event.occurred.toEpochMilli),
+          OccurredKey -> new BsonDateTime(event.occurred.toEpochMilli),
           VersionKey -> new BsonInt32(event.version),
           NameKey -> new BsonString(name),
-          VotedKey -> new BsonTimestamp(voted.toEpochMilli)
+          VotedKey -> new BsonDateTime(voted.toEpochMilli)
         ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
       logEvent(event.id, document)
   }
+
+  // migrating from BSON Timestamp (which is for internal MongoDB use) to BSON DateTime
+  private def getDateTimestampValue(doc: BsonDocument, key: String) =
+    if (doc.isDateTime(key)) {
+      doc.getDateTime(key).getValue
+    } else if (doc.isTimestamp(key)) {
+      doc.getTimestamp(key).getValue
+    } else {
+      throw new RuntimeException(s"expected $key to be a DateTime or a Timestamp")
+    }
 
   private def toElectionEvent(id: Id, doc: BsonDocument) = {
     val eventType = doc.getString(TypeKey).getValue
@@ -356,7 +366,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           AccessToken(doc.getBinary(OrganizerTokenKey).asUuid),
           AccessToken(doc.getBinary(VoterTokenKey).asUuid),
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case RetextedValue =>
@@ -365,7 +375,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           doc.getString(NameKey).getValue,
           Option(doc.getString(DescriptionKey, null)).map(_.getValue),
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case CandidatesNominatedValue =>
@@ -382,7 +392,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
             .toSet
             .map((bv: BsonValue) => LocalDateTime.parse(bv.asString.getValue)),
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case SubscribedValue =>
@@ -394,28 +404,28 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           subscriptions._3,
           subscriptions._4,
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case ProtectedValue =>
         ProtectedEvent(
           id,
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case PrivatizedValue =>
         PrivatizedEvent(
           id,
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case RepublishedValue =>
         RepublishedEvent(
           id,
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case VotedValue =>
@@ -431,7 +441,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
             doc.getDocument(AvailabilityKey).asScala.toMap
           ),
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
       case VoteDeletedValue =>
@@ -439,10 +449,10 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
           id,
           doc.getString(NameKey).getValue,
           Instant.ofEpochMilli(
-            doc.getTimestamp(VotedKey).getValue
+            getDateTimestampValue(doc, VotedKey)
           ),
           Instant.ofEpochMilli(
-            doc.getTimestamp(OccurredKey).getValue
+            getDateTimestampValue(doc, OccurredKey)
           )
         )
     }
@@ -454,7 +464,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       document.getDocument(AvailabilityKey).asScala.toMap
     ),
     Instant
-      .ofEpochMilli(document.getTimestamp(VotedKey).getValue)
+      .ofEpochMilli(getDateTimestampValue(document, VotedKey))
   )
 
   private def toSnapshot(id: Id, document: BsonDocument, replayedEvents: Int) =
@@ -462,11 +472,11 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
       id,
       Instant
         .ofEpochMilli(
-          document.getTimestamp(CreatedKey).getValue
+          getDateTimestampValue(document, CreatedKey)
         ),
       Instant
         .ofEpochMilli(
-          document.getTimestamp(UpdatedKey).getValue
+          getDateTimestampValue(document, UpdatedKey)
         ),
       AccessToken(document.getBinary(OrganizerTokenKey).asUuid),
       AccessToken(document.getBinary(VoterTokenKey).asUuid),
@@ -581,7 +591,7 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
         Map(
           NameKey -> new BsonString(vote.name),
           AvailabilityKey -> fromAvailability(vote.availability),
-          VotedKey -> new BsonTimestamp(vote.voted.toEpochMilli)
+          VotedKey -> new BsonDateTime(vote.voted.toEpochMilli)
         ).toList.map(entry => new BsonElement(entry._1, entry._2)).asJava
       )
       bsonArray.add(document)
@@ -645,8 +655,8 @@ class MdbRepository @Inject() (implicit ec: ExecutionContext, val mdb: Mdb)
   ): Future[Unit] = {
     val document = new BsonDocument(
       Map(
-        CreatedKey -> new BsonTimestamp(snapshot.created.toEpochMilli),
-        UpdatedKey -> new BsonTimestamp(snapshot.updated.toEpochMilli),
+        CreatedKey -> new BsonDateTime(snapshot.created.toEpochMilli),
+        UpdatedKey -> new BsonDateTime(snapshot.updated.toEpochMilli),
         OrganizerTokenKey -> new BsonBinary(snapshot.organizerToken.wert),
         VoterTokenKey -> new BsonBinary(snapshot.voterToken.wert),
         VisibilityKey -> new BsonInt32(snapshot.visibility.ordinal),
