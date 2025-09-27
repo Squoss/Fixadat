@@ -22,7 +22,7 @@ COPY fegui/vite.config.ts ./
 RUN npm run build
 
 
-FROM sbtscala/scala-sbt:eclipse-temurin-21.0.8_9_1.11.6_3.3.6 AS play
+FROM sbtscala/scala-sbt:eclipse-temurin-25_36_1.11.6_3.3.6 AS play
 
 WORKDIR /squeng/fixadat
 
@@ -36,7 +36,7 @@ COPY --from=react /squeng/fixadat/build ./public/build
 RUN sbt stage
 
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 
 WORKDIR /squeng/fixadat
 
