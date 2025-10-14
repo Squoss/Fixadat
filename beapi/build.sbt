@@ -18,11 +18,11 @@ lazy val root = (project in file("."))
     .dependsOn(hexagon)
 lazy val hexagon = project
 
-scalaVersion := "3.3.6"
+scalaVersion := "3.3.7"
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.6.0"
+libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.6.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.2" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.4.1" % Test
