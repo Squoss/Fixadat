@@ -10,11 +10,11 @@ jobs:
 #  npm:
 #    runs-on: ubuntu-latest
 #    steps:
-#    - uses: actions/checkout@v5
-#    - name: Set up Node.js 20
-#      uses: actions/setup-node@v4
+#    - uses: actions/checkout@v6
+#    - name: Set up Node.js 24
+#      uses: actions/setup-node@v6
 #      with:
-#        node-version: '20'
+#        node-version: '24'
 #        cache: 'npm'
 #        cache-dependency-path: fegui/package-lock.json
 #    - name: Clean install with npm
@@ -26,12 +26,12 @@ jobs:
   sbt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up JDK 21
+    - uses: actions/checkout@v6
+    - name: Set up JDK 25
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '21'
+        java-version: '25'
     - uses: sbt/setup-sbt@v1
     - name: Test with sbt
       run: sbt test
