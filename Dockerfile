@@ -22,7 +22,7 @@ COPY fegui/vite.config.ts ./
 RUN npm run build
 
 
-FROM sbtscala/scala-sbt:eclipse-temurin-25.0.1_8_1.11.7_3.3.7 AS play
+FROM sbtscala/scala-sbt:eclipse-temurin-25.0.1_8_1.12.0_3.3.7 AS play
 
 WORKDIR /squeng/fixadat
 
