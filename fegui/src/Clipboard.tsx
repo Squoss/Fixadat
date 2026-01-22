@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ interface ClipboardProps {
   text: string;
 }
 
-function Clipboard(props: ClipboardProps) {
+function Clipboard(props: Readonly<ClipboardProps>) {
   console.log("Clipboard props: " + JSON.stringify(props));
 
   const [copied, setCopied] = useState<boolean>(false);

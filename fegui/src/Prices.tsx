@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2024 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,6 @@ function Prices(props: {}) {
             width="200"
             height="400"
             src="https://leanpub.com/JKS/embed"
-            frameBorder="0"
           ></iframe>
         </div>
       </div>

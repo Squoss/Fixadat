@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2025 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <I18nApp>
-        <Routes>{/* cf. https://github.com/PacktPublishing/Learn-React-with-TypeScript-2nd-Edition/blob/main/Chapter6/src/Routes.tsx for a future refactoring */}
+        <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Abode />} />
             <Route path="elections/:election/*" element={<Election />} />

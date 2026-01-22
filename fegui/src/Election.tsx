@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2025 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -263,9 +263,9 @@ function Election(props: {}) {
 
   if (election === undefined && responseStatusCode === 200) {
     return (
-      <div className="spinner-border" role="status">
+      <output className="spinner-border">
         <span className="visually-hidden">Loading election …</span>
-      </div>
+      </output>
     );
   } else if (responseStatusCode !== 200) {
     switch (responseStatusCode) {
