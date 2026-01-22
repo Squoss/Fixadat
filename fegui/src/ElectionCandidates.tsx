@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  */
 
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
-import { DateTimePicker, type DateTimePickerElement } from "@vaadin/react-components";
 
 interface ElectionCandidatesProps {
   election: ElectionT;
@@ -48,16 +47,10 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
 
   const localizations = useContext(l10nContext);
 
-  const dateTimePicker = useRef<DateTimePickerElement>(null);
-
-  useEffect(() => {
-    if (dateTimePicker.current) {
-      dateTimePicker.current.i18n = {
-        ...dateTimePicker.current.i18n,
-        firstDayOfWeek: 1,
-      };
-    }
-  }, [dateTimePicker.current]);
+  const [dateTimes, setDateTimes] = useState<Array<string>>(
+    props.election.candidates
+  );
+  const [dateTime, setDateTime] = useState<string>("");
 
   const dateTtime = (dt: Date) => {
     return (
@@ -72,11 +65,6 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
       ("" + dt.getMinutes()).padStart(2, "0")
     );
   };
-
-  const [dateTimes, setDateTimes] = useState<Array<string>>(
-    props.election.candidates
-  );
-  const [dateTime, setDateTime] = useState<string>(dateTtime(new Date()));
 
   const [timeZone, setTimeZone] = useState(
     props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -133,7 +121,9 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
     <form className="d-grid gap-4">
       <div className={changesSaved() ? "card" : "card border-warning"}>
         <div className="card-body">
-          <h5 className="card-title">{localizations["datesAndTimes.instruction"]}</h5>
+          <h5 className="card-title">
+            {localizations["datesAndTimes.instruction"]}
+          </h5>
           <div className="row align-items-start">
             <div className="col-sm">
               <div>
@@ -150,7 +140,8 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                   {timeZones}
                 </select>
                 <p className="card-text">
-                  <i className="bi bi-info-circle-fill"></i> {localizations["datesAndTimes.timeZoneMotivation"]}
+                  <i className="bi bi-info-circle-fill"></i>{" "}
+                  {localizations["datesAndTimes.timeZoneMotivation"]}
                 </p>
               </div>
             </div>
@@ -162,8 +153,17 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                 {dateTimes.map((dt) => (
                   <React.Fragment key={dt}>
                     <div className="input-group mb-3">
-                      <input type="datetime-local" className="form-control" value={dt} readOnly />
-                      <button className="btn btn-danger" type="button" onClick={() => removeDateTime(dt)}>
+                      <input
+                        type="datetime-local"
+                        className="form-control"
+                        value={dt}
+                        readOnly
+                      />
+                      <button
+                        className="btn btn-danger"
+                        type="button"
+                        onClick={() => removeDateTime(dt)}
+                      >
                         <i className="bi bi-dash-lg"></i>
                       </button>
                     </div>
@@ -171,32 +171,31 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                 ))}
                 <div className="input-group mb-3">
                   <p className="card-text">
-                    <i className="bi bi-info-circle-fill"></i> {localizations["datesAndTimes.order"]}
+                    <i className="bi bi-info-circle-fill"></i>{" "}
+                    {localizations["datesAndTimes.order"]}
                   </p>
-                  <DateTimePicker
+                  <input
                     id="dateTimeSchedule"
-                    ref={dateTimePicker}
-                    min={dateTtime(new Date((Date.now() / 60) * 1000 * 60 * 1000))}
-                    className="form-control"
                     value={dateTime}
-                    step={60 * 30}
-                    showWeekNumbers
-                    onValueChanged={(event) => {
-                      setDateTime(event.detail.value);
+                    type="datetime-local"
+                    min={dateTtime(new Date())}
+                    onChange={(event) => {
+                      setDateTime(event.target.value);
+                      if (event.target.valueAsDate !== null) { // yep, valueAsDate
+                        addDateTime(event.target.value); // yep, value
+                        setDateTime("");
+                      }
                     }}
-                  />{" "}
-                  <button
-                    className="btn btn-success"
-                    type="button"
-                    disabled={dateTime === ""}
-                    onClick={() => addDateTime(dateTime)}
-                  >
-                    <i className="bi bi-plus-lg"></i>
-                  </button>
+                    className="form-control"
+                  />
                 </div>
               </div>
             </div>
-            <div className={changesSaved() ? "card-footer" : "card-footer bg-warning"}>
+            <div
+              className={
+                changesSaved() ? "card-footer" : "card-footer bg-warning"
+              }
+            >
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button className="btn btn-secondary" onClick={cancelSchedule}>
                   {localizations["revert"]}
