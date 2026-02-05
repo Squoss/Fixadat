@@ -22,42 +22,37 @@
  * THE SOFTWARE.
  */
 
-import { useState } from "react";
+import React, { useContext } from "react";
+import { l10nContext } from "../l10nContext";
 
-interface ClipboardProps {
-  text: string;
-}
+function Prices(props: {}) {
+  console.log("Prices props: " + JSON.stringify(props));
 
-function Clipboard(props: Readonly<ClipboardProps>) {
-  console.log("Clipboard props: " + JSON.stringify(props));
-
-  const [copied, setCopied] = useState<boolean>(false);
-
-  const writeToClipboard = () =>
-    navigator.clipboard
-      .writeText(props.text)
-      .then(() => {
-        console.log("succeeded in copying link to clipboard");
-        setCopied(true);
-      })
-      .catch((error) => {
-        console.error(`failed to copy link to clipboard: ${error}`);
-        setCopied(false);
-      });
+  const localizations = useContext(l10nContext);
 
   return (
-    <button
-      type="button"
-      className="btn btn-outline-dark"
-      onClick={writeToClipboard}
-    >
-      {copied ? (
-        <i className="bi bi-clipboard-check"></i>
-      ) : (
-        <i className="bi bi-clipboard"></i>
-      )}
-    </button>
+    <React.Fragment>
+      <h1>{localizations["prices"]}</h1>
+      <div className="row align-items-center">
+        <div className="col">
+          <p
+            dangerouslySetInnerHTML={{
+              __html: localizations["HTML.teachingAid"],
+            }}
+          ></p>
+          <p>{localizations["readMe"]}</p>
+        </div>
+        <div className="col">
+          <iframe
+            title="Leanpub"
+            width="200"
+            height="400"
+            src="https://leanpub.com/JKS/embed"
+          ></iframe>
+        </div>
+      </div>
+    </React.Fragment>
   );
 }
 
-export default Clipboard;
+export default Prices;

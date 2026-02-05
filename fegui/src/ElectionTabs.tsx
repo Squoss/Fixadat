@@ -26,43 +26,11 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import ElectionCandidates from "./ElectionCandidates";
 import ElectionLinks from "./ElectionLinks";
-import { Availability, ElectionT, Visibility } from "./Elections";
 import ElectionSettings from "./ElectionSettings";
 import ElectionTally from "./ElectionTally";
 import ElectionTexts from "./ElectionTexts";
 import { l10nContext } from "./l10nContext";
-
-export enum ACTIVE_TAB {
-  TEXTS = "name and description",
-  CANDIDATES = "dates and times",
-  LINKS = "links",
-  VOTES = "votes",
-  SETTINGS = "settings",
-}
-
-interface ElectionTabsProps {
-  election: ElectionT;
-  token: string;
-  activeTab: ACTIVE_TAB;
-  saveElectionText: (name: string, description?: string) => void;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
-  saveElectionSubscriptions: (
-    emailAddress?: string,
-    phoneNumber?: string
-  ) => void;
-  saveElectionVisibility: (visibility: Visibility) => void;
-  sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
-  timeZones: Array<string>;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
-  deleteVote: (name: string, voted: Date) => void;
-  deleteElection: () => void;
-  isOrganizer: boolean;
-  isBrandNew: boolean;
-}
+import { ACTIVE_TAB, ElectionTabsProps } from "./props/ElectionTabsProps";
 
 function ElectionTabs(props: Readonly<ElectionTabsProps>) {
   console.log("ElectionTabs props: " + JSON.stringify(props));

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   Navigate,
   Outlet,
@@ -32,14 +32,20 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Availability, ElectionT, Visibility } from "./Elections";
-import ElectionTabs, { ACTIVE_TAB } from "./ElectionTabs";
+import { ElectionT } from "./ElectionT";
+import { electionsContext } from "./electionsContext";
+import { HttpError } from "./HttpError";
+import { Availability } from "./value_objects/Availability";
+import { Visibility } from "./value_objects/Visibility";
+import ElectionTabs from "./ElectionTabs";
+import { ACTIVE_TAB } from "./props/ElectionTabsProps";
 import { fetchResource, Method } from "./fetchJson";
-import NotFound from "./NotFound";
+import NotFound from "./components/NotFound";
 
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));
 
+  const elections = useContext(electionsContext)!;
   const id = useParams().election;
   const location = useLocation();
   const token = location.hash;
@@ -56,21 +62,23 @@ function Election(props: {}) {
       return;
     }
 
-    fetchResource<ElectionT>(
-      Method.Get,
-      `/iapi/elections/${id}?timeZone=${
+    elections
+      .readElection(
+        id!,
+        token.substring(1),
         tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone
-      }`,
-      token.substring(1)
-    )
-      .then((response) => {
-        setResponseStatusCode(response.status);
-        if (response.ok) {
-          setElection(response.parsedBody);
-        }
+      )
+      .then((election) => {
+        setResponseStatusCode(200);
+        setElection(election);
       })
-      .catch((error) => console.error(`failed to get election: ${error}`));
-  }, [id, token, tz]);
+      .catch((error) => {
+        if (error instanceof HttpError) {
+          setResponseStatusCode(error.status);
+        }
+        console.error(`failed to get election: ${error}`);
+      });
+  }, [elections, id, token, tz]);
 
   useEffect(() => {
     getElection();
@@ -92,21 +100,10 @@ function Election(props: {}) {
   }, []);
 
   const saveElectionText = (name: string, description?: string) =>
-    fetchResource(
-      Method.Put,
-      `/iapi/elections/${id}/text`,
-      token.substring(1),
-      {
-        name,
-        description,
-      }
-    )
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          setElection({ ...election, name, description } as ElectionT);
-        }
+    elections
+      .updateElectionText(id!, token.substring(1), name, description)
+      .then(() => {
+        setElection({ ...election, name, description } as ElectionT);
       })
       .catch((error) => console.error(`failed to put election text: ${error}`));
 

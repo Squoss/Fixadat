@@ -28,35 +28,43 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Abode from "./Abode";
 import App from "./App";
 import Election from "./Election";
+import { ElectionsService } from "./ElectionsService";
+import { electionsContext } from "./electionsContext";
+import { factoryContext } from "./factoryContext";
+import { FetchRepository } from "./FetchRepository";
 import I18nApp from "./I18nApp";
-import Masthead from "./Masthead";
-import NotFound from "./NotFound";
-import Prices from "./Prices";
-import PrivacyPolicy from "./PrivacyPolicy";
-import ToDo from "./ToDo";
+import Masthead from "./components/Masthead";
+import NotFound from "./components/NotFound";
+import Prices from "./components/Prices";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import ToDo from "./components/ToDo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+const electionsService = new ElectionsService(new FetchRepository());
+
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <I18nApp>
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route index element={<Abode />} />
-            <Route path="elections/:election/*" element={<Election />} />
-            <Route path="legalese" element={<Navigate to="/legalese/im" />} />
-            <Route path="legalese/im" element={<Masthead />} />
-            <Route path="legalese/pp" element={<PrivacyPolicy />} />
-            <Route path="legalese/tos" element={<ToDo />} />
-            <Route path="prices" element={<Prices />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </I18nApp>
+      <factoryContext.Provider value={electionsService}><electionsContext.Provider value={electionsService}>
+        <I18nApp>
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<Abode />} />
+              <Route path="elections/:election/*" element={<Election />} />
+              <Route path="legalese" element={<Navigate to="/legalese/im" />} />
+              <Route path="legalese/im" element={<Masthead />} />
+              <Route path="legalese/pp" element={<PrivacyPolicy />} />
+              <Route path="legalese/tos" element={<ToDo />} />
+              <Route path="prices" element={<Prices />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </I18nApp>
+      </electionsContext.Provider></factoryContext.Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

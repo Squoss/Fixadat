@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ interface I18nAppProperties {
   children: React.ReactNode;
 }
 
-function I18nApp(props: I18nAppProperties) {
+function I18nApp(props: Readonly<I18nAppProperties>) {
   console.log("I18nApp props: " + JSON.stringify(props));
 
   const [localizations, setLocalizations] = useState<Localizations>({});
@@ -45,7 +45,7 @@ function I18nApp(props: I18nAppProperties) {
             setLocalizations(response.parsedBody!);
           }
         })
-        .catch((error) => console.error(`failed to get time zones: ${error}`));
+        .catch((error) => console.error(`failed to get localizations: ${error}`));
 
     fetchLocalizations();
   }, []);
@@ -53,9 +53,9 @@ function I18nApp(props: I18nAppProperties) {
   return (
     <React.Fragment>
       {Object.keys(localizations).length === 0 ? (
-        <div className="spinner-border" role="status">
+        <output className="spinner-border">
           <span className="visually-hidden">Loading localizations …</span>
-        </div>
+        </output>
       ) : (
         <l10nContext.Provider value={localizations}>
           {props.children}

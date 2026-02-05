@@ -23,17 +23,10 @@
  */
 
 import React, { useContext, useState } from "react";
-import { Availability, ElectionT, Visibility } from "./Elections";
+import { Availability } from "./value_objects/Availability";
+import { Visibility } from "./value_objects/Visibility";
 import { l10nContext } from "./l10nContext";
-
-interface ElectionVoteProps {
-  election: ElectionT;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
-}
+import { ElectionVoteProps } from "./props/ElectionVoteProps";
 
 function ElectionVote(props: ElectionVoteProps) {
   console.log("ElectionVote props: " + JSON.stringify(props));

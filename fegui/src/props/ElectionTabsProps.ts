@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,38 @@
  * THE SOFTWARE.
  */
 
-export enum Availability {
-  NO = "No",
-  IFNEEDBE = "IfNeedBe",
-  YES = "Yes",
+import { ElectionT } from "../ElectionT";
+import { Availability } from "../value_objects/Availability";
+import { Visibility } from "../value_objects/Visibility";
+
+export enum ACTIVE_TAB {
+  TEXTS = "name and description",
+  CANDIDATES = "dates and times",
+  LINKS = "links",
+  VOTES = "votes",
+  SETTINGS = "settings",
 }
 
-export interface Vote {
-  name: string;
-  availability: Map<string, Availability>;
-  voted: Date;
-}
-
-export enum Visibility {
-  PUBLIC = "Public",
-  PROTECTED = "Protected",
-  PRIVATE = "Private",
-}
-
-export interface SubscriptionChannels {
-  emailAddress?: string;
-  phoneNumber?: string;
-  url?: string;
-}
-
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+export interface ElectionTabsProps {
+  election: ElectionT;
+  token: string;
+  activeTab: ACTIVE_TAB;
+  saveElectionText: (name: string, description?: string) => void;
+  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+  saveElectionSubscriptions: (
+    emailAddress?: string,
+    phoneNumber?: string
+  ) => void;
+  saveElectionVisibility: (visibility: Visibility) => void;
+  sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
+  timeZones: Array<string>;
+  saveVote: (
+    name: string,
+    availability: Map<string, Availability>,
+    timeZone?: string
+  ) => void;
+  deleteVote: (name: string, voted: Date) => void;
+  deleteElection: () => void;
+  isOrganizer: boolean;
+  isBrandNew: boolean;
 }
