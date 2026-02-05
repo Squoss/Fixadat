@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   Navigate,
   Outlet,
@@ -33,6 +33,8 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { ElectionT } from "./ElectionT";
+import { electionsContext } from "./electionsContext";
+import { HttpError } from "./HttpError";
 import { Availability } from "./value_objects/Availability";
 import { Visibility } from "./value_objects/Visibility";
 import ElectionTabs from "./ElectionTabs";
@@ -43,6 +45,7 @@ import NotFound from "./components/NotFound";
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));
 
+  const elections = useContext(electionsContext)!;
   const id = useParams().election;
   const location = useLocation();
   const token = location.hash;
@@ -59,21 +62,23 @@ function Election(props: {}) {
       return;
     }
 
-    fetchResource<ElectionT>(
-      Method.Get,
-      `/iapi/elections/${id}?timeZone=${
+    elections
+      .readElection(
+        id!,
+        token.substring(1),
         tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone
-      }`,
-      token.substring(1)
-    )
-      .then((response) => {
-        setResponseStatusCode(response.status);
-        if (response.ok) {
-          setElection(response.parsedBody);
-        }
+      )
+      .then((election) => {
+        setResponseStatusCode(200);
+        setElection(election);
       })
-      .catch((error) => console.error(`failed to get election: ${error}`));
-  }, [id, token, tz]);
+      .catch((error) => {
+        if (error instanceof HttpError) {
+          setResponseStatusCode(error.status);
+        }
+        console.error(`failed to get election: ${error}`);
+      });
+  }, [elections, id, token, tz]);
 
   useEffect(() => {
     getElection();

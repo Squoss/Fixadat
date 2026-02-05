@@ -22,32 +22,8 @@
  * THE SOFTWARE.
  */
 
-import { Repository } from "./driven_ports/Repository";
-import { ElectionT } from "./ElectionT";
-import { fetchResource, Method } from "./fetchJson";
-import { HttpError } from "./HttpError";
-import { PostElectionResponse } from "./value_objects/PostElectionResponse";
-
-export class FetchRepository implements Repository {
-  postElection = (): Promise<PostElectionResponse> =>
-    fetchResource<PostElectionResponse>(Method.Post, "/iapi/elections").then(
-      (response) => {
-        if (response.status !== 201) {
-          throw new Error(`HTTP status ${response.status} instead of 201`);
-        }
-        return response.parsedBody!;
-      }
-    );
-
-  getElection = (id: string, token: string, timeZone: string): Promise<ElectionT> =>
-    fetchResource<ElectionT>(
-      Method.Get,
-      `/iapi/elections/${id}?timeZone=${timeZone}`,
-      token
-    ).then((response) => {
-      if (!response.ok) {
-        throw new HttpError(response.status);
-      }
-      return response.parsedBody!;
-    });
+export class HttpError extends Error {
+  constructor(public readonly status: number) {
+    super(`HTTP status ${status}`);
+  }
 }
