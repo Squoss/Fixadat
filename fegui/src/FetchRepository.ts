@@ -50,4 +50,14 @@ export class FetchRepository implements Repository {
       }
       return response.parsedBody!;
     });
+
+  putElectionText = (id: string, token: string, name: string, description?: string): Promise<void> =>
+    fetchResource(Method.Put, `/iapi/elections/${id}/text`, token, {
+      name,
+      description,
+    }).then((response) => {
+      if (response.status !== 204) {
+        throw new HttpError(response.status);
+      }
+    });
 }

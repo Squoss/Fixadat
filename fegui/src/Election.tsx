@@ -100,21 +100,10 @@ function Election(props: {}) {
   }, []);
 
   const saveElectionText = (name: string, description?: string) =>
-    fetchResource(
-      Method.Put,
-      `/iapi/elections/${id}/text`,
-      token.substring(1),
-      {
-        name,
-        description,
-      }
-    )
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          setElection({ ...election, name, description } as ElectionT);
-        }
+    elections
+      .updateElectionText(id!, token.substring(1), name, description)
+      .then(() => {
+        setElection({ ...election, name, description } as ElectionT);
       })
       .catch((error) => console.error(`failed to put election text: ${error}`));
 

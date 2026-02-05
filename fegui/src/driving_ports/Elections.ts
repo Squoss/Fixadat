@@ -26,4 +26,5 @@ import { ElectionT } from "../ElectionT";
 
 export interface Elections {
   readElection: (id: string, token: string, timeZone: string) => Promise<ElectionT>;
+  updateElectionText: (id: string, token: string, name: string, description?: string) => Promise<void>;
 }

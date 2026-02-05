@@ -36,4 +36,7 @@ export class ElectionsService implements Factory, Elections {
 
   readElection = (id: string, token: string, timeZone: string): Promise<ElectionT> =>
     this.repository.getElection(id, token, timeZone);
+
+  updateElectionText = (id: string, token: string, name: string, description?: string): Promise<void> =>
+    this.repository.putElectionText(id, token, name, description);
 }

@@ -30,7 +30,7 @@ interface I18nAppProperties {
   children: React.ReactNode;
 }
 
-function I18nApp(props: I18nAppProperties) {
+function I18nApp(props: Readonly<I18nAppProperties>) {
   console.log("I18nApp props: " + JSON.stringify(props));
 
   const [localizations, setLocalizations] = useState<Localizations>({});
@@ -53,9 +53,9 @@ function I18nApp(props: I18nAppProperties) {
   return (
     <React.Fragment>
       {Object.keys(localizations).length === 0 ? (
-        <div className="spinner-border" role="status">
+        <output className="spinner-border">
           <span className="visually-hidden">Loading localizations …</span>
-        </div>
+        </output>
       ) : (
         <l10nContext.Provider value={localizations}>
           {props.children}
