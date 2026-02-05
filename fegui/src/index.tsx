@@ -28,7 +28,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Abode from "./Abode";
 import App from "./App";
 import Election from "./Election";
-import { Elections } from "./Elections";
+import { ElectionsService } from "./ElectionsService";
 import { factoryContext } from "./factoryContext";
 import { FetchRepository } from "./FetchRepository";
 import I18nApp from "./I18nApp";
@@ -42,7 +42,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const factory = new Elections(new FetchRepository());
+const factory = new ElectionsService(new FetchRepository());
 
 const root = createRoot(document.getElementById("root")!);
 root.render(

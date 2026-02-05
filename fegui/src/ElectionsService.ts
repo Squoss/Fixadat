@@ -29,7 +29,7 @@ import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
 import { Visibility } from "./value_objects/Visibility";
 import { Vote } from "./value_objects/Vote";
 
-export class Elections implements Factory {
+export class ElectionsService implements Factory {
   constructor(private readonly repository: Repository) {}
 
   createElection: () => Promise<PostElectionResponse> = () =>

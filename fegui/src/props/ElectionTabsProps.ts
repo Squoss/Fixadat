@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../Elections";
+import { ElectionT } from "../ElectionsService";
 import { Availability } from "../value_objects/Availability";
 import { Visibility } from "../value_objects/Visibility";
 

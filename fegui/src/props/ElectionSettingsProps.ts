@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../Elections";
+import { ElectionT } from "../ElectionsService";
 import { Visibility } from "../value_objects/Visibility";
 
 export interface ElectionSettingsProps {
