@@ -22,9 +22,19 @@
  * THE SOFTWARE.
  */
 
+import { Repository } from "./driven_ports/Repository";
+import { Factory } from "./driving_ports/Factory";
+import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
 import { Visibility } from "./value_objects/Visibility";
 import { Vote } from "./value_objects/Vote";
+
+export class Elections implements Factory {
+  constructor(private readonly repository: Repository) {}
+
+  createElection: () => Promise<PostElectionResponse> = () =>
+    this.repository.postElection();
+}
 
 export interface ElectionT {
   id: number;
