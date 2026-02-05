@@ -23,6 +23,7 @@
  */
 
 import { Repository } from "./driven_ports/Repository";
+import { ElectionT } from "./ElectionT";
 import { fetchResource, Method } from "./fetchJson";
 import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 
@@ -36,4 +37,16 @@ export class FetchRepository implements Repository {
         return response.parsedBody!;
       }
     );
+
+  getElection = (id: string, token: string, timeZone: string): Promise<ElectionT> =>
+    fetchResource<ElectionT>(
+      Method.Get,
+      `/iapi/elections/${id}?timeZone=${timeZone}`,
+      token
+    ).then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP status ${response.status}`);
+      }
+      return response.parsedBody!;
+    });
 }

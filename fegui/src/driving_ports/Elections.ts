@@ -24,8 +24,6 @@
 
 import { ElectionT } from "../ElectionT";
 
-export interface ElectionCandidatesProps {
-  election: ElectionT;
-  timeZones: Array<string>;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+export interface Elections {
+  readElection: (id: string, token: string, timeZone: string) => Promise<ElectionT>;
 }

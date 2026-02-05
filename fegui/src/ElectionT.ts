@@ -22,10 +22,21 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
+import { Visibility } from "./value_objects/Visibility";
+import { Vote } from "./value_objects/Vote";
 
-export interface ElectionCandidatesProps {
-  election: ElectionT;
-  timeZones: Array<string>;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+export interface ElectionT {
+  id: number;
+  organizerToken: string;
+  voterToken: string;
+  name: string;
+  description?: string;
+  timeZone?: string;
+  candidates: Array<string>;
+  visibility: Visibility;
+  created: Date;
+  updated: Date;
+  votes: Array<Vote>;
+  subscriptions: SubscriptionChannels;
 }

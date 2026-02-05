@@ -29,6 +29,7 @@ import Abode from "./Abode";
 import App from "./App";
 import Election from "./Election";
 import { ElectionsService } from "./ElectionsService";
+import { electionsContext } from "./electionsContext";
 import { factoryContext } from "./factoryContext";
 import { FetchRepository } from "./FetchRepository";
 import I18nApp from "./I18nApp";
@@ -42,13 +43,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const factory = new ElectionsService(new FetchRepository());
+const electionsService = new ElectionsService(new FetchRepository());
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <factoryContext.Provider value={factory}>
+      <factoryContext.Provider value={electionsService}><electionsContext.Provider value={electionsService}>
         <I18nApp>
           <Routes>
             <Route path="/" element={<App />}>
@@ -63,7 +64,7 @@ root.render(
             </Route>
           </Routes>
         </I18nApp>
-      </factoryContext.Provider>
+      </electionsContext.Provider></factoryContext.Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

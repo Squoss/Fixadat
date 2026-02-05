@@ -23,30 +23,17 @@
  */
 
 import { Repository } from "./driven_ports/Repository";
+import { ElectionT } from "./ElectionT";
+import { Elections } from "./driving_ports/Elections";
 import { Factory } from "./driving_ports/Factory";
 import { PostElectionResponse } from "./value_objects/PostElectionResponse";
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
 
-export class ElectionsService implements Factory {
+export class ElectionsService implements Factory, Elections {
   constructor(private readonly repository: Repository) {}
 
   createElection: () => Promise<PostElectionResponse> = () =>
     this.repository.postElection();
-}
 
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+  readElection = (id: string, token: string, timeZone: string): Promise<ElectionT> =>
+    this.repository.getElection(id, token, timeZone);
 }

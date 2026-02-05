@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 
+import { ElectionT } from "../ElectionT";
 import { PostElectionResponse } from "../value_objects/PostElectionResponse";
 
 export interface Repository {
   postElection: () => Promise<PostElectionResponse>;
+  getElection: (id: string, token: string, timeZone: string) => Promise<ElectionT>;
 }

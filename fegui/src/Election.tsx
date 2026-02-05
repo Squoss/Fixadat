@@ -32,7 +32,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { ElectionT } from "./ElectionsService";
+import { ElectionT } from "./ElectionT";
 import { Availability } from "./value_objects/Availability";
 import { Visibility } from "./value_objects/Visibility";
 import ElectionTabs from "./ElectionTabs";

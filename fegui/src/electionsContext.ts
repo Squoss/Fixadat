@@ -22,10 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import React from "react";
+import { Elections } from "./driving_ports/Elections";
 
-export interface ElectionCandidatesProps {
-  election: ElectionT;
-  timeZones: Array<string>;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
-}
+export const electionsContext = React.createContext<Elections | null>(null);
