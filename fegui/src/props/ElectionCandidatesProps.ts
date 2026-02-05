@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 
 export interface ElectionCandidatesProps {
-  election: ElectionT;
+  election: ElectionEntity;
   timeZones: Array<string>;
   saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
 }

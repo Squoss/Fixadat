@@ -22,8 +22,17 @@
  * THE SOFTWARE.
  */
 
-import { PostElectionResponse } from "../value_objects/PostElectionResponse";
+import { Repository } from "./driven_ports/Repository";
+import { ElectionEntity } from "./ElectionEntity";
+import { ElectionFactory } from "./driving_ports/ElectionFactory";
+import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 
-export interface Factory {
-  createElection: () => Promise<PostElectionResponse>;
+export class Factory implements ElectionFactory {
+  constructor(private readonly repository: Repository) {}
+
+  createElection: () => Promise<PostElectionResponse> = () =>
+    this.repository.postElection();
+
+  recreateElection: (id: string, token: string, timeZone: string) => Promise<ElectionEntity> = (id, token, timeZone) =>
+    this.repository.getElection(id, token, timeZone);
 }

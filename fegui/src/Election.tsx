@@ -23,17 +23,8 @@
  */
 
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import {
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { ElectionT } from "./ElectionT";
-import { electionsContext } from "./electionsContext";
+import { Navigate, Outlet, Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { ElectionEntity } from "./ElectionEntity";
 import { HttpError } from "./HttpError";
 import { Availability } from "./value_objects/Availability";
 import { Visibility } from "./value_objects/Visibility";
@@ -41,11 +32,12 @@ import ElectionTabs from "./ElectionTabs";
 import { ACTIVE_TAB } from "./props/ElectionTabsProps";
 import { fetchResource, Method } from "./fetchJson";
 import NotFound from "./components/NotFound";
+import { factoryContext } from "./factoryContext";
 
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));
 
-  const elections = useContext(electionsContext)!;
+  const factory = useContext(factoryContext)!;
   const id = useParams().election;
   const location = useLocation();
   const token = location.hash;
@@ -53,7 +45,7 @@ function Election(props: {}) {
   const brandNew = searchParams.has("brandNew");
   const tz = searchParams.get("timeZone");
 
-  const [election, setElection] = useState<ElectionT | undefined>(undefined);
+  const [election, setElection] = useState<ElectionEntity | undefined>(undefined);
   const [responseStatusCode, setResponseStatusCode] = useState<number>(200);
   const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
@@ -62,12 +54,8 @@ function Election(props: {}) {
       return;
     }
 
-    elections
-      .readElection(
-        id!,
-        token.substring(1),
-        tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone
-      )
+    factory
+      .recreateElection(id!, token.substring(1), tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
       .then((election) => {
         setResponseStatusCode(200);
         setElection(election);
@@ -78,7 +66,7 @@ function Election(props: {}) {
         }
         console.error(`failed to get election: ${error}`);
       });
-  }, [elections, id, token, tz]);
+  }, [factory, id, token, tz]);
 
   useEffect(() => {
     getElection();
@@ -100,115 +88,72 @@ function Election(props: {}) {
   }, []);
 
   const saveElectionText = (name: string, description?: string) =>
-    elections
-      .updateElectionText(id!, token.substring(1), name, description)
+    election!
+      .updateElectionText(token.substring(1), name, description)
       .then(() => {
-        setElection({ ...election, name, description } as ElectionT);
+        setElection(election!.with({ name, description }));
       })
       .catch((error) => console.error(`failed to put election text: ${error}`));
 
   const saveElectionSchedule = (candidates: Array<string>, timeZone?: string) =>
-    fetchResource(
-      Method.Put,
-      `/iapi/elections/${id}/nominees`,
-      token.substring(1),
-      {
-        candidates,
-        timeZone,
-      }
-    )
+    fetchResource(Method.Put, `/iapi/elections/${id}/nominees`, token.substring(1), {
+      candidates,
+      timeZone,
+    })
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
-          setElection({ ...election, candidates, timeZone } as ElectionT);
+          setElection(election!.with({ candidates, timeZone }));
         }
       })
-      .catch((error) =>
-        console.error(`failed to put election schedule: ${error}`)
-      );
+      .catch((error) => console.error(`failed to put election schedule: ${error}`));
 
-  const saveElectionSubscriptions = (
-    emailAddress?: string,
-    phoneNumber?: string
-  ) =>
-    fetchResource(
-      Method.Patch,
-      `/iapi/elections/${id}/subscriptions`,
-      token.substring(1),
-      {
-        emailAddress,
-        phoneNumber,
-      }
-    )
+  const saveElectionSubscriptions = (emailAddress?: string, phoneNumber?: string) =>
+    fetchResource(Method.Patch, `/iapi/elections/${id}/subscriptions`, token.substring(1), {
+      emailAddress,
+      phoneNumber,
+    })
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
-          setElection({
-            ...election,
-            subscriptions: { emailAddress, phoneNumber },
-          } as ElectionT);
+          setElection(election!.with({ subscriptions: { emailAddress, phoneNumber } }));
         }
       })
-      .catch((error) =>
-        console.error(`failed to put election subscriptions: ${error}`)
-      );
+      .catch((error) => console.error(`failed to put election subscriptions: ${error}`));
 
   const saveElectionVisibility = (visibility: Visibility) =>
-    fetchResource(
-      Method.Put,
-      `/iapi/elections/${id}/visibility`,
-      token.substring(1),
-      {
-        visibility,
-      }
-    )
+    fetchResource(Method.Put, `/iapi/elections/${id}/visibility`, token.substring(1), {
+      visibility,
+    })
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
         } else {
-          setElection({ ...election, visibility } as ElectionT);
+          setElection(election!.with({ visibility }));
         }
       })
-      .catch((error) =>
-        console.error(`failed to put election visibility: ${error}`)
-      );
+      .catch((error) => console.error(`failed to put election visibility: ${error}`));
 
   const sendLinksReminder = (emailAddress?: string, phoneNumber?: string) =>
-    fetchResource(
-      Method.Post,
-      `/iapi/elections/${id}/reminders`,
-      token.substring(1),
-      {
-        emailAddress,
-        phoneNumber,
-      }
-    )
+    fetchResource(Method.Post, `/iapi/elections/${id}/reminders`, token.substring(1), {
+      emailAddress,
+      phoneNumber,
+    })
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
         }
       })
-      .catch((error) =>
-        console.error(`failed to post election reminders: ${error}`)
-      );
+      .catch((error) => console.error(`failed to post election reminders: ${error}`));
 
-  const saveVote = (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => {
-    fetchResource(
-      Method.Post,
-      `/iapi/elections/${id}/votes`,
-      token.substring(1),
-      {
-        name,
-        timeZone,
-        availability: Object.fromEntries(availability),
-      }
-    )
+  const saveVote = (name: string, availability: Map<string, Availability>, timeZone?: string) => {
+    fetchResource(Method.Post, `/iapi/elections/${id}/votes`, token.substring(1), {
+      name,
+      timeZone,
+      availability: Object.fromEntries(availability),
+    })
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
@@ -216,17 +161,11 @@ function Election(props: {}) {
           getElection();
         }
       })
-      .catch((error) =>
-        console.error(`failed to post election reminders: ${error}`)
-      );
+      .catch((error) => console.error(`failed to post election reminders: ${error}`));
   };
 
   const deleteVote = (name: string, voted: Date) => {
-    fetchResource<void>(
-      Method.Delete,
-      `/iapi/elections/${id}/votes?name=${name}&voted=${voted}`,
-      token.substring(1)
-    )
+    fetchResource<void>(Method.Delete, `/iapi/elections/${id}/votes?name=${name}&voted=${voted}`, token.substring(1))
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
@@ -238,11 +177,7 @@ function Election(props: {}) {
   };
 
   const deleteElection = () => {
-    fetchResource<void>(
-      Method.Delete,
-      `/iapi/elections/${id}`,
-      token.substring(1)
-    )
+    fetchResource<void>(Method.Delete, `/iapi/elections/${id}`, token.substring(1))
       .then((response) => {
         if (response.status !== 204) {
           throw new Error(`HTTP status ${response.status} instead of 204`);
@@ -279,126 +214,126 @@ function Election(props: {}) {
     return (
       <React.Fragment>
         <title>{election.name}</title>
-      <Routes>
-      <Route path="/" element={<Outlet />}>
-          <Route
-            index
-            element={
-              token.substring(1) === election.organizerToken && brandNew ? (
-                <Navigate to={`/elections/${id}/texts?brandNew=true${token}`} />
-              ) : (
-                <Navigate to={`/elections/${id}/tally${token}`} />
-              )
-            }
-          />
-          <Route
-            path="texts"
-            element={
-              <ElectionTabs
-                activeTab={ACTIVE_TAB.TEXTS}
-                election={election}
-                token={token.substring(1)}
-                saveElectionText={saveElectionText}
-                saveElectionSchedule={saveElectionSchedule}
-                saveElectionSubscriptions={saveElectionSubscriptions}
-                saveElectionVisibility={saveElectionVisibility}
-                sendLinksReminder={sendLinksReminder}
-                timeZones={timeZones}
-                saveVote={saveVote}
-                deleteVote={deleteVote}
-                deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election.organizerToken}
-                isBrandNew={brandNew}
-              />
-            }
-          />
-          <Route
-            path="dats"
-            element={
-              <ElectionTabs
-                activeTab={ACTIVE_TAB.CANDIDATES}
-                election={election}
-                token={token.substring(1)}
-                saveElectionText={saveElectionText}
-                saveElectionSchedule={saveElectionSchedule}
-                saveElectionSubscriptions={saveElectionSubscriptions}
-                saveElectionVisibility={saveElectionVisibility}
-                sendLinksReminder={sendLinksReminder}
-                timeZones={timeZones}
-                saveVote={saveVote}
-                deleteVote={deleteVote}
-                deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election.organizerToken}
-                isBrandNew={brandNew}
-              />
-            }
-          />
-          <Route
-            path="links"
-            element={
-              <ElectionTabs
-                activeTab={ACTIVE_TAB.LINKS}
-                election={election}
-                token={token.substring(1)}
-                saveElectionText={saveElectionText}
-                saveElectionSchedule={saveElectionSchedule}
-                saveElectionSubscriptions={saveElectionSubscriptions}
-                saveElectionVisibility={saveElectionVisibility}
-                sendLinksReminder={sendLinksReminder}
-                timeZones={timeZones}
-                saveVote={saveVote}
-                deleteVote={deleteVote}
-                deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election.organizerToken}
-                isBrandNew={brandNew}
-              />
-            }
-          />
-          <Route
-            path="tally"
-            element={
-              <ElectionTabs
-                activeTab={ACTIVE_TAB.VOTES}
-                election={election}
-                token={token.substring(1)}
-                saveElectionText={saveElectionText}
-                saveElectionSchedule={saveElectionSchedule}
-                saveElectionSubscriptions={saveElectionSubscriptions}
-                saveElectionVisibility={saveElectionVisibility}
-                sendLinksReminder={sendLinksReminder}
-                timeZones={timeZones}
-                saveVote={saveVote}
-                deleteVote={deleteVote}
-                deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election.organizerToken}
-                isBrandNew={brandNew}
-              />
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <ElectionTabs
-                activeTab={ACTIVE_TAB.SETTINGS}
-                election={election}
-                token={token.substring(1)}
-                saveElectionText={saveElectionText}
-                saveElectionSchedule={saveElectionSchedule}
-                saveElectionSubscriptions={saveElectionSubscriptions}
-                saveElectionVisibility={saveElectionVisibility}
-                sendLinksReminder={sendLinksReminder}
-                timeZones={timeZones}
-                saveVote={saveVote}
-                deleteVote={deleteVote}
-                deleteElection={deleteElection}
-                isOrganizer={token.substring(1) === election.organizerToken}
-                isBrandNew={brandNew}
-              />
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Outlet />}>
+            <Route
+              index
+              element={
+                token.substring(1) === election.organizerToken && brandNew ? (
+                  <Navigate to={`/elections/${id}/texts?brandNew=true${token}`} />
+                ) : (
+                  <Navigate to={`/elections/${id}/tally${token}`} />
+                )
+              }
+            />
+            <Route
+              path="texts"
+              element={
+                <ElectionTabs
+                  activeTab={ACTIVE_TAB.TEXTS}
+                  election={election}
+                  token={token.substring(1)}
+                  saveElectionText={saveElectionText}
+                  saveElectionSchedule={saveElectionSchedule}
+                  saveElectionSubscriptions={saveElectionSubscriptions}
+                  saveElectionVisibility={saveElectionVisibility}
+                  sendLinksReminder={sendLinksReminder}
+                  timeZones={timeZones}
+                  saveVote={saveVote}
+                  deleteVote={deleteVote}
+                  deleteElection={deleteElection}
+                  isOrganizer={token.substring(1) === election.organizerToken}
+                  isBrandNew={brandNew}
+                />
+              }
+            />
+            <Route
+              path="dats"
+              element={
+                <ElectionTabs
+                  activeTab={ACTIVE_TAB.CANDIDATES}
+                  election={election}
+                  token={token.substring(1)}
+                  saveElectionText={saveElectionText}
+                  saveElectionSchedule={saveElectionSchedule}
+                  saveElectionSubscriptions={saveElectionSubscriptions}
+                  saveElectionVisibility={saveElectionVisibility}
+                  sendLinksReminder={sendLinksReminder}
+                  timeZones={timeZones}
+                  saveVote={saveVote}
+                  deleteVote={deleteVote}
+                  deleteElection={deleteElection}
+                  isOrganizer={token.substring(1) === election.organizerToken}
+                  isBrandNew={brandNew}
+                />
+              }
+            />
+            <Route
+              path="links"
+              element={
+                <ElectionTabs
+                  activeTab={ACTIVE_TAB.LINKS}
+                  election={election}
+                  token={token.substring(1)}
+                  saveElectionText={saveElectionText}
+                  saveElectionSchedule={saveElectionSchedule}
+                  saveElectionSubscriptions={saveElectionSubscriptions}
+                  saveElectionVisibility={saveElectionVisibility}
+                  sendLinksReminder={sendLinksReminder}
+                  timeZones={timeZones}
+                  saveVote={saveVote}
+                  deleteVote={deleteVote}
+                  deleteElection={deleteElection}
+                  isOrganizer={token.substring(1) === election.organizerToken}
+                  isBrandNew={brandNew}
+                />
+              }
+            />
+            <Route
+              path="tally"
+              element={
+                <ElectionTabs
+                  activeTab={ACTIVE_TAB.VOTES}
+                  election={election}
+                  token={token.substring(1)}
+                  saveElectionText={saveElectionText}
+                  saveElectionSchedule={saveElectionSchedule}
+                  saveElectionSubscriptions={saveElectionSubscriptions}
+                  saveElectionVisibility={saveElectionVisibility}
+                  sendLinksReminder={sendLinksReminder}
+                  timeZones={timeZones}
+                  saveVote={saveVote}
+                  deleteVote={deleteVote}
+                  deleteElection={deleteElection}
+                  isOrganizer={token.substring(1) === election.organizerToken}
+                  isBrandNew={brandNew}
+                />
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <ElectionTabs
+                  activeTab={ACTIVE_TAB.SETTINGS}
+                  election={election}
+                  token={token.substring(1)}
+                  saveElectionText={saveElectionText}
+                  saveElectionSchedule={saveElectionSchedule}
+                  saveElectionSubscriptions={saveElectionSubscriptions}
+                  saveElectionVisibility={saveElectionVisibility}
+                  sendLinksReminder={sendLinksReminder}
+                  timeZones={timeZones}
+                  saveVote={saveVote}
+                  deleteVote={deleteVote}
+                  deleteElection={deleteElection}
+                  isOrganizer={token.substring(1) === election.organizerToken}
+                  isBrandNew={brandNew}
+                />
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
       </React.Fragment>
     );
   } else {

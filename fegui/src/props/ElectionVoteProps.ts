@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 import { Availability } from "../value_objects/Availability";
 
 export interface ElectionVoteProps {
-  election: ElectionT;
+  election: ElectionEntity;
   saveVote: (
     name: string,
     availability: Map<string, Availability>,

@@ -23,7 +23,7 @@
  */
 
 import { Repository } from "./driven_ports/Repository";
-import { ElectionT } from "./ElectionT";
+import { ElectionData, ElectionEntity } from "./ElectionEntity";
 import { fetchResource, Method } from "./fetchJson";
 import { HttpError } from "./HttpError";
 import { PostElectionResponse } from "./value_objects/PostElectionResponse";
@@ -39,8 +39,8 @@ export class FetchRepository implements Repository {
       }
     );
 
-  getElection = (id: string, token: string, timeZone: string): Promise<ElectionT> =>
-    fetchResource<ElectionT>(
+  getElection = (id: string, token: string, timeZone: string): Promise<ElectionEntity> =>
+    fetchResource<ElectionData>(
       Method.Get,
       `/iapi/elections/${id}?timeZone=${timeZone}`,
       token
@@ -48,7 +48,7 @@ export class FetchRepository implements Repository {
       if (!response.ok) {
         throw new HttpError(response.status);
       }
-      return response.parsedBody!;
+      return new ElectionEntity(this, response.parsedBody!);
     });
 
   putElectionText = (id: string, token: string, name: string, description?: string): Promise<void> =>

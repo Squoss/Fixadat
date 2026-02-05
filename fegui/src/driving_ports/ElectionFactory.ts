@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
+import { PostElectionResponse } from "../value_objects/PostElectionResponse";
 
-export interface Elections {
-  readElection: (id: string, token: string, timeZone: string) => Promise<ElectionT>;
-  updateElectionText: (id: string, token: string, name: string, description?: string) => Promise<void>;
+export interface ElectionFactory {
+  createElection: () => Promise<PostElectionResponse>;
+  recreateElection: (id: string, token: string, timeZone: string) => Promise<ElectionEntity>;
 }

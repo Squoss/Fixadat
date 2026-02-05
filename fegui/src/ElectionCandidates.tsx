@@ -144,7 +144,11 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                 <label htmlFor="dateTimeSchedule" className="form-label">
                   {localizations["datesAndTimes"]}
                 </label>
-                {dateTimes.map((dt) => (
+                  <p className="card-text">
+                    <i className="bi bi-info-circle-fill"></i>{" "}
+                    {localizations["datesAndTimes.order"]}
+                  </p>
+               {dateTimes.map((dt) => (
                   <React.Fragment key={dt}>
                     <div className="input-group mb-3">
                       <input
@@ -164,11 +168,7 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
                   </React.Fragment>
                 ))}
                 <div className="input-group mb-3">
-                  <p className="card-text">
-                    <i className="bi bi-info-circle-fill"></i>{" "}
-                    {localizations["datesAndTimes.order"]}
-                  </p>
-                  <input
+                   <input
                     id="dateTimeSchedule"
                     value={dateTime}
                     type="datetime-local"

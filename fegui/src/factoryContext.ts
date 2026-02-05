@@ -23,6 +23,6 @@
  */
 
 import React from "react";
-import { Factory } from "./driving_ports/Factory";
+import { ElectionFactory } from "./driving_ports/ElectionFactory";
 
-export const factoryContext = React.createContext<Factory | null>(null);
+export const factoryContext = React.createContext<ElectionFactory | null>(null);

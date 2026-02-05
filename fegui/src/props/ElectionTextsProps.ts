@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 
 export interface ElectionTextsProps {
-  election: ElectionT;
+  election: ElectionEntity;
   saveElectionText: (name: string, description?: string) => void;
 }

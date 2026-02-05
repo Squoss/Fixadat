@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 import { Availability } from "../value_objects/Availability";
 
 export interface ElectionTallyProps {
-  election: ElectionT;
+  election: ElectionEntity;
   token: string;
   timeZones: Array<string>;
   saveVote: (

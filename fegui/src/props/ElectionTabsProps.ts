@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 import { Availability } from "../value_objects/Availability";
 import { Visibility } from "../value_objects/Visibility";
 
@@ -35,7 +35,7 @@ export enum ACTIVE_TAB {
 }
 
 export interface ElectionTabsProps {
-  election: ElectionT;
+  election: ElectionEntity;
   token: string;
   activeTab: ACTIVE_TAB;
   saveElectionText: (name: string, description?: string) => void;

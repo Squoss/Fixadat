@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { ElectionT } from "../ElectionT";
+import { ElectionEntity } from "../ElectionEntity";
 import { Visibility } from "../value_objects/Visibility";
 
 export interface ElectionSettingsProps {
-  election: ElectionT;
+  election: ElectionEntity;
   saveElectionSubscriptions: (
     emailAddress?: string,
     phoneNumber?: string
