@@ -23,21 +23,10 @@
  */
 
 import React, { useContext } from "react";
-import { Availability, ElectionT, Vote } from "./Elections";
+import { Vote } from "./value_objects/Vote";
 import ElectionVote from "./ElectionVote";
 import { l10nContext } from "./l10nContext";
-
-interface ElectionTallyProps {
-  election: ElectionT;
-  token: string;
-  timeZones: Array<string>;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
-  deleteVote: (name: string, voted: Date) => void;
-}
+import { ElectionTallyProps } from "./props/ElectionTallyProps";
 
 function prettyLocalDateTimeString(locale: string, dateTime: string) {
   if (dateTime) {

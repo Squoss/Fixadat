@@ -22,21 +22,38 @@
  * THE SOFTWARE.
  */
 
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
+import { ElectionT } from "../Elections";
+import { Availability } from "../value_objects/Availability";
+import { Visibility } from "../value_objects/Visibility";
 
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+export enum ACTIVE_TAB {
+  TEXTS = "name and description",
+  CANDIDATES = "dates and times",
+  LINKS = "links",
+  VOTES = "votes",
+  SETTINGS = "settings",
+}
+
+export interface ElectionTabsProps {
+  election: ElectionT;
+  token: string;
+  activeTab: ACTIVE_TAB;
+  saveElectionText: (name: string, description?: string) => void;
+  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+  saveElectionSubscriptions: (
+    emailAddress?: string,
+    phoneNumber?: string
+  ) => void;
+  saveElectionVisibility: (visibility: Visibility) => void;
+  sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
+  timeZones: Array<string>;
+  saveVote: (
+    name: string,
+    availability: Map<string, Availability>,
+    timeZone?: string
+  ) => void;
+  deleteVote: (name: string, voted: Date) => void;
+  deleteElection: () => void;
+  isOrganizer: boolean;
+  isBrandNew: boolean;
 }

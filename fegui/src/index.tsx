@@ -29,11 +29,11 @@ import Abode from "./Abode";
 import App from "./App";
 import Election from "./Election";
 import I18nApp from "./I18nApp";
-import Masthead from "./Masthead";
-import NotFound from "./NotFound";
-import Prices from "./Prices";
-import PrivacyPolicy from "./PrivacyPolicy";
-import ToDo from "./ToDo";
+import Masthead from "./components/Masthead";
+import NotFound from "./components/NotFound";
+import Prices from "./components/Prices";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import ToDo from "./components/ToDo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";

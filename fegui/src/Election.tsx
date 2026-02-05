@@ -32,10 +32,13 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Availability, ElectionT, Visibility } from "./Elections";
-import ElectionTabs, { ACTIVE_TAB } from "./ElectionTabs";
+import { ElectionT } from "./Elections";
+import { Availability } from "./value_objects/Availability";
+import { Visibility } from "./value_objects/Visibility";
+import ElectionTabs from "./ElectionTabs";
+import { ACTIVE_TAB } from "./props/ElectionTabsProps";
 import { fetchResource, Method } from "./fetchJson";
-import NotFound from "./NotFound";
+import NotFound from "./components/NotFound";
 
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));

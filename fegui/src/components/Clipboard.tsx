@@ -22,21 +22,39 @@
  * THE SOFTWARE.
  */
 
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
+import { useState } from "react";
+import { ClipboardProps } from "../props/ClipboardProps";
 
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+function Clipboard(props: Readonly<ClipboardProps>) {
+  console.log("Clipboard props: " + JSON.stringify(props));
+
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const writeToClipboard = () =>
+    navigator.clipboard
+      .writeText(props.text)
+      .then(() => {
+        console.log("succeeded in copying link to clipboard");
+        setCopied(true);
+      })
+      .catch((error) => {
+        console.error(`failed to copy link to clipboard: ${error}`);
+        setCopied(false);
+      });
+
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-dark"
+      onClick={writeToClipboard}
+    >
+      {copied ? (
+        <i className="bi bi-clipboard-check"></i>
+      ) : (
+        <i className="bi bi-clipboard"></i>
+      )}
+    </button>
+  );
 }
+
+export default Clipboard;

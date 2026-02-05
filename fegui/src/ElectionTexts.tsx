@@ -23,13 +23,8 @@
  */
 
 import React, { useContext, useState } from "react";
-import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
-
-interface ElectionTextsProps {
-  election: ElectionT;
-  saveElectionText: (name: string, description?: string) => void;
-}
+import { ElectionTextsProps } from "./props/ElectionTextsProps";
 
 function tte(s?: string) {
   // trim to empty

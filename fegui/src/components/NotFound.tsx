@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2026 Squeng AG
+ * Copyright (c) 2021-2022 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,27 @@
  * THE SOFTWARE.
  */
 
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { l10nContext } from "../l10nContext";
 
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+function NotFound(props: {}) {
+  console.log("NotFound props: " + JSON.stringify(props));
+
+  const localizations = useContext(l10nContext);
+
+  return (
+    <div className="alert alert-info" role="alert">
+      <h4 className="alert-heading">{localizations["notFound.title"]}</h4>
+      <p>{localizations["notFound.page"]}</p>
+      <hr />
+      <p className="mb-0">
+        <Link to="/" className="alert-link">
+          <i className="bi bi-house"></i>
+        </Link>
+      </p>
+    </div>
+  );
 }
+
+export default NotFound;

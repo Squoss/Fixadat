@@ -24,19 +24,10 @@
 
 import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
-import { ElectionT, Visibility } from "./Elections";
+import { Visibility } from "./value_objects/Visibility";
 import { l10nContext } from "./l10nContext";
+import { ElectionSettingsProps } from "./props/ElectionSettingsProps";
 import useInputValidation, { InputType } from "./useInputValidation";
-
-interface ElectionSettingsProps {
-  election: ElectionT;
-  saveElectionSubscriptions: (
-    emailAddress?: string,
-    phoneNumber?: string
-  ) => void;
-  saveElectionVisibility: (visibility: Visibility) => void;
-  deleteElection: () => void;
-}
 
 function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
   console.log("ElectionSettings props: " + JSON.stringify(props));

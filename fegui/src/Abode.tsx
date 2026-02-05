@@ -27,11 +27,7 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchResource, Method } from "./fetchJson";
 import { l10nContext } from "./l10nContext";
-
-interface PostElectionResponse {
-  id: number;
-  organizerToken: string;
-}
+import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 
 function Abode(props: {}) {
   console.log("Abode props: " + JSON.stringify(props));

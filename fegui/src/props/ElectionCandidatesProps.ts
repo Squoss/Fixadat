@@ -22,42 +22,10 @@
  * THE SOFTWARE.
  */
 
-import { useState } from "react";
+import { ElectionT } from "../Elections";
 
-interface ClipboardProps {
-  text: string;
+export interface ElectionCandidatesProps {
+  election: ElectionT;
+  timeZones: Array<string>;
+  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
 }
-
-function Clipboard(props: Readonly<ClipboardProps>) {
-  console.log("Clipboard props: " + JSON.stringify(props));
-
-  const [copied, setCopied] = useState<boolean>(false);
-
-  const writeToClipboard = () =>
-    navigator.clipboard
-      .writeText(props.text)
-      .then(() => {
-        console.log("succeeded in copying link to clipboard");
-        setCopied(true);
-      })
-      .catch((error) => {
-        console.error(`failed to copy link to clipboard: ${error}`);
-        setCopied(false);
-      });
-
-  return (
-    <button
-      type="button"
-      className="btn btn-outline-dark"
-      onClick={writeToClipboard}
-    >
-      {copied ? (
-        <i className="bi bi-clipboard-check"></i>
-      ) : (
-        <i className="bi bi-clipboard"></i>
-      )}
-    </button>
-  );
-}
-
-export default Clipboard;

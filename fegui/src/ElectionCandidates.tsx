@@ -23,14 +23,8 @@
  */
 
 import React, { useContext, useState } from "react";
-import { ElectionT } from "./Elections";
 import { l10nContext } from "./l10nContext";
-
-interface ElectionCandidatesProps {
-  election: ElectionT;
-  timeZones: Array<string>;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
-}
+import { ElectionCandidatesProps } from "./props/ElectionCandidatesProps";
 
 function tte(s?: string) {
   // trim to empty

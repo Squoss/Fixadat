@@ -22,21 +22,37 @@
  * THE SOFTWARE.
  */
 
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
+import React, { useContext } from "react";
+import { l10nContext } from "../l10nContext";
 
-export interface ElectionT {
-  id: number;
-  organizerToken: string;
-  voterToken: string;
-  name: string;
-  description?: string;
-  timeZone?: string;
-  candidates: Array<string>;
-  visibility: Visibility;
-  created: Date;
-  updated: Date;
-  votes: Array<Vote>;
-  subscriptions: SubscriptionChannels;
+function Prices(props: {}) {
+  console.log("Prices props: " + JSON.stringify(props));
+
+  const localizations = useContext(l10nContext);
+
+  return (
+    <React.Fragment>
+      <h1>{localizations["prices"]}</h1>
+      <div className="row align-items-center">
+        <div className="col">
+          <p
+            dangerouslySetInnerHTML={{
+              __html: localizations["HTML.teachingAid"],
+            }}
+          ></p>
+          <p>{localizations["readMe"]}</p>
+        </div>
+        <div className="col">
+          <iframe
+            title="Leanpub"
+            width="200"
+            height="400"
+            src="https://leanpub.com/JKS/embed"
+          ></iframe>
+        </div>
+      </div>
+    </React.Fragment>
+  );
 }
+
+export default Prices;

@@ -22,37 +22,9 @@
  * THE SOFTWARE.
  */
 
-import React, { useContext } from "react";
-import { l10nContext } from "./l10nContext";
+import { ElectionT } from "../Elections";
 
-function Prices(props: {}) {
-  console.log("Prices props: " + JSON.stringify(props));
-
-  const localizations = useContext(l10nContext);
-
-  return (
-    <React.Fragment>
-      <h1>{localizations["prices"]}</h1>
-      <div className="row align-items-center">
-        <div className="col">
-          <p
-            dangerouslySetInnerHTML={{
-              __html: localizations["HTML.teachingAid"],
-            }}
-          ></p>
-          <p>{localizations["readMe"]}</p>
-        </div>
-        <div className="col">
-          <iframe
-            title="Leanpub"
-            width="200"
-            height="400"
-            src="https://leanpub.com/JKS/embed"
-          ></iframe>
-        </div>
-      </div>
-    </React.Fragment>
-  );
+export interface ElectionTextsProps {
+  election: ElectionT;
+  saveElectionText: (name: string, description?: string) => void;
 }
-
-export default Prices;
