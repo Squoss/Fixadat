@@ -28,6 +28,9 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Abode from "./Abode";
 import App from "./App";
 import Election from "./Election";
+import { Elections } from "./Elections";
+import { factoryContext } from "./factoryContext";
+import { FetchRepository } from "./FetchRepository";
 import I18nApp from "./I18nApp";
 import Masthead from "./components/Masthead";
 import NotFound from "./components/NotFound";
@@ -39,24 +42,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+const factory = new Elections(new FetchRepository());
+
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <I18nApp>
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route index element={<Abode />} />
-            <Route path="elections/:election/*" element={<Election />} />
-            <Route path="legalese" element={<Navigate to="/legalese/im" />} />
-            <Route path="legalese/im" element={<Masthead />} />
-            <Route path="legalese/pp" element={<PrivacyPolicy />} />
-            <Route path="legalese/tos" element={<ToDo />} />
-            <Route path="prices" element={<Prices />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </I18nApp>
+      <factoryContext.Provider value={factory}>
+        <I18nApp>
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<Abode />} />
+              <Route path="elections/:election/*" element={<Election />} />
+              <Route path="legalese" element={<Navigate to="/legalese/im" />} />
+              <Route path="legalese/im" element={<Masthead />} />
+              <Route path="legalese/pp" element={<PrivacyPolicy />} />
+              <Route path="legalese/tos" element={<ToDo />} />
+              <Route path="prices" element={<Prices />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </I18nApp>
+      </factoryContext.Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

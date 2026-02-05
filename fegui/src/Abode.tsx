@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2022 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,34 +25,28 @@
 import { Modal } from "bootstrap";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchResource, Method } from "./fetchJson";
+import { factoryContext } from "./factoryContext";
 import { l10nContext } from "./l10nContext";
-import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 
 function Abode(props: {}) {
   console.log("Abode props: " + JSON.stringify(props));
 
+  const factory = useContext(factoryContext)!;
   const localizations = useContext(l10nContext);
 
   const navigate = useNavigate();
 
-  const postElection = () =>
-    fetchResource<PostElectionResponse>(Method.Post, "/iapi/elections")
-      .then((response) => {
-        if (response.status !== 201) {
-          throw new Error(`HTTP status ${response.status} instead of 201`);
-        } else {
-          navigate(
-            `/elections/${response.parsedBody?.id}?brandNew=true#${response.parsedBody?.organizerToken}`
-          );
-        }
-      })
-      .catch((error) => console.error(`failed to post election: ${error}`));
-
   const handlePostElection = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     Modal.getInstance(document.getElementById("postElectionModal")!)!.hide();
-    postElection();
+    factory
+      .createElection()
+      .then((response) => {
+        navigate(
+          `/elections/${response.id}?brandNew=true#${response.organizerToken}`
+        );
+      })
+      .catch((error) => console.error(`failed to post election: ${error}`));
   };
 
   return (
