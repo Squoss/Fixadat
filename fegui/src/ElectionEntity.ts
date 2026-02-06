@@ -23,6 +23,7 @@
  */
 
 import { Repository } from "./driven_ports/Repository";
+import { Availability } from "./value_objects/Availability";
 import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
 import { Visibility } from "./value_objects/Visibility";
 import { Vote } from "./value_objects/Vote";
@@ -98,6 +99,16 @@ export class ElectionEntity {
     this.visibility = visibility;
     return this.repository.putElectionVisibility(String(this.id), this.organizerToken, visibility)
       .then(() => this.with({}));
+  }
+
+  castVote(token: string, name: string, availability: Map<string, Availability>, timeZone?: string): Promise<ElectionEntity> {
+    return this.repository.postVote(String(this.id), token, name, availability, timeZone)
+      .then(() => this.repository.getElection(String(this.id), token, this.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone));
+  }
+
+  revokeVote(token: string, name: string, voted: Date): Promise<ElectionEntity> {
+    return this.repository.deleteVote(String(this.id), token, name, voted)
+      .then(() => this.repository.getElection(String(this.id), token, this.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone));
   }
 
   with(overrides: Partial<ElectionData>): ElectionEntity {

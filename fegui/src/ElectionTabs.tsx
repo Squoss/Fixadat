@@ -75,8 +75,7 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
           election={props.election}
           token={props.token}
           timeZones={props.timeZones}
-          saveVote={props.saveVote}
-          deleteVote={props.deleteVote}
+          onElectionChanged={props.onElectionChanged}
         />
       );
       break;

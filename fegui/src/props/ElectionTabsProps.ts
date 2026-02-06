@@ -23,7 +23,6 @@
  */
 
 import { ElectionEntity } from "../ElectionEntity";
-import { Availability } from "../value_objects/Availability";
 
 export enum ACTIVE_TAB {
   TEXTS = "name and description",
@@ -40,12 +39,6 @@ export interface ElectionTabsProps {
   onElectionChanged: (election: ElectionEntity) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
   timeZones: Array<string>;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
-  deleteVote: (name: string, voted: Date) => void;
   deleteElection: () => void;
   isOrganizer: boolean;
   isBrandNew: boolean;

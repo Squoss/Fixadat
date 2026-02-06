@@ -26,7 +26,6 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { ElectionEntity } from "./ElectionEntity";
 import { HttpError } from "./HttpError";
-import { Availability } from "./value_objects/Availability";
 import ElectionTabs from "./ElectionTabs";
 import { ACTIVE_TAB } from "./props/ElectionTabsProps";
 import { fetchResource, Method } from "./fetchJson";
@@ -98,34 +97,6 @@ function Election(props: {}) {
       })
       .catch((error) => console.error(`failed to post election reminders: ${error}`));
 
-  const saveVote = (name: string, availability: Map<string, Availability>, timeZone?: string) => {
-    fetchResource(Method.Post, `/iapi/elections/${id}/votes`, token.substring(1), {
-      name,
-      timeZone,
-      availability: Object.fromEntries(availability),
-    })
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          getElection();
-        }
-      })
-      .catch((error) => console.error(`failed to post election reminders: ${error}`));
-  };
-
-  const deleteVote = (name: string, voted: Date) => {
-    fetchResource<void>(Method.Delete, `/iapi/elections/${id}/votes?name=${name}&voted=${voted}`, token.substring(1))
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          getElection();
-        }
-      })
-      .catch((error) => console.error(`failed to delete vote: ${error}`));
-  };
-
   const deleteElection = () => {
     fetchResource<void>(Method.Delete, `/iapi/elections/${id}`, token.substring(1))
       .then((response) => {
@@ -186,8 +157,6 @@ function Election(props: {}) {
                   onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
-                  saveVote={saveVote}
-                  deleteVote={deleteVote}
                   deleteElection={deleteElection}
                   isOrganizer={token.substring(1) === election.organizerToken}
                   isBrandNew={brandNew}
@@ -204,8 +173,6 @@ function Election(props: {}) {
                   onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
-                  saveVote={saveVote}
-                  deleteVote={deleteVote}
                   deleteElection={deleteElection}
                   isOrganizer={token.substring(1) === election.organizerToken}
                   isBrandNew={brandNew}
@@ -222,8 +189,6 @@ function Election(props: {}) {
                   onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
-                  saveVote={saveVote}
-                  deleteVote={deleteVote}
                   deleteElection={deleteElection}
                   isOrganizer={token.substring(1) === election.organizerToken}
                   isBrandNew={brandNew}
@@ -240,8 +205,6 @@ function Election(props: {}) {
                   onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
-                  saveVote={saveVote}
-                  deleteVote={deleteVote}
                   deleteElection={deleteElection}
                   isOrganizer={token.substring(1) === election.organizerToken}
                   isBrandNew={brandNew}
@@ -258,8 +221,6 @@ function Election(props: {}) {
                   onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
-                  saveVote={saveVote}
-                  deleteVote={deleteVote}
                   deleteElection={deleteElection}
                   isOrganizer={token.substring(1) === election.organizerToken}
                   isBrandNew={brandNew}

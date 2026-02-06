@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -134,7 +134,9 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
           )
       )
     ) {
-      props.deleteVote(name, voted);
+      props.election.revokeVote(props.token, name, voted)
+        .then((updated) => props.onElectionChanged(updated))
+        .catch((error) => console.error(`failed to revoke vote: ${error}`));
     }
   };
 
@@ -237,7 +239,8 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
             <tfoot>
               <ElectionVote
                 election={props.election}
-                saveVote={props.saveVote}
+                token={props.token}
+                onElectionChanged={props.onElectionChanged}
               />
             </tfoot>
           </table>

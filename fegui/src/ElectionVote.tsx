@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,9 @@ function ElectionVote(props: ElectionVoteProps) {
 
   const saveVote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    props.saveVote(name, availability, props.election.timeZone);
+    props.election.castVote(props.token, name, availability, props.election.timeZone)
+      .then((updated) => props.onElectionChanged(updated))
+      .catch((error) => console.error(`failed to cast vote: ${error}`));
     setName("");
     setAvailability(defaultAvailabiity);
   };

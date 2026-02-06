@@ -90,4 +90,23 @@ export class FetchRepository implements Repository {
         throw new HttpError(response.status);
       }
     });
+
+  postVote = (id: string, token: string, name: string, availability: Map<string, string>, timeZone?: string): Promise<void> =>
+    fetchResource(Method.Post, `/iapi/elections/${id}/votes`, token, {
+      name,
+      timeZone,
+      availability: Object.fromEntries(availability),
+    }).then((response) => {
+      if (response.status !== 204) {
+        throw new HttpError(response.status);
+      }
+    });
+
+  deleteVote = (id: string, token: string, name: string, voted: Date): Promise<void> =>
+    fetchResource<void>(Method.Delete, `/iapi/elections/${id}/votes?name=${name}&voted=${voted}`, token)
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new HttpError(response.status);
+        }
+      });
 }

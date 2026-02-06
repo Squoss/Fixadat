@@ -23,16 +23,10 @@
  */
 
 import { ElectionEntity } from "../ElectionEntity";
-import { Availability } from "../value_objects/Availability";
 
 export interface ElectionTallyProps {
   election: ElectionEntity;
   token: string;
   timeZones: Array<string>;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
-  deleteVote: (name: string, voted: Date) => void;
+  onElectionChanged: (election: ElectionEntity) => void;
 }

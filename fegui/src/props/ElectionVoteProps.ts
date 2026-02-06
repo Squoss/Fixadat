@@ -23,13 +23,9 @@
  */
 
 import { ElectionEntity } from "../ElectionEntity";
-import { Availability } from "../value_objects/Availability";
 
 export interface ElectionVoteProps {
   election: ElectionEntity;
-  saveVote: (
-    name: string,
-    availability: Map<string, Availability>,
-    timeZone?: string
-  ) => void;
+  token: string;
+  onElectionChanged: (election: ElectionEntity) => void;
 }
