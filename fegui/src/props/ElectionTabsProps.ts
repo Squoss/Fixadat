@@ -39,7 +39,7 @@ export interface ElectionTabsProps {
   onElectionChanged: (election: ElectionEntity) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
   timeZones: Array<string>;
-  deleteElection: () => void;
+  onElectionDeleted: () => void;
   isOrganizer: boolean;
   isBrandNew: boolean;
 }

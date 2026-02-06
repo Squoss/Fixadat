@@ -109,4 +109,12 @@ export class FetchRepository implements Repository {
           throw new HttpError(response.status);
         }
       });
+
+  deleteElection = (id: string, token: string): Promise<void> =>
+    fetchResource<void>(Method.Delete, `/iapi/elections/${id}`, token)
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new HttpError(response.status);
+        }
+      });
 }

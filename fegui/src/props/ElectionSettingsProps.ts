@@ -27,5 +27,5 @@ import { ElectionEntity } from "../ElectionEntity";
 export interface ElectionSettingsProps {
   election: ElectionEntity;
   onElectionChanged: (election: ElectionEntity) => void;
-  deleteElection: () => void;
+  onElectionDeleted: () => void;
 }

@@ -22,18 +22,12 @@
  * THE SOFTWARE.
  */
 
-import { ElectionEntity } from "../ElectionEntity";
-import { PostElectionResponse } from "../value_objects/PostElectionResponse";
-import { Visibility } from "../value_objects/Visibility";
+import { Repository } from "./driven_ports/Repository";
+import { ElectionAntiFactory } from "./driving_ports/ElectionAntiFactory";
 
-export interface Repository {
-  postElection: () => Promise<PostElectionResponse>;
-  getElection: (id: string, token: string, timeZone: string) => Promise<ElectionEntity>;
-  putElectionText: (id: string, token: string, name: string, description?: string) => Promise<void>;
-  putElectionSchedule: (id: string, token: string, candidates: Array<string>, timeZone?: string) => Promise<void>;
-  patchElectionSubscriptions: (id: string, token: string, emailAddress?: string, phoneNumber?: string) => Promise<void>;
-  putElectionVisibility: (id: string, token: string, visibility: Visibility) => Promise<void>;
-  postVote: (id: string, token: string, name: string, availability: Map<string, string>, timeZone?: string) => Promise<void>;
-  deleteVote: (id: string, token: string, name: string, voted: Date) => Promise<void>;
-  deleteElection: (id: string, token: string) => Promise<void>;
+export class AntiFactory implements ElectionAntiFactory {
+  constructor(private readonly repository: Repository) {}
+
+  destroyElection: (id: string, token: string) => Promise<void> = (id, token) =>
+    this.repository.deleteElection(id, token);
 }

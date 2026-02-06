@@ -84,7 +84,7 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
         <ElectionSettings
           election={props.election}
           onElectionChanged={props.onElectionChanged}
-          deleteElection={props.deleteElection}
+          onElectionDeleted={props.onElectionDeleted}
         />
       );
       break;

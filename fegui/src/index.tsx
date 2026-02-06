@@ -26,6 +26,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Abode from "./Abode";
+import { AntiFactory } from "./AntiFactory";
+import { antiFactoryContext } from "./antiFactoryContext";
 import App from "./App";
 import Election from "./Election";
 import { Factory } from "./Factory";
@@ -42,27 +44,31 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const factory = new Factory(new FetchRepository());
+const repository = new FetchRepository();
+const factory = new Factory(repository);
+const antiFactory = new AntiFactory(repository);
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <factoryContext.Provider value={factory}>
-        <I18nApp>
-          <Routes>
-            <Route path="/" element={<App />}>
-              <Route index element={<Abode />} />
-              <Route path="elections/:election/*" element={<Election />} />
-              <Route path="legalese" element={<Navigate to="/legalese/im" />} />
-              <Route path="legalese/im" element={<Masthead />} />
-              <Route path="legalese/pp" element={<PrivacyPolicy />} />
-              <Route path="legalese/tos" element={<ToDo />} />
-              <Route path="prices" element={<Prices />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </I18nApp>
+        <antiFactoryContext.Provider value={antiFactory}>
+          <I18nApp>
+            <Routes>
+              <Route path="/" element={<App />}>
+                <Route index element={<Abode />} />
+                <Route path="elections/:election/*" element={<Election />} />
+                <Route path="legalese" element={<Navigate to="/legalese/im" />} />
+                <Route path="legalese/im" element={<Masthead />} />
+                <Route path="legalese/pp" element={<PrivacyPolicy />} />
+                <Route path="legalese/tos" element={<ToDo />} />
+                <Route path="prices" element={<Prices />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </I18nApp>
+        </antiFactoryContext.Provider>
       </factoryContext.Provider>
     </BrowserRouter>
   </React.StrictMode>

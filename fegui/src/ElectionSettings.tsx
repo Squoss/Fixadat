@@ -24,6 +24,7 @@
 
 import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
+import { antiFactoryContext } from "./antiFactoryContext";
 import { Visibility } from "./value_objects/Visibility";
 import { l10nContext } from "./l10nContext";
 import { ElectionSettingsProps } from "./props/ElectionSettingsProps";
@@ -32,6 +33,7 @@ import useInputValidation, { InputType } from "./useInputValidation";
 function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
   console.log("ElectionSettings props: " + JSON.stringify(props));
 
+  const antiFactory = useContext(antiFactoryContext)!;
   const localizations = useContext(l10nContext);
 
   const [emailAddressValid, emailAddress, setEmailAddress] = useInputValidation(
@@ -86,7 +88,9 @@ function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
   const handleDeleteElection = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     Modal.getInstance(document.getElementById("deleteElectionModal")!)!.hide();
-    props.deleteElection();
+    antiFactory.destroyElection(String(props.election.id), props.election.organizerToken)
+      .then(() => props.onElectionDeleted())
+      .catch((error) => console.error(`failed to delete election: ${error}`));
   };
 
   const subscriptionChangesSaved = () =>
