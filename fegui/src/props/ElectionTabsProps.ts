@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionEntity } from "../ElectionEntity";
+import { ElectionEntity } from "../entities/ElectionEntity";
 
 export enum ACTIVE_TAB {
   TEXTS = "name and description",

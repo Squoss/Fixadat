@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { ElectionEntity } from "../ElectionEntity";
+import { ElectionEntity } from "../entities/ElectionEntity";
 import { PostElectionResponse } from "../value_objects/PostElectionResponse";
 import { Visibility } from "../value_objects/Visibility";
 

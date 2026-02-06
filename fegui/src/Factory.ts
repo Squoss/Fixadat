@@ -23,7 +23,7 @@
  */
 
 import { Repository } from "./driven_ports/Repository";
-import { ElectionEntity } from "./ElectionEntity";
+import { ElectionEntity } from "./entities/ElectionEntity";
 import { ElectionFactory } from "./driving_ports/ElectionFactory";
 import { PostElectionResponse } from "./value_objects/PostElectionResponse";
 

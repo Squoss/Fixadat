@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { Repository } from "./driven_ports/Repository";
-import { Availability } from "./value_objects/Availability";
-import { SubscriptionChannels } from "./value_objects/SubscriptionChannels";
-import { Visibility } from "./value_objects/Visibility";
-import { Vote } from "./value_objects/Vote";
+import { Repository } from "../driven_ports/Repository";
+import { Availability } from "../value_objects/Availability";
+import { SubscriptionChannels } from "../value_objects/SubscriptionChannels";
+import { Visibility } from "../value_objects/Visibility";
+import { Vote } from "../value_objects/Vote";
 
 export type ElectionData = {
   id: number;
