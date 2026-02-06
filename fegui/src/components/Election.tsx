@@ -24,13 +24,13 @@
 
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
-import { ElectionEntity } from "./entities/ElectionEntity";
-import { HttpError } from "./HttpError";
+import { ElectionEntity } from "../entities/ElectionEntity";
+import { HttpError } from "../HttpError";
 import ElectionTabs from "./ElectionTabs";
-import { ACTIVE_TAB } from "./props/ElectionTabsProps";
-import { fetchResource, Method } from "./fetchJson";
-import NotFound from "./components/NotFound";
-import { factoryContext } from "./factoryContext";
+import { ACTIVE_TAB } from "../props/ElectionTabsProps";
+import { fetchResource, Method } from "../fetchJson";
+import NotFound from "./NotFound";
+import { factoryContext } from "../factoryContext";
 
 function Election(props: {}) {
   console.log("Election props: " + JSON.stringify(props));

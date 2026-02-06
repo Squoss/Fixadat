@@ -23,8 +23,8 @@
  */
 
 import React, { useContext, useState } from "react";
-import { l10nContext } from "./l10nContext";
-import { ElectionCandidatesProps } from "./props/ElectionCandidatesProps";
+import { l10nContext } from "../l10nContext";
+import { ElectionCandidatesProps } from "../props/ElectionCandidatesProps";
 
 function tte(s?: string) {
   // trim to empty

@@ -23,10 +23,10 @@
  */
 
 import React, { useContext, useState } from "react";
-import { Availability } from "./value_objects/Availability";
-import { Visibility } from "./value_objects/Visibility";
-import { l10nContext } from "./l10nContext";
-import { ElectionVoteProps } from "./props/ElectionVoteProps";
+import { Availability } from "../value_objects/Availability";
+import { Visibility } from "../value_objects/Visibility";
+import { l10nContext } from "../l10nContext";
+import { ElectionVoteProps } from "../props/ElectionVoteProps";
 
 function ElectionVote(props: ElectionVoteProps) {
   console.log("ElectionVote props: " + JSON.stringify(props));

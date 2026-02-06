@@ -23,10 +23,10 @@
  */
 
 import React, { useContext } from "react";
-import { Vote } from "./value_objects/Vote";
+import { Vote } from "../value_objects/Vote";
 import ElectionVote from "./ElectionVote";
-import { l10nContext } from "./l10nContext";
-import { ElectionTallyProps } from "./props/ElectionTallyProps";
+import { l10nContext } from "../l10nContext";
+import { ElectionTallyProps } from "../props/ElectionTallyProps";
 
 function prettyLocalDateTimeString(locale: string, dateTime: string) {
   if (dateTime) {

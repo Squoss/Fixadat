@@ -24,11 +24,11 @@
 
 import { Modal } from "bootstrap";
 import React, { useContext, useState } from "react";
-import { antiFactoryContext } from "./antiFactoryContext";
-import { Visibility } from "./value_objects/Visibility";
-import { l10nContext } from "./l10nContext";
-import { ElectionSettingsProps } from "./props/ElectionSettingsProps";
-import useInputValidation, { InputType } from "./useInputValidation";
+import { antiFactoryContext } from "../antiFactoryContext";
+import { Visibility } from "../value_objects/Visibility";
+import { l10nContext } from "../l10nContext";
+import { ElectionSettingsProps } from "../props/ElectionSettingsProps";
+import useInputValidation, { InputType } from "../useInputValidation";
 
 function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
   console.log("ElectionSettings props: " + JSON.stringify(props));

@@ -25,8 +25,8 @@
 import { Modal } from "bootstrap";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { factoryContext } from "./factoryContext";
-import { l10nContext } from "./l10nContext";
+import { factoryContext } from "../factoryContext";
+import { l10nContext } from "../l10nContext";
 
 function Abode(props: {}) {
   console.log("Abode props: " + JSON.stringify(props));

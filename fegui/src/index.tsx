@@ -25,11 +25,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Abode from "./Abode";
+import Abode from "./components/Abode";
 import { AntiFactory } from "./AntiFactory";
 import { antiFactoryContext } from "./antiFactoryContext";
 import App from "./App";
-import Election from "./Election";
+import Election from "./components/Election";
 import { Factory } from "./Factory";
 import { factoryContext } from "./factoryContext";
 import { FetchRepository } from "./FetchRepository";

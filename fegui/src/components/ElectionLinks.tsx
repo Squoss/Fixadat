@@ -24,10 +24,10 @@
 
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import Clipboard from "./components/Clipboard";
-import { l10nContext } from "./l10nContext";
-import { ElectionLinksProps } from "./props/ElectionLinksProps";
-import useInputValidation, { InputType } from "./useInputValidation";
+import Clipboard from "./Clipboard";
+import { l10nContext } from "../l10nContext";
+import { ElectionLinksProps } from "../props/ElectionLinksProps";
+import useInputValidation, { InputType } from "../useInputValidation";
 
 function ElectionLinks(props: Readonly<ElectionLinksProps>) {
   console.log("ElectionLinks props: " + JSON.stringify(props));

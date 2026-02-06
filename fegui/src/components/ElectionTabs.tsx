@@ -29,8 +29,8 @@ import ElectionLinks from "./ElectionLinks";
 import ElectionSettings from "./ElectionSettings";
 import ElectionTally from "./ElectionTally";
 import ElectionTexts from "./ElectionTexts";
-import { l10nContext } from "./l10nContext";
-import { ACTIVE_TAB, ElectionTabsProps } from "./props/ElectionTabsProps";
+import { l10nContext } from "../l10nContext";
+import { ACTIVE_TAB, ElectionTabsProps } from "../props/ElectionTabsProps";
 
 function ElectionTabs(props: Readonly<ElectionTabsProps>) {
   console.log("ElectionTabs props: " + JSON.stringify(props));
