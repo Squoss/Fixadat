@@ -27,5 +27,5 @@ import { ElectionEntity } from "../ElectionEntity";
 export interface ElectionCandidatesProps {
   election: ElectionEntity;
   timeZones: Array<string>;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
+  onElectionChanged: (election: ElectionEntity) => void;
 }

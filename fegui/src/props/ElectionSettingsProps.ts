@@ -23,14 +23,9 @@
  */
 
 import { ElectionEntity } from "../ElectionEntity";
-import { Visibility } from "../value_objects/Visibility";
 
 export interface ElectionSettingsProps {
   election: ElectionEntity;
-  saveElectionSubscriptions: (
-    emailAddress?: string,
-    phoneNumber?: string
-  ) => void;
-  saveElectionVisibility: (visibility: Visibility) => void;
+  onElectionChanged: (election: ElectionEntity) => void;
   deleteElection: () => void;
 }

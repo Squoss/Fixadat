@@ -96,10 +96,12 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
 
   const saveSchedule = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    props.saveElectionSchedule(
+    props.election.updateElectionSchedule(
       dateTimes.map((dt) => tte(dt)),
       ttu(timeZone)
-    );
+    )
+      .then((updated) => props.onElectionChanged(updated))
+      .catch((error) => console.error(`failed to put election schedule: ${error}`));
   };
 
   const sameElements = (arr1: Array<string>, arr2: Array<string>) => {

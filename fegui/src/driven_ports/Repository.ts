@@ -24,9 +24,13 @@
 
 import { ElectionEntity } from "../ElectionEntity";
 import { PostElectionResponse } from "../value_objects/PostElectionResponse";
+import { Visibility } from "../value_objects/Visibility";
 
 export interface Repository {
   postElection: () => Promise<PostElectionResponse>;
   getElection: (id: string, token: string, timeZone: string) => Promise<ElectionEntity>;
   putElectionText: (id: string, token: string, name: string, description?: string) => Promise<void>;
+  putElectionSchedule: (id: string, token: string, candidates: Array<string>, timeZone?: string) => Promise<void>;
+  patchElectionSubscriptions: (id: string, token: string, emailAddress?: string, phoneNumber?: string) => Promise<void>;
+  putElectionVisibility: (id: string, token: string, visibility: Visibility) => Promise<void>;
 }

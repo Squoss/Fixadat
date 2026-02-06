@@ -27,6 +27,7 @@ import { ElectionData, ElectionEntity } from "./ElectionEntity";
 import { fetchResource, Method } from "./fetchJson";
 import { HttpError } from "./HttpError";
 import { PostElectionResponse } from "./value_objects/PostElectionResponse";
+import { Visibility } from "./value_objects/Visibility";
 
 export class FetchRepository implements Repository {
   postElection = (): Promise<PostElectionResponse> =>
@@ -55,6 +56,35 @@ export class FetchRepository implements Repository {
     fetchResource(Method.Put, `/iapi/elections/${id}/text`, token, {
       name,
       description,
+    }).then((response) => {
+      if (response.status !== 204) {
+        throw new HttpError(response.status);
+      }
+    });
+
+  putElectionSchedule = (id: string, token: string, candidates: Array<string>, timeZone?: string): Promise<void> =>
+    fetchResource(Method.Put, `/iapi/elections/${id}/nominees`, token, {
+      candidates,
+      timeZone,
+    }).then((response) => {
+      if (response.status !== 204) {
+        throw new HttpError(response.status);
+      }
+    });
+
+  patchElectionSubscriptions = (id: string, token: string, emailAddress?: string, phoneNumber?: string): Promise<void> =>
+    fetchResource(Method.Patch, `/iapi/elections/${id}/subscriptions`, token, {
+      emailAddress,
+      phoneNumber,
+    }).then((response) => {
+      if (response.status !== 204) {
+        throw new HttpError(response.status);
+      }
+    });
+
+  putElectionVisibility = (id: string, token: string, visibility: Visibility): Promise<void> =>
+    fetchResource(Method.Put, `/iapi/elections/${id}/visibility`, token, {
+      visibility,
     }).then((response) => {
       if (response.status !== 204) {
         throw new HttpError(response.status);

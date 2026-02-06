@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
       content = (
         <ElectionTexts
           election={props.election}
-          saveElectionText={props.saveElectionText}
+          onElectionChanged={props.onElectionChanged}
         />
       );
       break;
@@ -54,7 +54,7 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
         <ElectionCandidates
           election={props.election}
           timeZones={props.timeZones}
-          saveElectionSchedule={props.saveElectionSchedule}
+          onElectionChanged={props.onElectionChanged}
         />
       );
       break;
@@ -84,8 +84,7 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
       content = (
         <ElectionSettings
           election={props.election}
-          saveElectionSubscriptions={props.saveElectionSubscriptions}
-          saveElectionVisibility={props.saveElectionVisibility}
+          onElectionChanged={props.onElectionChanged}
           deleteElection={props.deleteElection}
         />
       );

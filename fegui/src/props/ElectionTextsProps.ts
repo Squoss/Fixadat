@@ -26,5 +26,5 @@ import { ElectionEntity } from "../ElectionEntity";
 
 export interface ElectionTextsProps {
   election: ElectionEntity;
-  saveElectionText: (name: string, description?: string) => void;
+  onElectionChanged: (election: ElectionEntity) => void;
 }

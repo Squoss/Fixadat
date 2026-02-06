@@ -24,7 +24,6 @@
 
 import { ElectionEntity } from "../ElectionEntity";
 import { Availability } from "../value_objects/Availability";
-import { Visibility } from "../value_objects/Visibility";
 
 export enum ACTIVE_TAB {
   TEXTS = "name and description",
@@ -38,13 +37,7 @@ export interface ElectionTabsProps {
   election: ElectionEntity;
   token: string;
   activeTab: ACTIVE_TAB;
-  saveElectionText: (name: string, description?: string) => void;
-  saveElectionSchedule: (candidates: Array<string>, timeZone?: string) => void;
-  saveElectionSubscriptions: (
-    emailAddress?: string,
-    phoneNumber?: string
-  ) => void;
-  saveElectionVisibility: (visibility: Visibility) => void;
+  onElectionChanged: (election: ElectionEntity) => void;
   sendLinksReminder: (emailAddress?: string, phoneNumber?: string) => void;
   timeZones: Array<string>;
   saveVote: (

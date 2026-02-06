@@ -27,7 +27,6 @@ import { Navigate, Outlet, Route, Routes, useLocation, useParams, useSearchParam
 import { ElectionEntity } from "./ElectionEntity";
 import { HttpError } from "./HttpError";
 import { Availability } from "./value_objects/Availability";
-import { Visibility } from "./value_objects/Visibility";
 import ElectionTabs from "./ElectionTabs";
 import { ACTIVE_TAB } from "./props/ElectionTabsProps";
 import { fetchResource, Method } from "./fetchJson";
@@ -66,7 +65,7 @@ function Election(props: {}) {
         }
         console.error(`failed to get election: ${error}`);
       });
-  }, [factory, id, token, tz]);
+  }, [id, token, tz]);
 
   useEffect(() => {
     getElection();
@@ -86,55 +85,6 @@ function Election(props: {}) {
 
     getTimeZones();
   }, []);
-
-  const saveElectionText = (name: string, description?: string) =>
-    election!
-      .updateElectionText(token.substring(1), name, description)
-      .then(() => {
-        setElection(election!.with({ name, description }));
-      })
-      .catch((error) => console.error(`failed to put election text: ${error}`));
-
-  const saveElectionSchedule = (candidates: Array<string>, timeZone?: string) =>
-    fetchResource(Method.Put, `/iapi/elections/${id}/nominees`, token.substring(1), {
-      candidates,
-      timeZone,
-    })
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          setElection(election!.with({ candidates, timeZone }));
-        }
-      })
-      .catch((error) => console.error(`failed to put election schedule: ${error}`));
-
-  const saveElectionSubscriptions = (emailAddress?: string, phoneNumber?: string) =>
-    fetchResource(Method.Patch, `/iapi/elections/${id}/subscriptions`, token.substring(1), {
-      emailAddress,
-      phoneNumber,
-    })
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          setElection(election!.with({ subscriptions: { emailAddress, phoneNumber } }));
-        }
-      })
-      .catch((error) => console.error(`failed to put election subscriptions: ${error}`));
-
-  const saveElectionVisibility = (visibility: Visibility) =>
-    fetchResource(Method.Put, `/iapi/elections/${id}/visibility`, token.substring(1), {
-      visibility,
-    })
-      .then((response) => {
-        if (response.status !== 204) {
-          throw new Error(`HTTP status ${response.status} instead of 204`);
-        } else {
-          setElection(election!.with({ visibility }));
-        }
-      })
-      .catch((error) => console.error(`failed to put election visibility: ${error}`));
 
   const sendLinksReminder = (emailAddress?: string, phoneNumber?: string) =>
     fetchResource(Method.Post, `/iapi/elections/${id}/reminders`, token.substring(1), {
@@ -233,10 +183,7 @@ function Election(props: {}) {
                   activeTab={ACTIVE_TAB.TEXTS}
                   election={election}
                   token={token.substring(1)}
-                  saveElectionText={saveElectionText}
-                  saveElectionSchedule={saveElectionSchedule}
-                  saveElectionSubscriptions={saveElectionSubscriptions}
-                  saveElectionVisibility={saveElectionVisibility}
+                  onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
                   saveVote={saveVote}
@@ -254,10 +201,7 @@ function Election(props: {}) {
                   activeTab={ACTIVE_TAB.CANDIDATES}
                   election={election}
                   token={token.substring(1)}
-                  saveElectionText={saveElectionText}
-                  saveElectionSchedule={saveElectionSchedule}
-                  saveElectionSubscriptions={saveElectionSubscriptions}
-                  saveElectionVisibility={saveElectionVisibility}
+                  onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
                   saveVote={saveVote}
@@ -275,10 +219,7 @@ function Election(props: {}) {
                   activeTab={ACTIVE_TAB.LINKS}
                   election={election}
                   token={token.substring(1)}
-                  saveElectionText={saveElectionText}
-                  saveElectionSchedule={saveElectionSchedule}
-                  saveElectionSubscriptions={saveElectionSubscriptions}
-                  saveElectionVisibility={saveElectionVisibility}
+                  onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
                   saveVote={saveVote}
@@ -296,10 +237,7 @@ function Election(props: {}) {
                   activeTab={ACTIVE_TAB.VOTES}
                   election={election}
                   token={token.substring(1)}
-                  saveElectionText={saveElectionText}
-                  saveElectionSchedule={saveElectionSchedule}
-                  saveElectionSubscriptions={saveElectionSubscriptions}
-                  saveElectionVisibility={saveElectionVisibility}
+                  onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
                   saveVote={saveVote}
@@ -317,10 +255,7 @@ function Election(props: {}) {
                   activeTab={ACTIVE_TAB.SETTINGS}
                   election={election}
                   token={token.substring(1)}
-                  saveElectionText={saveElectionText}
-                  saveElectionSchedule={saveElectionSchedule}
-                  saveElectionSubscriptions={saveElectionSubscriptions}
-                  saveElectionVisibility={saveElectionVisibility}
+                  onElectionChanged={setElection}
                   sendLinksReminder={sendLinksReminder}
                   timeZones={timeZones}
                   saveVote={saveVote}

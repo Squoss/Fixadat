@@ -74,8 +74,30 @@ export class ElectionEntity {
     this.subscriptions = data.subscriptions;
   }
 
-  updateElectionText(token: string, name: string, description?: string): Promise<void> {
-    return this.repository.putElectionText(String(this.id), token, name, description);
+  updateElectionText(name: string, description?: string): Promise<ElectionEntity> {
+    this.name = name;
+    this.description = description;
+    return this.repository.putElectionText(String(this.id), this.organizerToken, name, description)
+      .then(() => this.with({}));
+  }
+
+  updateElectionSchedule(candidates: Array<string>, timeZone?: string): Promise<ElectionEntity> {
+    this.candidates = candidates;
+    this.timeZone = timeZone;
+    return this.repository.putElectionSchedule(String(this.id), this.organizerToken, candidates, timeZone)
+      .then(() => this.with({}));
+  }
+
+  updateElectionSubscriptions(emailAddress?: string, phoneNumber?: string): Promise<ElectionEntity> {
+    this.subscriptions = { emailAddress, phoneNumber };
+    return this.repository.patchElectionSubscriptions(String(this.id), this.organizerToken, emailAddress, phoneNumber)
+      .then(() => this.with({}));
+  }
+
+  updateElectionVisibility(visibility: Visibility): Promise<ElectionEntity> {
+    this.visibility = visibility;
+    return this.repository.putElectionVisibility(String(this.id), this.organizerToken, visibility)
+      .then(() => this.with({}));
   }
 
   with(overrides: Partial<ElectionData>): ElectionEntity {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021-2023 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,10 +59,12 @@ function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    props.saveElectionSubscriptions(
+    props.election.updateElectionSubscriptions(
       emailAddress && emailAddress !== "" ? emailAddress : undefined,
       phoneNumber && phoneNumber !== "" ? phoneNumber : undefined
-    );
+    )
+      .then((updated) => props.onElectionChanged(updated))
+      .catch((error) => console.error(`failed to put election subscriptions: ${error}`));
   };
 
   const cancelVisibility = (
@@ -76,7 +78,9 @@ function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    props.saveElectionVisibility(visibility);
+    props.election.updateElectionVisibility(visibility)
+      .then((updated) => props.onElectionChanged(updated))
+      .catch((error) => console.error(`failed to put election visibility: ${error}`));
   };
 
   const handleDeleteElection = (event: React.FormEvent<HTMLFormElement>) => {
