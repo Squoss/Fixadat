@@ -89,13 +89,11 @@ The following rules are enforced by `sbt test`:
 
 ### Frontend
 
-React SPA with React Router. Key components:
-- `Election.tsx` - Main election view
-- `ElectionTabs.tsx` - Tab navigation (Candidates, Vote, Tally, etc.)
-- `fetchJson.ts` - API client
-- `l10nContext.tsx` - Internationalization context
+React SPA with React Router.
 
-It is a mess, and needs to be refactored along the lines of https://martinfowler.com/articles/modularizing-react-apps.html or, even better, with the Ports & Adapters pattern in mind.
+Internationalization/Localization (cf. `l10nContext.tsx`) is based on the backend (i.e., on Play's i18n/l10n support).
+
+Organized along the lines of the Ports & Adapters pattern (Hexagonal architecture).
 
 ## API Routes
 
