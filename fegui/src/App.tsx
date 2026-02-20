@@ -108,16 +108,15 @@ function App(props: {}) {
                 </NavLink>
               </li>
               <li className="nav-item dropdown">
-                <a
+                <button
                   className="nav-link dropdown-toggle"
-                  href="/legalese"
+                  type="button"
                   id="legalese"
-                  role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   {localizations["legalese"]}
-                </a>
+                </button>
                 <ul className="dropdown-menu" aria-labelledby="legalese">
                   <li>
                     <NavLink
@@ -278,16 +277,16 @@ function App(props: {}) {
                   cookies
                 </a>
                 .{" "}
-                <a
+                <button
                   className="link-info"
+                  type="button"
                   data-bs-toggle="collapse"
-                  href="#cookieConsentCollapse"
-                  role="button"
+                  data-bs-target="#cookieConsentCollapse"
                   aria-expanded="false"
                   aria-controls="cookieConsentCollapse"
                 >
                   Learn more …
-                </a>
+                </button>
               </p>
               <div className="collapse" id="cookieConsentCollapse">
                 <div className="card card-body">
