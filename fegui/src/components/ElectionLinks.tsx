@@ -83,7 +83,7 @@ function ElectionLinks(props: Readonly<ElectionLinksProps>) {
               </NavLink>
             </p>
           ) : (
-            <React.Fragment />
+            null
           )}
         </div>
       </div>
