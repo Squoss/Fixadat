@@ -264,7 +264,7 @@ function ElectionSettings(props: Readonly<ElectionSettingsProps>) {
                 localizations["settings.trash.pointOfNoReturn"].replace(
                   "{0}",
                   props.election.name
-                ) /* FIXME/TODO: XSS?! */
+                )
               }
             </div>
             <div className="modal-footer">
