@@ -36,7 +36,7 @@ function App(props: {}) {
   let locationString = location.pathname;
   locationString += "?";
   new URLSearchParams(location.search).forEach(
-    (v, k) => (locationString += k !== "locale" ? `${k}=${v}&` : "")
+    (v, k) => (locationString += k === "locale" ? "" : `${k}=${v}&`)
   );
   locationString += "locale=NEWLOCALE";
   locationString += location.hash;

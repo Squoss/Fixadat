@@ -39,10 +39,10 @@ function I18nApp(props: Readonly<I18nAppProperties>) {
     const fetchLocalizations = () =>
       fetchResource<Localizations>(Method.Get, "/iapi/l10nMessages")
         .then((response) => {
-          if (response.status !== 200) {
-            throw new Error(`HTTP status ${response.status} instead of 200`);
-          } else {
+          if (response.status === 200) {
             setLocalizations(response.parsedBody!);
+          } else {
+            throw new Error(`HTTP status ${response.status} instead of 200`);
           }
         })
         .catch((error) => console.error(`failed to get localizations: ${error}`));

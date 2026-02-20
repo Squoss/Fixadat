@@ -61,10 +61,10 @@ function useInputValidation(inputType: InputType, inputValue: string) {
         `/iapi/validations/${inputType}=${potentiallyInvalidValue}`
       )
         .then((response) => {
-          if (response.status !== 200) {
-            throw new Error(`HTTP status ${response.status} instead of 200`);
-          } else {
+          if (response.status === 200) {
             setValueValid(response.parsedBody!.valid);
+          } else {
+            throw new Error(`HTTP status ${response.status} instead of 200`);
           }
         })
         .catch((error) => console.error(`failed to get validity: ${error}`));

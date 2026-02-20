@@ -74,10 +74,10 @@ function Election(props: {}) {
     const getTimeZones = () =>
       fetchResource<Array<string>>(Method.Get, "/iapi/timeZones")
         .then((response) => {
-          if (response.status !== 200) {
-            throw new Error(`HTTP status ${response.status} instead of 200`);
-          } else {
+          if (response.status === 200) {
             setTimeZones(response.parsedBody!);
+          } else {
+            throw new Error(`HTTP status ${response.status} instead of 200`);
           }
         })
         .catch((error) => console.error(`failed to get time zones: ${error}`));
@@ -123,7 +123,7 @@ function Election(props: {}) {
       default:
         return <p>{responseStatusCode}</p>;
     }
-  } else if (election !== undefined) {
+  } else if (election) {
     return (
       <React.Fragment>
         <title>{election.name}</title>
