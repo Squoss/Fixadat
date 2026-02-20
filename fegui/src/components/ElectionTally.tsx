@@ -145,7 +145,7 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
       <blockquote className="blockquote">
         {description
           ?.split("\n")
-          .map((line, i) => <p key={`l${i}`}>{line}</p>) ?? ""}
+          .map((line, i) => <p key={`${i}:${line}`}>{line}</p>) ?? ""}
       </blockquote>
       <form>
         <div className="table-responsive">
@@ -192,7 +192,7 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
                 <th></th>
                 {columnCounts.map((yinbn, i) => (
                   <th
-                    key={`cc${i}`}
+                    key={candidates[i]}
                     className={
                       best[0] === yinbn[0] &&
                       best[1] === yinbn[1] &&
@@ -208,12 +208,12 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
               </tr>
             </thead>
             <tbody>
-              {votes.map((vote, i) => (
-                <tr key={`v${i}`}>
+              {votes.map((vote) => (
+                <tr key={String(vote.voted)}>
                   <td>{vote.name}</td>
-                  {candidates.map((c, j) => (
+                  {candidates.map((c) => (
                     <td
-                      key={`v${i}c${j}`}
+                      key={c}
                       className={cN(
                         new Map(Object.entries(vote.availability)).get(
                           c.substring(0, c.indexOf("T") + 6)
