@@ -58,7 +58,7 @@ function App(props: {}) {
   return (
     <React.Fragment>
       <header className="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-        <nav className="container-fluid">
+        <nav className="container-fluid" aria-label="Main navigation">
           <Link className="navbar-brand" to="/">
             Fixadat
           </Link>{" "}
@@ -223,7 +223,7 @@ function App(props: {}) {
       </main>
 
       <footer className="d-none d-sm-block fixed-bottom">
-        <div className="card text-center">
+        <nav className="card text-center" aria-label="Legal links">
           <div className="card-body">
             <div className="row">
               <div className="col">
@@ -247,7 +247,7 @@ function App(props: {}) {
               </div>
             </div>
           </div>
-        </div>
+        </nav>
       </footer>
 
       <div
