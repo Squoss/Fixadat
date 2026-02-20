@@ -88,10 +88,11 @@ function ElectionTabs(props: Readonly<ElectionTabsProps>) {
         />
       );
       break;
-    default:
+    default: {
       // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
       const _exhaustiveCheck: never = props.activeTab;
       return _exhaustiveCheck;
+    }
   }
 
   const brandNewAlert = (
