@@ -123,7 +123,7 @@ function ElectionTally(props: Readonly<ElectionTallyProps>) {
   ) => {
     e.preventDefault();
     if (
-      window.confirm(
+      globalThis.confirm(
         localizations["votes.revocationConfirmation"]
           .replace("{0}", name)
           .replace(
