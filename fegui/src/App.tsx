@@ -202,7 +202,7 @@ function App(props: {}) {
             &nbsp;
             &nbsp;
             <div className="form-check form-switch text-bg-primary">
-              <input className="form-check-input" type="checkbox" role="switch" id="modeLightDark" checked={mode==="dark"} onChange={() => mode==="light"?setMode("dark"):setMode("light")}/>
+              <input className="form-check-input" type="checkbox" role="switch" id="modeLightDark" checked={mode==="dark"} aria-checked={mode==="dark"} onChange={() => mode==="light"?setMode("dark"):setMode("light")}/>
               <label className="form-check-label" htmlFor="modeLightDark"><i className="bi bi-emoji-sunglasses-fill"></i> / <i className="bi bi-emoji-sunglasses"></i></label>
             </div>
             &nbsp;

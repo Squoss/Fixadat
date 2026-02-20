@@ -1,7 +1,7 @@
 @*
 * The MIT License
 *
-* Copyright (c) 2025 Squeng AG
+* Copyright (c) 2021-2026 Squeng AG
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@
 
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-        <nav class="container-fluid">
+        <nav class="container-fluid" aria-label="Main navigation">
             <a class="navbar-brand" href="/">Fixadat</a>
             <a class="navbar-brand" href="https://www.squeng.com/" target="Squeng"
                 rel="noreferrer noopener"><small>Squeng<sup>&reg;</sup>&nbsp;made</small></a>
@@ -106,7 +106,7 @@
                 &nbsp;
                 &nbsp;
                 <div class="form-check form-switch text-bg-primary">
-                    <input class="form-check-input" type="checkbox" role="switch" id="bsThemeSwitch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="bsThemeSwitch" aria-checked="false">
                     <label class="form-check-label" for="bsThemeSwitch"><i class="bi bi-emoji-sunglasses-fill"></i> / <i class="bi bi-emoji-sunglasses"></i></label>
                 </div>
                 &nbsp;
@@ -124,8 +124,7 @@
     </main>
 
     <footer class="d-none d-sm-block fixed-bottom">
-        <nav class="legalese">
-            <div class="card text-center">
+        <nav class="card text-center" aria-label="Legal links">
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
@@ -139,11 +138,10 @@
                             <a class="link text-decoration-none" href="/legalese/tos">@messages("legalese.tos")</a>
                         </div>
                         <div class="col">
-                            Copyright &copy; <time dateTime="2025">2025</time> Squeng AG
+                            Copyright &copy; <time dateTime="2026">2026</time> Squeng AG
                         </div>
                     </div>
                 </div>
-            </div>
         </nav>
     </footer>
 
