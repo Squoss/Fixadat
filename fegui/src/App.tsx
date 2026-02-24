@@ -278,14 +278,14 @@ function App(props: {}) {
                 </a>
                 .{" "}
                 <button
-                  className="link-info"
+                  className="btn btn-info btn-sm"
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#cookieConsentCollapse"
                   aria-expanded="false"
                   aria-controls="cookieConsentCollapse"
                 >
-                  Learn more …
+                  <i className="bi bi-chevron-expand"></i> Learn more …
                 </button>
               </p>
               <div className="collapse" id="cookieConsentCollapse">
