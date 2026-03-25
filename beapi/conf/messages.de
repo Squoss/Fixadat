@@ -38,7 +38,6 @@ datesAndTimes = Daten & Zeiten
 datesAndTimes.duration = Dauer des Anlasses in Minuten
 datesAndTimes.durationOptional = Dies ist optional.
 datesAndTimes.instruction = Schlagen Sie Daten & Zeiten für den Gruppenanlass vor.
-datesAndTimes.order = Machen Sie sich keine Gedanken über ihre Reihenfolge; Fixadat wird sie chronologisch sortieren.
 datesAndTimes.timeZone = Zeitzone
 datesAndTimes.timeZoneMotivation = Durch Angabe Ihrer Zeitzone können Sie Umrechnungen Fixadat überlassen, falls sie nicht dieselbe für jedes Gruppenmitglied ist.
 

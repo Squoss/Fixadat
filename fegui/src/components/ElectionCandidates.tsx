@@ -23,95 +23,144 @@
  */
 
 import React, { useContext, useState } from "react";
+import { DayPicker } from "react-day-picker";
+import { de, enUS } from "react-day-picker/locale";
+import "react-day-picker/style.css";
 import { l10nContext } from "../l10nContext";
 import { ElectionCandidatesProps } from "../props/ElectionCandidatesProps";
 
+// Use local date parts to avoid UTC/local timezone offset issues
+function localDateStr(d: Date): string {
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
+}
+
+// Parse "YYYY-MM-DDTHH:mm:ss" candidates into { "YYYY-MM-DD": ["HH:mm", ...] }
+function parseCandidates(candidates: string[]): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
+  for (const c of candidates) {
+    const date = c.substring(0, 10);
+    const time = c.substring(11, 16);
+    if (!map[date]) map[date] = [];
+    map[date].push(time);
+  }
+  // Invariant: each date always ends with an empty slot as an "add" affordance
+  for (const date of Object.keys(map)) {
+    map[date].push("");
+  }
+  return map;
+}
+
+// Flatten back into sorted "YYYY-MM-DDTHH:mm:00" array
+function flattenCandidates(schedule: Record<string, string[]>): string[] {
+  return Object.keys(schedule)
+    .sort()
+    .flatMap((date) =>
+      schedule[date].filter((time) => time !== "").map((time) => `${date}T${time}:00`)
+    );
+}
+
+function sameElements(arr1: string[], arr2: string[]): boolean {
+  const set = new Set([...arr1, ...arr2]);
+  return set.size === new Set(arr1).size && set.size === new Set(arr2).size;
+}
+
 function tte(s?: string) {
-  // trim to empty
   return s?.trim() ?? "";
 }
 
 function ttu(s?: string) {
-  // trim to undefined
   return s === undefined || s.trim() === "" ? undefined : s.trim();
 }
 
 function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
-  console.log("ElectionCandidates props: " + JSON.stringify(props));
-
   const localizations = useContext(l10nContext);
+  const locale = localizations["locale"] === "de" ? de : enUS;
 
-  const [dateTimes, setDateTimes] = useState<Array<string>>(
-    props.election.candidates
+  const [schedule, setSchedule] = useState<Record<string, string[]>>(
+    parseCandidates(props.election.candidates)
   );
-  const [dateTime, setDateTime] = useState<string>("");
-
-  const dateTtime = (dt: Date) => {
-    return (
-      dt.getFullYear() +
-      "-" +
-      ("" + (dt.getMonth() + 1)).padStart(2, "0") +
-      "-" +
-      ("" + dt.getDate()).padStart(2, "0") +
-      "T" +
-      ("" + dt.getHours()).padStart(2, "0") +
-      ":" +
-      ("" + dt.getMinutes()).padStart(2, "0")
-    );
-  };
-
   const [timeZone, setTimeZone] = useState(
     props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   );
-  const timeZones = props.timeZones.map((tz) => (
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Noon local time avoids any UTC rollover when DayPicker compares dates
+  const selectedDays = Object.keys(schedule).map(
+    (ds) => new Date(ds + "T12:00:00")
+  );
+
+  const handleSelect = (days: Date[] | undefined) => {
+    const newSchedule: Record<string, string[]> = {};
+    for (const day of days ?? []) {
+      const ds = localDateStr(day);
+      newSchedule[ds] = schedule[ds] ?? [""]; // preserve existing times
+    }
+    setSchedule(newSchedule);
+  };
+
+  const updateTime = (date: string, index: number, time: string) => {
+    const times = [...schedule[date]];
+    times[index] = time;
+    // When the last slot is filled, append a new empty slot
+    if (index === times.length - 1 && time !== "") {
+      times.push("");
+    }
+    setSchedule({ ...schedule, [date]: times });
+  };
+
+  const removeTime = (date: string, index: number) => {
+    const times = schedule[date].filter((_, i) => i !== index);
+    if (times.length === 0) {
+      // Removing the last time deselects the date entirely
+      const { [date]: _removed, ...rest } = schedule;
+      setSchedule(rest);
+    } else {
+      // Re-enforce the invariant: trailing empty slot
+      if (times[times.length - 1] !== "") times.push("");
+      setSchedule({ ...schedule, [date]: times });
+    }
+  };
+
+  const candidates = flattenCandidates(schedule);
+  const hasEmptyTimes = Object.values(schedule).some((times) =>
+    times.every((t) => t === "")
+  );
+
+  const changesSaved = () =>
+    sameElements(props.election.candidates, candidates) &&
+    tte(props.election.timeZone) === timeZone;
+
+  const cancelSchedule = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSchedule(parseCandidates(props.election.candidates));
+    setTimeZone(
+      props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+  };
+
+  const saveSchedule = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    props.election
+      .updateElectionSchedule(candidates, ttu(timeZone))
+      .then((updated) => props.onElectionChanged(updated))
+      .catch((error) =>
+        console.error(`failed to put election schedule: ${error}`)
+      );
+  };
+
+  const timeZoneOptions = props.timeZones.map((tz) => (
     <option key={tz} value={tz}>
       {tz}
     </option>
   ));
-
-  const addDateTime = (dateTimeArg: string) => {
-    const dts = dateTimes.slice();
-    const dta = dateTimeArg.substring(0, dateTimeArg.indexOf("T") + 6) + ":00";
-    if (!dts.includes(dta)) {
-      dts.push(dta);
-      setDateTimes(dts);
-    }
-  };
-
-  const removeDateTime = (dateTimeArg: string) => {
-    const dts = dateTimes.filter((dt) => dt !== dateTimeArg);
-    setDateTimes(dts);
-  };
-
-  const cancelSchedule = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    setDateTimes(props.election.candidates.map((dt) => tte(dt)));
-    setTimeZone(
-      props.election.timeZone ??
-        Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
-  };
-
-  const saveSchedule = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    props.election.updateElectionSchedule(
-      dateTimes.map((dt) => tte(dt)),
-      ttu(timeZone)
-    )
-      .then((updated) => props.onElectionChanged(updated))
-      .catch((error) => console.error(`failed to put election schedule: ${error}`));
-  };
-
-  const sameElements = (arr1: Array<string>, arr2: Array<string>) => {
-    const set = new Set([...arr1, ...arr2]);
-    return set.size === new Set(arr1).size && set.size === new Set(arr2).size;
-  };
-
-  const changesSaved = () =>
-    sameElements(props.election.candidates, dateTimes) &&
-    tte(props.election.timeZone) === timeZone;
 
   return (
     <form className="d-grid gap-4">
@@ -120,91 +169,98 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
           <h5 className="card-title">
             {localizations["datesAndTimes.instruction"]}
           </h5>
-          <div className="row align-items-start">
-            <div className="col-sm">
-              <div>
-                <label htmlFor="timeZoneSelect" className="form-label">
-                  {localizations["datesAndTimes.timeZone"]}
-                </label>
-                <select
-                  className="form-select"
-                  id="timeZoneSelect"
-                  required={false}
-                  value={timeZone}
-                  onChange={(event) => setTimeZone(event.target.value)}
-                >
-                  {timeZones}
-                </select>
-                <p className="card-text">
-                  <i className="bi bi-info-circle-fill"></i>{" "}
-                  {localizations["datesAndTimes.timeZoneMotivation"]}
-                </p>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div>
-                <label htmlFor="dateTimeSchedule" className="form-label">
-                  {localizations["datesAndTimes"]}
-                </label>
-                  <p className="card-text">
-                    <i className="bi bi-info-circle-fill"></i>{" "}
-                    {localizations["datesAndTimes.order"]}
-                  </p>
-               {dateTimes.map((dt) => (
-                  <React.Fragment key={dt}>
-                    <div className="input-group mb-3">
-                      <input
-                        type="datetime-local"
-                        className="form-control"
-                        value={dt}
-                        readOnly
-                      />
-                      <button
-                        className="btn btn-danger"
-                        type="button"
-                        onClick={() => removeDateTime(dt)}
-                      >
-                        <i className="bi bi-dash-lg"></i>
-                      </button>
-                    </div>
-                  </React.Fragment>
-                ))}
-                <div className="input-group mb-3">
-                   <input
-                    id="dateTimeSchedule"
-                    value={dateTime}
-                    type="datetime-local"
-                    min={dateTtime(new Date())}
-                    onChange={(event) => {
-                      setDateTime(event.target.value);
-                      if (event.target.valueAsDate !== null) { // yep, valueAsDate
-                        addDateTime(event.target.value); // yep, value
-                        setDateTime("");
-                      }
-                    }}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              className={
-                changesSaved() ? "card-footer" : "card-footer bg-warning"
-              }
+
+          {/* Timezone */}
+          <div className="mb-3">
+            <label htmlFor="timeZoneSelect" className="form-label">
+              {localizations["datesAndTimes.timeZone"]}
+            </label>
+            <select
+              className="form-select"
+              id="timeZoneSelect"
+              value={timeZone}
+              onChange={(e) => setTimeZone(e.target.value)}
             >
-              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button className="btn btn-secondary" onClick={cancelSchedule}>
-                  {localizations["revert"]}
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={saveSchedule}
-                  disabled={dateTimes.length === 0 || changesSaved()}
-                >
-                  {localizations["save"]}
-                </button>
+              {timeZoneOptions}
+            </select>
+            <div className="form-text">
+              <i className="bi bi-info-circle-fill" />{" "}
+              {localizations["datesAndTimes.timeZoneMotivation"]}
+            </div>
+          </div>
+
+          {/* Calendar + per-date times */}
+          <div className="row align-items-start">
+            <div className="col-auto">
+              <div className="border rounded p-1">
+              <DayPicker
+                mode="multiple"
+                selected={selectedDays}
+                onSelect={handleSelect}
+                disabled={{ before: today }}
+                locale={locale}
+              />
               </div>
             </div>
+            <div className="col">
+              {Object.keys(schedule).length === 0 ? (
+                <p className="text-muted fst-italic">
+                  {localizations["datesAndTimes"]}
+                </p>
+              ) : (
+                Object.keys(schedule)
+                  .sort()
+                  .map((date) => (
+                    <div key={date} className="mb-3">
+                      <div className="fw-semibold mb-1">
+                        {new Date(date + "T12:00:00").toLocaleDateString(
+                          localizations["locale"],
+                          {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </div>
+                      {schedule[date].map((time, i) => (
+                        <div key={i} className="input-group mb-1">
+                          <input
+                            type="time"
+                            className="form-control"
+                            value={time}
+                            onChange={(e) => updateTime(date, i, e.target.value)}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-danger"
+                            onClick={() => removeTime(date, i)}
+                            title="Remove this time"
+                          >
+                            <i className="bi bi-dash-lg" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+        </div>
+        <div
+          className={changesSaved() ? "card-footer" : "card-footer bg-warning"}
+        >
+          <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button className="btn btn-secondary" onClick={cancelSchedule}>
+              {localizations["revert"]}
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={saveSchedule}
+              disabled={candidates.length === 0 || hasEmptyTimes || changesSaved()}
+            >
+              {localizations["save"]}
+            </button>
           </div>
         </div>
       </div>
