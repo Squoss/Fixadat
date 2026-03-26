@@ -35,13 +35,11 @@ function App(props: {}) {
   const location = useLocation();
   let locationString = location.pathname;
   locationString += "?";
-  new URLSearchParams(location.search).forEach(
-    (v, k) => (locationString += k === "locale" ? "" : `${k}=${v}&`)
-  );
+  new URLSearchParams(location.search).forEach((v, k) => (locationString += k === "locale" ? "" : `${k}=${v}&`));
   locationString += "locale=NEWLOCALE";
   locationString += location.hash;
 
-  const [mode, setMode] = useState<"light"|"dark">("light");
+  const [mode, setMode] = useState<"light" | "dark">("light");
   useEffect(() => {
     document.getElementById("rootElement")?.setAttribute("data-bs-theme", mode);
   }, [mode]);
@@ -62,11 +60,7 @@ function App(props: {}) {
           <Link className="navbar-brand" to="/">
             Fixadat
           </Link>{" "}
-          <a
-            className="navbar-brand"
-            href="https://www.squeng.com/"
-            target="Squeng" rel="noreferrer noopener"
-          >
+          <a className="navbar-brand" href="https://www.squeng.com/" target="Squeng" rel="noreferrer noopener">
             <small>
               Squeng<sup>&reg;</sup>&nbsp;made
             </small>
@@ -86,9 +80,7 @@ function App(props: {}) {
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <NavLink
-                  className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                  }
+                  className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                   aria-current="page"
                   to="/"
                 >
@@ -97,9 +89,7 @@ function App(props: {}) {
               </li>
               <li className="nav-item">
                 <NavLink
-                  className={({ isActive }) =>
-                    isActive ? "disabled nav-link active" : "disabled nav-link"
-                  }
+                  className={({ isActive }) => (isActive ? "disabled nav-link active" : "disabled nav-link")}
                   tabIndex={-1}
                   aria-disabled="true"
                   to="/acknowledgements"
@@ -120,9 +110,7 @@ function App(props: {}) {
                 <ul className="dropdown-menu" aria-labelledby="legalese">
                   <li>
                     <NavLink
-                      className={({ isActive }) =>
-                        isActive ? "dropdown-item disabled" : "dropdown-item"
-                      }
+                      className={({ isActive }) => (isActive ? "dropdown-item disabled" : "dropdown-item")}
                       to="/legalese/im"
                     >
                       {localizations["legalese.masthead"]}
@@ -130,9 +118,7 @@ function App(props: {}) {
                   </li>
                   <li>
                     <NavLink
-                      className={({ isActive }) =>
-                        isActive ? "dropdown-item disabled" : "dropdown-item"
-                      }
+                      className={({ isActive }) => (isActive ? "dropdown-item disabled" : "dropdown-item")}
                       to="/legalese/pp"
                     >
                       {localizations["legalese.pp"]}
@@ -140,9 +126,7 @@ function App(props: {}) {
                   </li>
                   <li>
                     <NavLink
-                      className={({ isActive }) =>
-                        isActive ? "dropdown-item disabled" : "dropdown-item"
-                      }
+                      className={({ isActive }) => (isActive ? "dropdown-item disabled" : "dropdown-item")}
                       to="/legalese/tos"
                     >
                       {localizations["legalese.tos"]}
@@ -151,12 +135,7 @@ function App(props: {}) {
                 </ul>
               </li>
               <li className="nav-item">
-                <NavLink
-                  className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                  }
-                  to="/prices"
-                >
+                <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/prices">
                   {localizations["prices"]}
                 </NavLink>
               </li>
@@ -174,11 +153,7 @@ function App(props: {}) {
               <ul className="dropdown-menu" aria-labelledby="language">
                 <li>
                   <a
-                    className={
-                      localizations["locale"] === "de"
-                        ? "dropdown-item disabled"
-                        : "dropdown-item"
-                    }
+                    className={localizations["locale"] === "de" ? "dropdown-item disabled" : "dropdown-item"}
                     href={locationString.replace("NEWLOCALE", "de")}
                   >
                     Deutsch
@@ -186,11 +161,7 @@ function App(props: {}) {
                 </li>
                 <li>
                   <a
-                    className={
-                      localizations["locale"] === "en"
-                        ? "dropdown-item disabled"
-                        : "dropdown-item"
-                    }
+                    className={localizations["locale"] === "en" ? "dropdown-item disabled" : "dropdown-item"}
                     href={locationString.replace("NEWLOCALE", "en")}
                   >
                     English
@@ -198,18 +169,27 @@ function App(props: {}) {
                 </li>
               </ul>
             </div>
-            &nbsp;
-            &nbsp;
+            &nbsp; &nbsp;
             <div className="form-check form-switch text-bg-primary">
-              <input className="form-check-input" type="checkbox" role="switch" id="modeLightDark" checked={mode==="dark"} aria-checked={mode==="dark"} onChange={() => mode==="light"?setMode("dark"):setMode("light")}/>
-              <label className="form-check-label" htmlFor="modeLightDark"><i className="bi bi-emoji-sunglasses-fill"></i> / <i className="bi bi-emoji-sunglasses"></i></label>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="modeLightDark"
+                checked={mode === "dark"}
+                aria-checked={mode === "dark"}
+                onChange={() => (mode === "light" ? setMode("dark") : setMode("light"))}
+              />
+              <label className="form-check-label" htmlFor="modeLightDark">
+                <i className="bi bi-emoji-sunglasses-fill"></i> / <i className="bi bi-emoji-sunglasses"></i>
+              </label>
             </div>
-            &nbsp;
-            &nbsp;
+            &nbsp; &nbsp;
             <a
               className="btn btn-outline-light"
               href="https://github.com/Squoss/Fixadat"
-              target="GitHub" rel="noreferrer noopener"
+              target="GitHub"
+              rel="noreferrer noopener"
             >
               <i className="bi bi-github"></i>
             </a>
@@ -241,8 +221,7 @@ function App(props: {}) {
                 </Link>
               </div>
               <div className="col">
-                Copyright &copy; <time dateTime="2021">2021</time>-
-                <time dateTime="2026">2026</time> Squeng AG
+                Copyright &copy; <time dateTime="2021">2021</time>-<time dateTime="2026">2026</time> Squeng AG
               </div>
             </div>
           </div>
@@ -272,7 +251,8 @@ function App(props: {}) {
                 , including but not limited to{" "}
                 <a
                   href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies"
-                  target="MDN" rel="noreferrer noopener"
+                  target="MDN"
+                  rel="noreferrer noopener"
                 >
                   cookies
                 </a>
@@ -294,7 +274,8 @@ function App(props: {}) {
                     For the time being, Fixadat uses two{" "}
                     <a
                       href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_the_lifetime_of_a_cookie"
-                      target="MDN" rel="noreferrer noopener"
+                      target="MDN"
+                      rel="noreferrer noopener"
                     >
                       session cookies
                     </a>{" "}
@@ -305,14 +286,16 @@ function App(props: {}) {
                       The{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/SettingsSession"
-                        target="Play" rel="noreferrer noopener"
+                        target="Play"
+                        rel="noreferrer noopener"
                       >
                         Play session cookie
                       </a>
                       , typically called <code>PLAY_SESSION</code>, to{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/ScalaCsrf#Adding-a-CSRF-token-to-the-session"
-                        target="Play" rel="noreferrer noopener"
+                        target="Play"
+                        rel="noreferrer noopener"
                       >
                         add an anti-CSRF token
                       </a>
@@ -322,23 +305,19 @@ function App(props: {}) {
                       The{" "}
                       <a
                         href="https://www.playframework.com/documentation/latest/ScalaI18N#Language-Cookie-Support"
-                        target="Play" rel="noreferrer noopener"
+                        target="Play"
+                        rel="noreferrer noopener"
                       >
                         Play language cookie
                       </a>
-                      , typically called <code>PLAY_LANG</code>, to remember
-                      your preferred language.
+                      , typically called <code>PLAY_LANG</code>, to remember your preferred language.
                     </li>
                   </ol>
                 </div>
               </div>
             </div>
             <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal">
                 Take it
               </button>{" "}
               or <a href="https://noyb.eu/">leave it</a>

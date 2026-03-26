@@ -31,13 +31,7 @@ import { ElectionCandidatesProps } from "../props/ElectionCandidatesProps";
 
 // Use local date parts to avoid UTC/local timezone offset issues
 function localDateStr(d: Date): string {
-  return (
-    d.getFullYear() +
-    "-" +
-    String(d.getMonth() + 1).padStart(2, "0") +
-    "-" +
-    String(d.getDate()).padStart(2, "0")
-  );
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
 // Parse "YYYY-MM-DDTHH:mm:ss" candidates into { "YYYY-MM-DD": ["HH:mm", ...] }
@@ -59,10 +53,8 @@ function parseCandidates(candidates: string[]): Record<string, string[]> {
 // Flatten back into sorted "YYYY-MM-DDTHH:mm:00" array
 function flattenCandidates(schedule: Record<string, string[]>): string[] {
   return Object.keys(schedule)
-    .sort()
-    .flatMap((date) =>
-      schedule[date].filter((time) => time !== "").map((time) => `${date}T${time}:00`)
-    );
+    .sort((a, b) => a.localeCompare(b))
+    .flatMap((date) => schedule[date].filter((time) => time !== "").map((time) => `${date}T${time}:00`));
 }
 
 function sameElements(arr1: string[], arr2: string[]): boolean {
@@ -82,20 +74,14 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
   const localizations = useContext(l10nContext);
   const locale = localizations["locale"] === "de" ? de : enUS;
 
-  const [schedule, setSchedule] = useState<Record<string, string[]>>(
-    parseCandidates(props.election.candidates)
-  );
-  const [timeZone, setTimeZone] = useState(
-    props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
+  const [schedule, setSchedule] = useState<Record<string, string[]>>(parseCandidates(props.election.candidates));
+  const [timeZone, setTimeZone] = useState(props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   // Noon local time avoids any UTC rollover when DayPicker compares dates
-  const selectedDays = Object.keys(schedule).map(
-    (ds) => new Date(ds + "T12:00:00")
-  );
+  const selectedDays = Object.keys(schedule).map((ds) => new Date(ds + "T12:00:00"));
 
   const handleSelect = (days: Date[] | undefined) => {
     const newSchedule: Record<string, string[]> = {};
@@ -130,20 +116,15 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
   };
 
   const candidates = flattenCandidates(schedule);
-  const hasEmptyTimes = Object.values(schedule).some((times) =>
-    times.every((t) => t === "")
-  );
+  const hasEmptyTimes = Object.values(schedule).some((times) => times.every((t) => t === ""));
 
   const changesSaved = () =>
-    sameElements(props.election.candidates, candidates) &&
-    tte(props.election.timeZone) === timeZone;
+    sameElements(props.election.candidates, candidates) && tte(props.election.timeZone) === timeZone;
 
   const cancelSchedule = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSchedule(parseCandidates(props.election.candidates));
-    setTimeZone(
-      props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
+    setTimeZone(props.election.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone);
   };
 
   const saveSchedule = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -151,9 +132,7 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
     props.election
       .updateElectionSchedule(candidates, ttu(timeZone))
       .then((updated) => props.onElectionChanged(updated))
-      .catch((error) =>
-        console.error(`failed to put election schedule: ${error}`)
-      );
+      .catch((error) => console.error(`failed to put election schedule: ${error}`));
   };
 
   const timeZoneOptions = props.timeZones.map((tz) => (
@@ -166,9 +145,7 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
     <form className="d-grid gap-4">
       <div className={changesSaved() ? "card" : "card border-warning"}>
         <div className="card-body">
-          <h5 className="card-title">
-            {localizations["datesAndTimes.instruction"]}
-          </h5>
+          <h5 className="card-title">{localizations["datesAndTimes.instruction"]}</h5>
 
           {/* Timezone */}
           <div className="mb-3">
@@ -184,8 +161,7 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
               {timeZoneOptions}
             </select>
             <div className="form-text">
-              <i className="bi bi-info-circle-fill" />{" "}
-              {localizations["datesAndTimes.timeZoneMotivation"]}
+              <i className="bi bi-info-circle-fill" /> {localizations["datesAndTimes.timeZoneMotivation"]}
             </div>
           </div>
 
@@ -193,38 +169,33 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
           <div className="row align-items-start">
             <div className="col-auto">
               <div className="border rounded p-1">
-              <DayPicker
-                mode="multiple"
-                selected={selectedDays}
-                onSelect={handleSelect}
-                disabled={{ before: today }}
-                locale={locale}
-              />
+                <DayPicker
+                  mode="multiple"
+                  selected={selectedDays}
+                  onSelect={handleSelect}
+                  disabled={{ before: today }}
+                  locale={locale}
+                />
               </div>
             </div>
             <div className="col">
               {Object.keys(schedule).length === 0 ? (
-                <p className="text-muted fst-italic">
-                  {localizations["datesAndTimes"]}
-                </p>
+                <p className="text-muted fst-italic">{localizations["datesAndTimes"]}</p>
               ) : (
                 Object.keys(schedule)
-                  .sort()
+                  .sort((a, b) => a.localeCompare(b))
                   .map((date) => (
                     <div key={date} className="mb-3">
                       <div className="fw-semibold mb-1">
-                        {new Date(date + "T12:00:00").toLocaleDateString(
-                          localizations["locale"],
-                          {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}
+                        {new Date(date + "T12:00:00").toLocaleDateString(localizations["locale"], {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </div>
                       {schedule[date].map((time, i) => (
-                        <div key={i} className="input-group mb-1">
+                        <div key={`${date}T${time}`} className="input-group mb-1">
                           <input
                             type="time"
                             className="form-control"
@@ -247,9 +218,7 @@ function ElectionCandidates(props: Readonly<ElectionCandidatesProps>) {
             </div>
           </div>
         </div>
-        <div
-          className={changesSaved() ? "card-footer" : "card-footer bg-warning"}
-        >
+        <div className={changesSaved() ? "card-footer" : "card-footer bg-warning"}>
           <div className="d-grid gap-2 d-md-flex justify-content-md-end">
             <button className="btn btn-secondary" onClick={cancelSchedule}>
               {localizations["revert"]}

@@ -48,12 +48,12 @@ function Election(props: {}) {
   const [timeZones, setTimeZones] = useState<Array<string>>([]);
 
   const getElection = useCallback(() => {
-    if (token === "") {
+    if (token === "" || !id) {
       return;
     }
 
     factory
-      .recreateElection(id!, token.substring(1), tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
+      .recreateElection(id, token.substring(1), tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
       .then((election) => {
         setResponseStatusCode(200);
         setElection(election);
