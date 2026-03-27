@@ -77,5 +77,5 @@ votes.voted.subject = Stimme abgegeben auf {0}
 votes.voted.text = Auf der Wahl-Seite {1} wurde eine Stimme von {0} abgegeben: {2}
 votes.yourName = Ihr Name
 
-reloadNotice = Eine neue Version von Fixadat ist verfügbar.
-reloadLink = Fixadat neu laden!
+reloadNotice = Eine neue Version von {0} ist verfügbar.
+reloadLink = {0} neu laden!

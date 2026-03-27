@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2025 Squeng AG
+ * Copyright (c) 2021-2026 Squeng AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,94 @@
 
 package gui
 
+import domain.driving_ports.Elections
+import domain.value_objects.AccessToken
+import domain.value_objects.ElectionSnapshot
+import domain.value_objects.Error
+import domain.value_objects.Error.*
+import domain.value_objects.Id
+import domain.value_objects.Vote
 import play.api.i18n.I18nSupport
 import play.api.mvc.AnyContent
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.Request
 
+import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 @Singleton
-class TwirlController @Inject()(val controllerComponents: ControllerComponents) extends BaseController
-  with I18nSupport {
+class TwirlController @Inject() (implicit
+    ec: ExecutionContext,
+    val controllerComponents: ControllerComponents,
+    val elections: Elections
+) extends BaseController
+    with I18nSupport {
 
   def hello() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.hello())
   }
+
+  private def toErrorResponse(error: Error): Status = error match {
+    case domain.value_objects.Error.NotFound => NotFound
+    case AccessDenied                        => Forbidden
+    case PrivateAccess                       => Gone
+    case ProtectedAccess                     => Conflict
+    case CommandIncomplete                   => BadRequest
+  }
+
+  private def toPopularity(
+      votes: Seq[Vote]
+  ): Map[LocalDateTime, (Int, Int, Int)] =
+    votes
+      .flatMap(_.availability.toSeq)
+      .groupBy { entry => entry._1 }
+      .map { case (candidate, availabilities) =>
+        candidate -> (
+          availabilities.count { case (_, availability) =>
+            availability == domain.value_objects.Availability.Yes
+          },
+          availabilities.count { case (_, availability) =>
+            availability == domain.value_objects.Availability.IfNeedBe
+          },
+          availabilities.count { case (_, availability) =>
+            availability == domain.value_objects.Availability.No
+          }
+        )
+      }
+
+  def getElection(id: Id, accessToken: AccessToken, timeZone: Option[String]) =
+    Action.async { implicit request =>
+      Try(timeZone.map(ZoneId.of(_))) match { // TimeZone.getTimeZone(_) would resort to GMT in case of an unknown time zone
+        case Success(zoneId) =>
+          elections
+            .readElection(
+              id,
+              accessToken,
+              zoneId
+            )
+            .map(
+              _.fold(
+                toErrorResponse(_),
+                election =>
+                  Ok(
+                    views.html.without(
+                      accessToken,
+                      election,
+                      toPopularity(election.votes)
+                    )
+                  )
+              )
+            )
+        case Failure(exception) =>
+          Future(BadRequest(exception.getMessage))
+      }
+    }
 }
