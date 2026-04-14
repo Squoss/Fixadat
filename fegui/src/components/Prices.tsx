@@ -47,7 +47,7 @@ function Prices(props: {}) {
             title="Leanpub"
             width="200"
             height="400"
-            src="https://leanpub.com/JKS/embed"
+            src="https://leanpub.com/DevWebApps/embed"
           ></iframe>
         </div>
       </div>

@@ -1,6 +1,6 @@
 locale = de
 
-HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> und kann kostenlos verwendet werden. Wenn Sie sie unterstützen möchten, ziehen Sie den Kauf des <a href="https://leanpub.com/JKS" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> in Betracht.
+HTML.teachingAid = Diese App ist das Lehrobjekt eines <a href="https://leanpub.com/DevWebApps" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> und kann kostenlos verwendet werden. Wenn Sie sie unterstützen möchten, ziehen Sie den Kauf des <a href="https://leanpub.com/DevWebApps" target="Leanpub" rel="noreferrer noopener">Lehrbuchs</a> in Betracht.
 readMe = Sie müssen es nicht lesen. 😉
 
 notFound.title = Nicht Gefunden
