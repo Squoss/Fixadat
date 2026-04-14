@@ -79,18 +79,3 @@ votes.yourName = Your name
 
 reloadNotice = A new version of {0} is available.
 reloadLink = Reload {0}!
-
-twirl.candidates = Candidates
-twirl.created = Created
-twirl.emailAddress = E-mail Address
-twirl.id = ID
-twirl.locale = Locale
-twirl.organizerToken = Organizer Token
-twirl.phoneNumber = Phone Number
-twirl.replayedEvents = Replayed Events
-twirl.snapshot = Snapshot
-twirl.subscriptions = Subscriptions
-twirl.tokens = Tokens
-twirl.url = URL
-twirl.updated = Updated
-twirl.voterToken = Voter Token

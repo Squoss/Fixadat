@@ -30,8 +30,5 @@ libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.4.1" % Test
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.squeng.controllers._"
 
-libraryDependencies += "org.webjars.npm" % "popperjs__core" % "2.11.8"
-libraryDependencies += "org.webjars.npm" % "bootstrap" % "5.3.8"
-
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.squeng.binders._"

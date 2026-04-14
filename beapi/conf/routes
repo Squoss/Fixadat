@@ -26,9 +26,6 @@ GET     /assets/*file                            controllers.Assets.versioned(pa
 GET     /browserconfig.xml                       controllers.Assets.at(path="/public/build", file="browserconfig.xml")
 GET     /robots.txt                              controllers.Assets.at(path="/public/build", file="robots.txt")
 
-GET     /twirl                                   gui.TwirlController.hello()
-GET     /twirl/WITHOUThtmx/:election             gui.TwirlController.getElection(election: domain.value_objects.Id, accessToken: domain.value_objects.AccessToken, zoneId: Option[String])
-
 GET     /                                        gui.ReactController.guiRoute(reactRoute = "")
 GET     /fegui/*reactFile                        gui.ReactController.guiFile(reactFile)
 GET     /*reactRoute                             gui.ReactController.guiRoute(reactRoute)
