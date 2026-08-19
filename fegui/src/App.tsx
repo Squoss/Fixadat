@@ -55,6 +55,7 @@ function App(props: {}) {
 
   return (
     <React.Fragment>
+      <a className="visually-hidden-focusable" href="#content">{localizations["skipToMainContent"]}</a>{/* https://getbootstrap.com/docs/5.3/getting-started/accessibility/#visually-hidden-content */}
       <header className="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
         <nav className="container-fluid" aria-label="Main navigation">
           <Link className="navbar-brand" to="/">
@@ -197,7 +198,7 @@ function App(props: {}) {
         </nav>
       </header>
 
-      <main className="container">
+      <main className="container" id="content">
         <Outlet />
       </main>
 
