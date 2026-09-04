@@ -23,7 +23,7 @@ COPY fegui/vite.config.ts ./
 RUN npm run build
 
 
-FROM sbtscala/scala-sbt:eclipse-temurin-25.0.4_7_1.13.0_3.3.8 AS play
+FROM sbtscala/scala-sbt:eclipse-temurin-25_2.x AS play
 
 WORKDIR /squeng/twotle
 

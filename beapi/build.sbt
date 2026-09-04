@@ -18,12 +18,12 @@ lazy val root = (project in file("."))
     .dependsOn(hexagon)
 lazy val hexagon = project
 
-scalaVersion := "3.3.8"
+scalaVersion := "3.9.0"
 scalacOptions += "-no-indent" // https://docs.scala-lang.org/scala3/reference/other-new-features/indentation.html
 
 libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.10.0"
+libraryDependencies += "org.mongodb" % "mongodb-driver-reactivestreams" % "5.11.0"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.2" % Test
 libraryDependencies += "com.tngtech.archunit" % "archunit" % "1.5.0" % Test

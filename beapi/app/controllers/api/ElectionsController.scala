@@ -242,9 +242,9 @@ class ElectionsController @Inject() (implicit
               request.body.name,
               request.body.timeZone,
               request.body.availability,
-              messagesApi("votes.voted.subject")(request.lang),
-              messagesApi("votes.voted.plainText")(request.lang),
-              messagesApi("votes.voted.text")(request.lang)
+              messagesApi("votes.voted.subject")(using request.lang),
+              messagesApi("votes.voted.plainText")(using request.lang),
+              messagesApi("votes.voted.text")(using request.lang)
             )
             .map(
               _.fold(
@@ -266,9 +266,9 @@ class ElectionsController @Inject() (implicit
             request.host,
             name,
             Instant.parse(voted),
-            messagesApi("votes.revoked.subject")(request.lang),
-            messagesApi("votes.revoked.plainText")(request.lang),
-            messagesApi("votes.revoked.text")(request.lang)
+            messagesApi("votes.revoked.subject")(using request.lang),
+            messagesApi("votes.revoked.plainText")(using request.lang),
+            messagesApi("votes.revoked.text")(using request.lang)
           )
           .map(
             _.fold(
@@ -290,10 +290,10 @@ class ElectionsController @Inject() (implicit
               AccessToken(accessToken),
               request.host,
               request.body.emailAddress,
-              messagesApi("links.byEmail.subject")(request.lang),
-              messagesApi("links.byEmail.plainText")(request.lang),
+              messagesApi("links.byEmail.subject")(using request.lang),
+              messagesApi("links.byEmail.plainText")(using request.lang),
               request.body.phoneNumber,
-              messagesApi("links.bySms.text")(request.lang)
+              messagesApi("links.bySms.text")(using request.lang)
             )
             .map(
               _.fold(

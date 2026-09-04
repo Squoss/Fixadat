@@ -47,21 +47,21 @@ class Module(
     // we may not need it when env.mode == play.api.Mode.Dev, but it won't cause any problem as long as nobody invokes Mdb.apply()
 
     val dbImplementationName = config.get[String]("di.db")
-    val dbImplementationClass: Class[_ <: Repository] = env.classLoader
+    val dbImplementationClass: Class[? <: Repository] = env.classLoader
       .loadClass(dbImplementationName)
       .asSubclass(classOf[Repository])
     logger.debug(s"db implementation class is $dbImplementationClass")
     bind(classOf[Repository]).to(dbImplementationClass)
 
     val emailImplementationName = config.get[String]("di.email")
-    val emailImplementationClass: Class[_ <: Email] = env.classLoader
+    val emailImplementationClass: Class[? <: Email] = env.classLoader
       .loadClass(emailImplementationName)
       .asSubclass(classOf[Email])
     logger.debug(s"email implementation class is $emailImplementationClass")
     bind(classOf[Email]).to(emailImplementationClass)
 
     val smsImplementationName = config.get[String]("di.sms")
-    val smsImplementationClass: Class[_ <: Sms] = env.classLoader
+    val smsImplementationClass: Class[? <: Sms] = env.classLoader
       .loadClass(smsImplementationName)
       .asSubclass(classOf[Sms])
     logger.debug(s"SMS implementation class is $smsImplementationClass")

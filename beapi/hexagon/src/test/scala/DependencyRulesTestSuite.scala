@@ -52,20 +52,20 @@ class DependencyRulesTestSuite extends FunSuite {
       VALUE_OBJECTS
     )
 
-  val classes =
+  private val classes =
     new ClassFileImporter().importPackages(
-      (THE_APP_INSIDE_THE_DOMAIN): _*
+      (THE_APP_INSIDE_THE_DOMAIN)*
     )
 
   test("the domain depends on itself and third-party APIs only") {
 
     noClasses()
       .that()
-      .resideInAnyPackage(THE_APP_INSIDE_THE_DOMAIN: _*)
+      .resideInAnyPackage(THE_APP_INSIDE_THE_DOMAIN*)
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN): _*
+        (NOT_THE_APP ++ THE_APP_INSIDE_THE_DOMAIN)*
       )
       .check(classes)
   }
@@ -80,7 +80,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ PERSISTENCE :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ PERSISTENCE :+ VALUE_OBJECTS)*
       )
       .check(classes)
   }
@@ -110,7 +110,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DRIVING_PORTS :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ DRIVING_PORTS :+ VALUE_OBJECTS)*
       )
       .check(classes)
   }
@@ -133,7 +133,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .resideInAPackage(NOTIFICATIONS)
       .should()
       .dependOnClassesThat()
-      .resideOutsideOfPackages((NOT_THE_APP :+ NOTIFICATIONS): _*)
+      .resideOutsideOfPackages((NOT_THE_APP :+ NOTIFICATIONS)*)
       .check(classes)
   }
 
@@ -158,7 +158,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ DRIVEN_PORTS :+ DRIVING_PORTS): _*
+        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ DRIVEN_PORTS :+ DRIVING_PORTS)*
       )
       .check(classes)
   }
@@ -184,7 +184,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ PERSISTENCE): _*
+        (NOT_THE_APP :+ ENTITIES :+ VALUE_OBJECTS :+ PERSISTENCE)*
       )
       .check(classes)
   }
@@ -197,7 +197,7 @@ class DependencyRulesTestSuite extends FunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ VALUE_OBJECTS): _*
+        (NOT_THE_APP :+ VALUE_OBJECTS)*
       )
       .check(classes)
   }

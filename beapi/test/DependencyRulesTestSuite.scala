@@ -72,7 +72,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
     Seq( /*DEFAULT,*/ API, DEV, FILTERS, GUI, MONGODB_ADAPTER, THIRDPARTY_SERVICES)
 
   val classes =
-    new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN: _*)
+    new ClassFileImporter().importPackages(THE_APP_OUTSIDE_OF_THE_DOMAIN*)
 
   test(
     "the controllers depend on themselves, the SPI, the (abstract) types, and the value objects only"
@@ -84,7 +84,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ API :+ DOMAIN_SERVICEINTS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS): _*
+        (NOT_THE_APP :+ API :+ DOMAIN_SERVICEINTS :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS)*
       )
       .check(classes)
   }
@@ -123,7 +123,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ "play.mvc.."): _*
+        (NOT_THE_APP :+ "play.mvc..")*
       ) // "play.mvc.." covers play.mvc.EssentialFilter
       .check(classes)
   }
@@ -149,7 +149,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE): _*
+        (NOT_THE_APP ++ MONGODB_DRIVER :+ MONGODB_ADAPTER :+ DOMAIN_ENTITYINTS :+ DOMAIN_VALUEOBJECTS :+ DOMAIN_PERSISTENCE)*
       )
       .check(classes)
   }
@@ -177,7 +177,7 @@ class DependencyRulesTestSuite extends AnyFunSuite {
       .should()
       .dependOnClassesThat()
       .resideOutsideOfPackages(
-        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS :+ MAILJET :+ THIRDPARTY_APIS :+ THIRDPARTY_SERVICES): _*
+        (NOT_THE_APP :+ DOMAIN_VALUEOBJECTS :+ MAILJET :+ THIRDPARTY_APIS :+ THIRDPARTY_SERVICES)*
       )
       .check(classes)
   }

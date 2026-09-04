@@ -46,7 +46,7 @@ class ReactController @Inject() (
 
   val is = env.classLoader.getResourceAsStream("public/build/index.html")
   val indexHtml = Source
-    .fromInputStream(is)(Codec.UTF8)
+    .fromInputStream(is)(using Codec.UTF8)
     .mkString // or use java.nio.Files, cf. Scala for the Impatient (§9.2) and https://horstmann.com/unblog/2023-04-09/index.html
 
   def guiFile(reactFile: String) = Action { implicit request: Request[AnyContent] =>
@@ -64,7 +64,7 @@ class ReactController @Inject() (
     Ok(
       indexHtml
         .replace("REPLACE_CSRF_TOKEN", token.get.value)
-        .replace("REPLACE_LANG", messagesApi("locale")(request.lang))
+        .replace("REPLACE_LANG", messagesApi("locale")(using request.lang))
     )
       .as("text/html")
   }
